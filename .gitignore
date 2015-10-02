@@ -5,6 +5,9 @@
 *.obj
 *.pyc
 
+# Sphinx
+docs/build
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -30,3 +33,6 @@
 
 # OS X Metadata
 .DS_Store
+
+# Vim / Editor
+*~
