@@ -14,6 +14,9 @@ Contents:
 .. automodule:: simulator 
     :members:
 
+.. automodule:: blackwidow
+    :members:
+
 
 
 Indices and tables
