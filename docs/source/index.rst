@@ -11,7 +11,15 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   run_simulator
+   blackwidow
+
 .. automodule:: simulator 
+    :members:
+
+.. automodule:: run_simulator
+
+.. automodule:: blackwidow
     :members:
 
 
