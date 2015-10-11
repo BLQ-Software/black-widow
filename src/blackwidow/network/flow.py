@@ -10,6 +10,24 @@ class Flow:
         self.destination = destination
         self.amount = amount
 
-    def send(): 
-        """Connects to a link"""
+    def make_packet(self, packet_num):
+        """Creates a packet with specified number.
+        """
+
+    def make_ack(self, packet):
+        """ Creates ack based for packet.
+        """
+
+    def send_packet(self, packet):
+        """ Send a packet.
+        """
+
+    def received_packet(self, event):
+        """ Generate an ack or respond to bad packet
+        """
+
+    def timeout(self, packet_num):
+        """
+        """
+
 
