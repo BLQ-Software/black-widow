@@ -1,4 +1,4 @@
-from blackwidow.network.host import Network
+from blackwidow.network import Network
 import json
 
 def config(filename):

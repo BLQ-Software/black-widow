@@ -15,15 +15,15 @@ class Host(Device):
         self.host_id = host_id
         self.flows = [] 
 
-    def add_flow(flow):
+    def add_flow(self, flow):
         """Add receiving flow to host."""
         self.flows.append(flow)
 
-    def send(env, packet): 
+    def send(self, env, packet): 
         """Connects to a link."""
         self.links[0].receive(env, packet)
 
-    def receive(env, packet):
+    def receive(self, env, packet):
         """Send packet to flow to process."""
         for flow in self.flows:
             if packet.flow_id == flow.flow_id:
