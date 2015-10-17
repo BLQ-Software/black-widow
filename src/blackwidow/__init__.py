@@ -15,7 +15,11 @@ def run(filename):
     """
 
     #: 
+    print "Parsing " + filename + " ..."
     network = parser.config(filename)
+
+    print "Parsed network:"
+    network.dump()
     
     # data = sim.simulate(network)
 
