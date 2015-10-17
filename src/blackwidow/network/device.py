@@ -5,6 +5,11 @@ class Device(object):
         """Constructor for device."""
         self.net_addr = net_addr
         self.links = []
+        self.env = None
+
+    def set_env(self, env):
+        """Set simpy environment"""
+        self.env = env
 
     def add_link(self, link):
         """Add link to list of links."""
