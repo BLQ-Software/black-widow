@@ -1,4 +1,4 @@
 {"Hosts": ["H1", "H2"],
  "Routers": [],
- "Links": {"LinkRate": 10, "LinkDelay": 10, "LinkBuffer": 64},
+ "Links": {"rate": 10, "delay": 10, "buffer": 64},
  "Flows": {"src": "H1", "dest": "H2", "amount": 20, "start": 1.0}}
