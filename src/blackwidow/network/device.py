@@ -10,5 +10,5 @@ class Device(object):
         """Add link to list of links."""
         self.links.append(link)
 
-    def send(env, dest_addr):
+    def send(env, packet):
         return
