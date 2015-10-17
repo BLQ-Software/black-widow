@@ -1,4 +1,5 @@
-from device import Device
+from blackwidow.network.device import Device
+from blackwidow.network.packet import Packet 
 
 class Host(Device):
     """Simple class for hosts.
@@ -9,11 +10,29 @@ class Host(Device):
     will trigger host behavior.
     """
     def __init__(self, host_id):
-        """Constructor for Host class.
-        """
+        """Constructor for Host class."""
         super(Host, self).__init__(host_id)
         self.host_id = host_id
+        self.flows = [] 
 
-    def send(): 
-        """Connects to a link"""
+    def add_flow(flow):
+        """Add receiving flow to host."""
+        self.flows.append(flow)
+
+    def send(env, packet): 
+        """Connects to a link."""
+        self.links[0].receive(env, packet)
+
+    def receive(env, packet):
+        """Send packet to flow to process."""
+        for flow in self.flows:
+            if packet.flow_id == flow.flow_id:
+                flow.receive(env, packet)
+                return
+            
+            
+                
+
+
+
 

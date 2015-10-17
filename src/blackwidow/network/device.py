@@ -6,9 +6,9 @@ class Device(object):
         self.net_addr = net_addr
         self.links = []
 
-    def add_link(self, link_id):
+    def add_link(self, link):
         """Add link to list of links."""
-        self.links.append(link_id)
+        self.links.append(link)
 
-    def send(env, dest_addr):
+    def send(env, packet):
         return

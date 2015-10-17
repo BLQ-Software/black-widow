@@ -15,8 +15,8 @@ def run(filename):
     """
 
     #: 
-    config = parser.config(filename)
+    network = parser.config(filename)
     
-    data = sim.simulate(config)
+    # data = sim.simulate(network)
 
-    graph.display(data)
+    # graph.display(data)
