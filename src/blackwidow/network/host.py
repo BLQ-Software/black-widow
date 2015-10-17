@@ -14,20 +14,24 @@ class Host(Device):
         super(Host, self).__init__(host_id)
         self.host_id = host_id
         self.flows = [] 
-
+    
     def add_flow(self, flow):
         """Add receiving flow to host."""
         self.flows.append(flow)
+    
+    def set_env(self, env)
+        """Set pysim environment."""
+        self.env = env
 
-    def send(self, env, packet): 
+    def send(self, packet): 
         """Connects to a link."""
-        self.links[0].receive(env, packet)
+        self.links[0].receive(packet)
 
-    def receive(self, env, packet):
+    def receive(self, packet):
         """Send packet to flow to process."""
         for flow in self.flows:
             if packet.flow_id == flow.flow_id:
-                flow.receive(env, packet)
+                flow.receive(packet)
                 return
             
             
