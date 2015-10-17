@@ -6,6 +6,12 @@ class Packet(object):
         self.src = src
         self.dest = dest
         self.size = size
+        self.ack = 0
+
+    def is_ack(self):
+        """ Returns 0 if not ack packet.
+        """
+        pass
 
 
 class DataPacket(Packet):
@@ -21,3 +27,4 @@ class AckPacket(Packet):
         self.src = src
         self.dest = dest
         self.size = 64*8
+        self.ack = 1
