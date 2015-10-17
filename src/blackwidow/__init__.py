@@ -15,7 +15,7 @@ def run(filename):
     """
 
     #: 
-    print "Parsing " + filename + " ..."
+    print "Parsing {0} ...".format(filename)
     network = parser.config(filename)
 
     print "Parsed network:"
