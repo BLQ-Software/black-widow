@@ -19,7 +19,7 @@ class Host(Device):
         """Add receiving flow to host."""
         self.flows.append(flow)
     
-    def set_env(self, env)
+    def set_env(self, env):
         """Set pysim environment."""
         self.env = env
 
