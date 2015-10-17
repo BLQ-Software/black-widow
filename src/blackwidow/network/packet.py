@@ -1,6 +1,6 @@
 """Packet classes
 """
-class Packet:
+class Packet(object):
     def __init__(self, pack_id, src, dest, size):
         self.pack_id = pack_id
         self.src = src
