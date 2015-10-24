@@ -16,6 +16,7 @@ class Link():
         # Packets that are traveling through the link
         self.release_to_device_buffer = deque()
         self.env = env
+        self.size = 0
 
     def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
@@ -25,9 +26,10 @@ class Link():
             message += "ACK "
         message += "packet {1} at time {2}"
         print message.format(self.id, packet.pack_id, self.env.time)
-        if len(self.release_into_link_buffer) < self.capacity:
+        if self.size + packet.size / 8 < self.capacity * 1000:
             self.release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
+            self.size += packet.size / 8
         else:
             print "Packet dropped."
 
@@ -53,6 +55,7 @@ class Link():
                 print message.format(self.id, packet.pack_id, self.env.time)
                 # Remove current packet from bufer
                 self.release_into_link_buffer.pop()
+                self.size -= packet.size / 8
                 # Update next packet time arrival time at front of queue
                 if (len(self.release_into_link_buffer) > 0):
                     self.release_into_link_buffer[-1][2] = self.env.time
