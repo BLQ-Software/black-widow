@@ -7,14 +7,18 @@ class Link():
         self.id = id
         self.device_a = device_a
         self.device_b = device_b
+
         # rate is initially Mbps. rate is stored as bits per ms.
         self.rate = rate * 10 ** 9
         self.delay = delay
         self.capacity = capacity * 1000 * 8
+
         # Buffer to enter link
         self.release_into_link_buffer = deque()
+
         # Packets that are traveling through the link
         self.release_to_device_buffer = deque()
+
         self.env = env
         self.size = 0
 
