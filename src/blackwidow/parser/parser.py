@@ -15,7 +15,9 @@ def config_network(filename):
         network.add_router(router_id)
 
     for link in config['Links']:
-        network.add_link(link)
+        network.add_link(link['network_id'], link['devices'][0], 
+                         link['devices'][1], link['delay'], 
+                         link['rate'], link['buffer'])
 
     for flow in config['Flows']:
         network.add_flow(flow)
