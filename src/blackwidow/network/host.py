@@ -1,17 +1,32 @@
-class Host:
+from device import Device
+
+class Host(Device):
     """Simple class for hosts.
-    
-    Hosts are mainly responsible for recording their time data. 
+
+    Hosts are mainly responsible for recording their time data.
     They don't trigger events in the simulation, but it will be
     useful to separate host data (end to end data). Flows
     will trigger host behavior.
     """
-    def __init__(self, host_id, link_id):
-        """Constructor for Host class.
-        """
+    def __init__(self, host_id):
+        """Constructor for Host class."""
+        super(Host, self).__init__(host_id)
         self.host_id = host_id
-        self.link_id = link_id
+        self.flows = []
 
-    def send(): 
-        """Connects to a link"""
+    def add_flow(self, flow):
+        """Add receiving flow to host."""
+        self.flows.append(flow)
 
+    def send(self, packet):
+        """Connects to a link."""
+        self.links[0].receive(packet, self.host_id)
+
+    def receive(self, packet):
+        """Send packet to flow to process."""
+        print "yo mama"
+        for flow in self.flows:
+            if packet.flow_id == flow.flow_id:
+                print "flow called"
+                flow.receive(packet)
+                return

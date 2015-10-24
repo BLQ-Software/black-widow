@@ -36,3 +36,6 @@ docs/build
 
 # Vim / Editor
 *~
+
+# Swap
+*.swp
