@@ -45,6 +45,8 @@ class Flow(object):
             print "{0} bits left".format(self.amount)
             self.amount = self.amount - pack.size
         else:
+            if self.amount <= 0:
+                self.done = True
             print "Waiting"
 
     def receive(self, packet):
@@ -55,7 +57,7 @@ class Flow(object):
             print "Packet {0} received".format(self.pack_num)
             self.send_ack(packet)
         else:
-            pdb.set_trace()
+            #pdb.set_trace()
             self.respond_to_ack()
             self.packets_sent.remove(packet.pack_id)
             print "Ack received for packet {0}".format(self.pack_num)
