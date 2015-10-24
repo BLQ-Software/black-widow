@@ -65,9 +65,14 @@ class Network():
 
     def run(self):
         global time, end_time
-        while time < end_time:
+        while True:
+            done = True
             for id in self.flows:
                 self.flows[id].send_packet()
+                if not self.flows[id].done:
+                    done = False
             for id in self.links:
                 self.links[id].send()
             time += 1
+            if done:
+                break
