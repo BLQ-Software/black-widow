@@ -16,7 +16,6 @@ class Flow(object):
         self.dest = destination
         self.amount = amount
         self.pack_num = 0
-        self.env = 0
         self.cwnd = 1
         self.ssthresh = 10
         self.packets_sent = []
