@@ -61,7 +61,7 @@ class Network():
         self.ids.append(link_id)
 
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
-        self.devices[flow_id] = Flow(flow_id, flow_src, flow_dest, data_amt,
+        self.flows[flow_id] = Flow(flow_id, flow_src, flow_dest, data_amt,
                                     self, flow_start)
         self.ids.append(flow_id)
 
@@ -73,7 +73,7 @@ class Network():
             for id in self.flows:
                 self.flows[id].send_packet()
                 if not self.flows[id].done:
-                    done = False
+                    done = False 
             for id in self.links:
                 self.links[id].send()
             time += 1
