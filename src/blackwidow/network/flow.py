@@ -35,7 +35,6 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
-        print "Waiting"
         if self.env.time > self.flow_start and self.amount > 0:
             pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
             self.packets_sent.append(self.pack_num)
@@ -43,6 +42,8 @@ class Flow(object):
             self.pack_num = self.pack_num + 1
             self.amount = self.amount - pack.size
             print "Packet {0} sent".format(self.pack_num)
+        else:
+            print "Waiting"
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
