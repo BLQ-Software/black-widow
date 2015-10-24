@@ -3,7 +3,7 @@ class Device(object):
     """
     def __init__(self, net_addr):
         """Constructor for device."""
-        self.net_addr = net_addr
+        self.network_id = net_addr
         self.links = []
         self.env = None
 

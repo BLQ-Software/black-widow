@@ -38,10 +38,10 @@ class Link():
             source_id = packet_info[1]
             start_time = packet_info[2]
             # Check if packet has been sent by router.
-            if (network.time - start_time >= packet.size / self.rate):
+            if (self.env.time - start_time >= packet.size / self.rate):
                 # Add it to queue of packets traveling through link.
                 # Update the current packet time to the send time
-                self.release_to_device_buffer.appendLeft(
+                self.release_to_device_buffer.appendleft(
                     [packet, source_id, self.env.time])
                 print "I am link {0}. I have released packet {1} to my link at time {2}".format(self.id, packet.pack_id, self.env.time)
                 # Remove current packet from bufer
@@ -58,9 +58,9 @@ class Link():
             source_id = packet_info[1]
             start_time = packet_info[2]
             # Check if packet has arrived at end of link.
-            if (network.time - start_time >= self.delay):
+            if (self.env.time - start_time >= self.delay):
                 # Figure out which device to send to and send
-                if (source_id == device_a.network_id):
+                if (source_id == self.device_a.network_id):
                     self.device_b.receive(packet)
                 elif (source_id == device_b.network_id):
                     self.device_a.receive(packet)

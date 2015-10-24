@@ -41,18 +41,18 @@ class Flow(object):
             self.src.send(pack)
             self.pack_num = self.pack_num + 1
             self.amount = self.amount - pack.size
-            print "Packet" + pack.pack_id + "sent"
+            print "Packet {0} sent".format(self.pack_num)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
         """
         if packet.dest == self.dest:
             self.send_ack(packet)
-            print "Packet" + packet.pack_id + "received"
+            print "Packet {0} received".format(self.pack_num)
         else:
             self.respond_to_ack()
             self.packets_sent.remove(packet.pack_id)
-            print "Ack received for packet" + packet.pack_id
+            print "Ack received for packet {0}".format(self.pack_num)
             if amount == 0 and len(self.packets_sent) == 0:
                 done = True
 
