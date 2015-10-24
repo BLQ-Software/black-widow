@@ -3,7 +3,7 @@ from blackwidow.network.host import Host
 
 def test_construct():
     d = Device('H1')
-    assert d.net_addr == 'H1'
+    assert d.network_id == 'H1'
 
 def test_host():
     h1 = Host('H1')
