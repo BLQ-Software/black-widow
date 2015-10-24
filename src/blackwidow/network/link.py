@@ -21,6 +21,8 @@ class Link():
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
         print "I am link {0}. I have received packet {1} at time {2}".format(self.id, packet.pack_id, self.env.time)
+        if (packet.is_ack):
+            print "This is an ACK packet"
         if len(self.release_into_link_buffer) < self.capacity:
             self.release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
@@ -44,6 +46,8 @@ class Link():
                 self.release_to_device_buffer.appendleft(
                     [packet, source_id, self.env.time])
                 print "I am link {0}. I have released packet {1} to my link at time {2}".format(self.id, packet.pack_id, self.env.time)
+                if (packet.is_ack):
+                    print "This is an ACK packet"
                 # Remove current packet from bufer
                 self.release_into_link_buffer.pop()
                 # Update next packet time arrival time at front of queue
@@ -63,8 +67,12 @@ class Link():
                 if (source_id == self.device_a.network_id):
                     self.device_b.receive(packet)
                     print "I am link {0}. I have released packet {1} to {2} at time {3}".format(self.id, packet.pack_id, self.device_b.network_id, self.env.time)
+                    if (packet.is_ack):
+                        print "This is an ACK packet"
                 elif (source_id == self.device_b.network_id):
                     self.device_a.receive(packet)
                     print "I am link {0}. I have released packet {1} to {2} at time {3}".format(self.id, packet.pack_id, self.device_a.network_id, self.env.time)
-                # Remove current packet from buffer
+                    if (packet.is_ack):
+                        print "This is an ACK packet"
+                # Remove currenst packet from buffer
                 self.release_to_device_buffer.pop()
