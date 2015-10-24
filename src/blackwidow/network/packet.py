@@ -10,7 +10,7 @@ class Packet(object):
     
     def __init__(self, packet_id, src, dest):
         """Constructor for host class"""
-        self.pack_id = pack_id
+        self.pack_id = packet_id
         self.src = src
         self.dest = dest   
 
@@ -19,15 +19,15 @@ class DataPacket(Packet):
     
     def __init__(self, packet_id, src, dest):
         """Constructor for DataPacket class"""
-        super(Packet, self).__init__()
+        super(DataPacket, self).__init__(packet_id, src, dest)
         self.size = DATA_PACKET_SIZE
         self.is_ack = False
 
 class AckPacket(Packet):
     """Class for acknowledgement packets"""
     
-    def __init__(self,packet_id, src, dest):
+    def __init__(self, packet_id, src, dest):
         """Constructor for AckPackets class"""
-        super(Packet, self).__init__()
+        super(AckPacket, self).__init__(packet_id, src, dest)
         self.size = ACK_PACKET_SIZE
         self.is_ack = True
