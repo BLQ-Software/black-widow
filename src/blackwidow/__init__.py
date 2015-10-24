@@ -16,7 +16,7 @@ def run(filename):
 
     #: 
     print "Parsing {0} ...".format(filename)
-    network = parser.config(filename)
+    network = parser.config_network(filename)
 
     print "Parsed network:"
     network.dump()

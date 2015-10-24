@@ -1,7 +1,7 @@
 from blackwidow.network import Network
 import json
 
-def config(filename):
+def config_network(filename):
     """Returns config object."""
     f = open(filename)
     config = json.load(f)
