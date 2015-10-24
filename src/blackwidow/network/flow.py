@@ -50,10 +50,15 @@ class Flow(object):
             print "{0} bits left".format(self.amount)
             self.amount = self.amount - pack.size
         else:
-            pack = DataPacket(self.pack_num - 1, self.src, self.dest, self.flow_id)
-            self.src.send(pack)
             if self.amount > 0:
                 print "Waiting"
+            else:
+                if (len(self.packets_sent) == 0):
+                    self.done = True
+                else:
+                    self.pack_num = self.packets_sent[0]
+                    pack = DataPacket(self.pack_num - 1, self.src, self.dest, self.flow_id)
+                    self.src.send(pack)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
