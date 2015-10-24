@@ -57,7 +57,7 @@ class Network():
         device_2 = self.devices[device_id2]
 
         # Create link
-        self.links[link_id] = Link(device_1, device_2, delay, rate, capacity,
+        self.links[link_id] = Link(link_id, device_1, device_2, delay, rate, capacity,
                                   self)
 
     def add_flow(self, flow):
