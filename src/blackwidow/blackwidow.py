@@ -1,5 +1,5 @@
-import blackwidow.parser as parser
-import blackwidow.graph
+import parser as parser
+import graph
 
 def run(filename):
     """Runs the overall simulation, configuring from arguments.
