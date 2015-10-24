@@ -20,6 +20,9 @@ def run(filename):
     print "Parsed network:"
     network.dump()
 
+    print "Running network:"
+    network.run()
+
     # data = sim.simulate(network)
 
     # graph.display(data)
