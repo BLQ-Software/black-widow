@@ -72,7 +72,7 @@ class Network():
                 print "Attempting to send on flow {0}".format(id)
                 self.flows[id].send_packet()
                 if not self.flows[id].done:
-                    done = False 
+                    done = False
             for id in self.links:
                 print "Attempting to send on link {0}".format(id)
                 self.links[id].send()

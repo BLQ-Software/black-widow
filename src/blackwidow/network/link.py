@@ -25,7 +25,6 @@ class Link():
                 [packet, source_id, self.env.time])
 
     def send(self):
-        print "I am link {0}. Here is my time: {1}".format(self.id, self.env.time)
         # Release into link
         if (len(self.release_into_link_buffer) > 0):
             # Peek at head
