@@ -19,6 +19,7 @@ class Flow(object):
         self.env = 0
         self.cwnd = 1
         self.ssthresh = 10
+        self.packets_sent = []
 
     def send_ack(self, packet):
         """ Creates ack based for packet.
@@ -27,12 +28,13 @@ class Flow(object):
             ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src)
         else:
             print "Received wrong packet."
-        self.src.send(ack_packet)
+        self.dest.send(ack_packet)
 
     def send_packet(self):
         """ Send a packet.
         """
         pack = DataPacket(self.pack_num, self.src, self.dest)
+        self.packets_sent.append(self.pack_num)
         self.src.send(pack)
         self.pack_num = self.pack_num + 1
 
@@ -40,12 +42,13 @@ class Flow(object):
         """ Generate an ack or respond to bad packet.
         """
         if packet.dest == self.dest:
-            send_ack(self,packet)
+            self.send_ack(packet)
         else:
-            pass
+            self.respond_to_ack()
+            self.packets_sent.remove(packet.pack_id)
 
 
-def respond_to_ack(self):
+    def respond_to_ack(self):
         """ Update window size.
         """
         if self.cwnd < self.ssthresh:
