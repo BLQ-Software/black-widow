@@ -1,7 +1,6 @@
 """ Flow class
 """
 
-from blackwidow.network import network
 from blackwidow.network.packet import AckPacket, DataPacket
 
 class Flow(object):
