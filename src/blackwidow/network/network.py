@@ -60,8 +60,9 @@ class Network():
         self.links[link_id] = Link(device_1, device_2, delay, rate, capacity,
                                   self)
 
-    def add_flow(self, flow):
-        pass
+    def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
+        self.devices[flow_id] = Flow(flow_id, flow_src, flow_dest, data_amt,
+                                    self, flow_start)
 
     def run(self):
         global time, end_time

@@ -20,6 +20,8 @@ def config_network(filename):
                          link['rate'], link['buffer'])
 
     for flow in config['Flows']:
-        network.add_flow(flow)
+        network.add_flow(flow['network_id'], flow['src'],
+                         flow['dest'], flow['amount'],
+                         flow['start'])
 
     return network
