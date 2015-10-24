@@ -1,9 +1,9 @@
-from blackwidow.network.device import Device
+from device import Device
 
 class Host(Device):
     """Simple class for hosts.
-    
-    Hosts are mainly responsible for recording their time data. 
+
+    Hosts are mainly responsible for recording their time data.
     They don't trigger events in the simulation, but it will be
     useful to separate host data (end to end data). Flows
     will trigger host behavior.
@@ -12,13 +12,13 @@ class Host(Device):
         """Constructor for Host class."""
         super(Host, self).__init__(host_id)
         self.host_id = host_id
-        self.flows = [] 
-    
+        self.flows = []
+
     def add_flow(self, flow):
         """Add receiving flow to host."""
         self.flows.append(flow)
-    
-    def send(self, packet): 
+
+    def send(self, packet):
         """Connects to a link."""
         self.links[0].receive(packet)
 
@@ -28,4 +28,3 @@ class Host(Device):
             if packet.flow_id == flow.flow_id:
                 flow.receive(packet)
                 return
-
