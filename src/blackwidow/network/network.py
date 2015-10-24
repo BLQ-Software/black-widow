@@ -3,8 +3,6 @@ from router import Router
 from link import Link
 from flow import Flow
 
-time = 0
-
 
 class Network():
     """Python representation of the network.
@@ -20,6 +18,7 @@ class Network():
         self.links = {}
         self.flows = {}
         self.ids = []
+        self.time = 0
 
     def check_id(self, obj_id):
         """Raise an exception if object id is not unique."""
@@ -66,9 +65,8 @@ class Network():
         self.ids.append(flow_id)
 
     def run(self):
-        global time
         while True:
-            print "Time: {0} ms".format(time)
+            print "Time: {0} ms".format(self.time)
             done = True
             for id in self.flows:
                 self.flows[id].send_packet()
@@ -76,6 +74,6 @@ class Network():
                     done = False
             for id in self.links:
                 self.links[id].send()
-            time += 1
+            self.time += 1
             if done:
                 break
