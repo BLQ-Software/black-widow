@@ -50,5 +50,3 @@ class Link():
                 elif (source_id == device_b.network_id):
                     device_b.receive(packet)
                 release_to_device_buffer.pop()
-                if (len(release_to_device_buffer) > 0):
-                    release_to_device_buffer[-1][2] = network.time
