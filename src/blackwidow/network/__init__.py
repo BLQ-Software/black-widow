@@ -32,12 +32,14 @@ class Network():
         print self.flows
 
     def add_host(self, host_id):
-        """Construct host and add to list of hosts."""
+        """Construct host and add to dictionary of hosts."""
         self.check_id(host_id)
         self.hosts[host_id] = Host(host_id)
 
     def add_router(self, router_id):
-        pass
+        """Construct router and add to dictionary of routers"""
+        self.check_id(router_id)
+        self.routers[router_id] = Router(router_id)
 
     def add_link(self, link):
         pass
