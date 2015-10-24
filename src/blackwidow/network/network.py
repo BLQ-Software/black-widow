@@ -82,12 +82,12 @@ class Network():
                 print "Time: {0} ms".format(self.time)
             done = True
             for id in self.flows:
-                print "Attempting to send on flow {0}".format(id)
+                # print "Attempting to send on flow {0}".format(id)
                 self.flows[id].send_packet()
                 if not self.flows[id].done:
                     done = False
             for id in self.links:
-                print "Attempting to send on link {0}".format(id)
+                # print "Attempting to send on link {0}".format(id)
                 self.links[id].send()
             self.time += 1
             if done or self.time > 2000:
