@@ -14,7 +14,7 @@ class Flow(object):
         self.flow_id = flow_id
         self.src = source
         self.dest = destination
-        self.amount = amount*8*10**6
+        self.amount = amount*8*10**5
         self.pack_num = 0
         self.cwnd = 10
         self.ssthresh = 10
@@ -57,7 +57,7 @@ class Flow(object):
                     self.done = True
                 else:
                     self.pack_num = self.packets_sent[0]
-                    pack = DataPacket(self.pack_num - 1, self.src, self.dest, self.flow_id)
+                    pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
                     self.src.send(pack)
 
     def receive(self, packet):
