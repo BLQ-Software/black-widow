@@ -7,7 +7,7 @@ class Flow(object):
     """Simple class for flows.
     Flows will trigger host behavior.
     """
-    def __init__(self, source, destination, amount, env):
+    def __init__(self, source, destination, amount, env, time):
         """ Constructor for Flow class
         """
         self.src = source
@@ -18,6 +18,7 @@ class Flow(object):
         self.ssthresh = 10
         self.packets_sent = []
         self.env = env
+        self.flow_start = time
 
     def send_ack(self, packet):
         """ Creates ack based for packet.
@@ -37,15 +38,18 @@ class Flow(object):
             self.src.send(pack)
             self.pack_num = self.pack_num + 1
             self.amount = self.amount - pack.size
+            print "Packet" + pack.pack_id + "sent"
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
         """
         if packet.dest == self.dest:
             self.send_ack(packet)
+            print "Packet" + packet.pack_id + "received"
         else:
             self.respond_to_ack()
             self.packets_sent.remove(packet.pack_id)
+            print "Ack received for packet" + packet.pack_id
 
 
     def respond_to_ack(self):
