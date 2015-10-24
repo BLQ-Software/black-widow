@@ -24,7 +24,9 @@ class Host(Device):
 
     def receive(self, packet):
         """Send packet to flow to process."""
+        print "yo mama"
         for flow in self.flows:
             if packet.flow_id == flow.flow_id:
+                print "flow called"
                 flow.receive(packet)
                 return

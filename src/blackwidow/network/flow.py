@@ -25,9 +25,10 @@ class Flow(object):
     def send_ack(self, packet):
         """ Creates ack based for packet.
         """
-        if self.src == packet.dest and self.dest == packet.src:
+        if self.src == packet.src and self.dest == packet.dest:
             ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self.flow_id)
             self.dest.send(ack_packet)
+            print "Ack packet {0} sent".format(self.pack_num)
         else:
             print "Received wrong packet."
 
@@ -46,14 +47,15 @@ class Flow(object):
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
         """
+        print "indeed, flow called"
         if packet.dest == self.dest:
-            self.send_ack(packet)
             print "Packet {0} received".format(self.pack_num)
+            self.send_ack(packet)
         else:
             self.respond_to_ack()
             self.packets_sent.remove(packet.pack_id)
             print "Ack received for packet {0}".format(self.pack_num)
-            if amount == 0 and len(self.packets_sent) == 0:
+            if self.amount < 0 and len(self.packets_sent) == 0:
                 done = True
 
     def respond_to_ack(self):
