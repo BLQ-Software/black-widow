@@ -14,13 +14,14 @@ def run(filename):
     """
 
     #:
-    print "Parsing {0} ...".format(filename)
+    print
+    print "Parsing {0} ...".format(filename), "\n"
     network = parser.config_network(filename)
 
-    print "Parsed network:"
+    print "Parsed network: \n"
     network.dump()
 
-    print "Running network:"
+    print "\nRunning network: \n"
     network.run()
 
     # data = sim.simulate(network)
