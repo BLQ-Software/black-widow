@@ -58,10 +58,12 @@ class Network():
         # Create link
         self.links[link_id] = Link(link_id, device_1, device_2, delay, rate, capacity,
                                   self)
+        self.ids.append(link_id)
 
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
         self.devices[flow_id] = Flow(flow_id, flow_src, flow_dest, data_amt,
                                     self, flow_start)
+        self.ids.append(flow_id)
 
     def run(self):
         global time
