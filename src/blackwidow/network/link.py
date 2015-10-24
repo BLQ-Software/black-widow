@@ -10,7 +10,7 @@ class Link():
         # rate is initially Mbps. rate is stored as bits per ms.
         self.rate = rate * 10 ** 9
         self.delay = delay
-        self.capacity = capacity * 1000
+        self.capacity = capacity * 1000 * 8
         # Buffer to enter link
         self.release_into_link_buffer = deque()
         # Packets that are traveling through the link
@@ -26,10 +26,10 @@ class Link():
             message += "ACK "
         message += "packet {1} at time {2}"
         print message.format(self.id, packet.pack_id, self.env.time)
-        if self.size + packet.size / 8 < self.capacity:
+        if self.size + packet.size < self.capacity:
             self.release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
-            self.size += packet.size / 8
+            self.size += packet.size
         else:
             print "Packet dropped."
 
@@ -55,7 +55,7 @@ class Link():
                 print message.format(self.id, packet.pack_id, self.env.time)
                 # Remove current packet from bufer
                 self.release_into_link_buffer.pop()
-                self.size -= packet.size / 8
+                self.size -= packet.size
                 # Update next packet time arrival time at front of queue
                 if (len(self.release_into_link_buffer) > 0):
                     self.release_into_link_buffer[-1][2] = self.env.time
