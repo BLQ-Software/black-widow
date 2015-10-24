@@ -90,5 +90,5 @@ class Network():
                 if not self.flows[id].done:
                     done = False
             self.time += 1
-            if done or self.time > 1050:
+            if done:# or self.time > 1050:
                 break

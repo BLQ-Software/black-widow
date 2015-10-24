@@ -36,7 +36,7 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
-        if self.env.time > self.flow_start and self.amount > 0 and self.env.time%100 == 0:
+        if self.env.time > self.flow_start and self.amount > 0:
             pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
             self.packets_sent.append(self.pack_num)
             self.src.send(pack)
@@ -59,7 +59,7 @@ class Flow(object):
             self.respond_to_ack()
             self.packets_sent.remove(packet.pack_id)
             print "Ack received for packet {0}".format(self.pack_num)
-            if self.amount < 0 and len(self.packets_sent) == 0:
+            if self.amount < 0:# and len(self.packets_sent) == 0:
                 done = True
 
     def respond_to_ack(self):
