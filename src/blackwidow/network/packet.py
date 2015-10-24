@@ -8,7 +8,7 @@ ACK_PACKET_SIZE = 64 * 8
 class Packet(object):
     """Super class for DataPackets and AckPackets"""
     
-    def __init__(self, packet_id, src, dest, size):
+    def __init__(self, packet_id, src, dest):
         """Constructor for host class"""
         self.pack_id = pack_id
         self.src = src
@@ -17,7 +17,7 @@ class Packet(object):
 class DataPacket(Packet):
     """Class for data packets"""
     
-    def __init__(self, size, ack):
+    def __init__(self, packet_id, src, dest, size, ack):
         """Constructor for DataPacket class"""
         super(Packet, self).__init__()
         self.size = DATA_PACKET_SIZE
@@ -26,7 +26,8 @@ class DataPacket(Packet):
 class AckPacket(Packet):
     """Class for acknowledgement packets"""
     
-    def __init__(self, pack_id, src, dest):
+    def __init__(self,packet_id, src, dest, size, ack):
         """Constructor for AckPackets class"""
+        super(Packet, self).__init__()
         self.size = ACK_PACKET_SIZE
         self.is_ack = True
