@@ -1,0 +1,11 @@
+{
+ "Hosts":["H1", "H2"],
+ "Routers":["R1", "R2", "R3", "R4"],
+ "Links": {"L0": {"devices": ["H1", "R1"], "rate": 12.5, "delay": 10, "buffer": 64},
+           "L1": {"devices": ["R1", "R2"], "rate": 10, "delay": 10, "buffer": 64},
+           "L2": {"devices": ["R1", "R3"], "rate": 10, "delay": 10, "buffer": 64},
+           "L3": {"devices": ["R2", "R4"], "rate": 10, "delay": 10, "buffer": 64},
+           "L4": {"devices": ["R3", "R4"], "rate": 10, "delay": 10, "buffer": 64},
+           "L5": {"devices": ["R4", "H2"], "rate": 12.5, "delay": 10, "buffer": 64}}, 
+ "Flows":{"F1": {"src": "H1", "dest": "H2", "amount": 20, "start": 0.5}}
+}
