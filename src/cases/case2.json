@@ -1,0 +1,16 @@
+{
+ "Hosts":["S1", "S2", "S3", "T1", "T2", "T3"],
+ "Routers":["R1", "R2", "R3", "R4"],
+ "Links": {"L1": {"devices": ["R1", "R2"], "rate": 10, "delay": 10, "buffer": 128},
+           "L2": {"devices": ["R2", "R3"], "rate": 10, "delay": 10, "buffer": 128},
+           "L3": {"devices": ["R3", "R4"], "rate": 10, "delay": 10, "buffer": 128},
+           "L4": {"devices": ["S2", "R1"], "rate": 12.5, "delay": 10, "buffer": 128},
+           "L5": {"devices": ["R1", "S1"], "rate": 12.5, "delay": 10, "buffer": 128},
+           "L6": {"devices": ["T2", "R2"], "rate": 12.5, "delay": 10, "buffer": 128},
+           "L7": {"devices": ["S3", "R3"], "rate": 12.5, "delay": 10, "buffer": 128},
+           "L8": {"devices": ["T1", "R4"], "rate": 12.5, "delay": 10, "buffer": 128},
+           "L9": {"devices": ["R4", "T3"], "rate": 12.5, "delay": 10, "buffer": 128}}, 
+ "Flows":{"F1": {"src": "S1", "dest": "T1", "amount": 35, "start": 0.5},
+          "F2": {"src": "S2", "dest": "T2", "amount": 15, "start": 10},
+          "F3": {"src": "S3", "dest": "T3", "amount": 30, "start": 20}}
+}
