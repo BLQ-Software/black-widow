@@ -19,15 +19,15 @@ class Link():
     def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
-        if len(release_into_link_buffer) < capacity:
-            release_into_link_buffer.appendleft(
+        if len(self.release_into_link_buffer) < capacity:
+            self.release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
 
     def send(self):
         # Release into link
-        if (len(release_into_link_buffer) > 0):
+        if (len(self.release_into_link_buffer) > 0):
             # Peek at head
-            packet_info = release_into_link_buffer[-1]
+            packet_info = self.release_into_link_buffer[-1]
             # Copy packet info fields.
             packet = packet_info[0]
             source_id = packet_info[1]
@@ -36,17 +36,17 @@ class Link():
             if (network.time - start_time >= packet.size / self.rate):
                 # Add it to queue of packets traveling through link.
                 # Update the current packet time to the send time
-                release_to_device_buffer.appendLeft(
+                self.release_to_device_buffer.appendLeft(
                     [packet, source_id, self.env.time])
                 # Remove current packet from bufer
-                release_into_link_buffer.pop()
+                self.release_into_link_buffer.pop()
                 # Update next packet time arrival time at front of queue
-                if (len(release_into_link_buffer) > 0):
-                    release_into_link_buffer[-1][2] = self.env.time
+                if (len(self.release_into_link_buffer) > 0):
+                    self.release_into_link_buffer[-1][2] = self.env.time
 
         # Release to device
-        if (len(release_to_device_buffer) > 0):
-            packet_info = release_to_device_buffer[-1]
+        if (len(self.release_to_device_buffer) > 0):
+            packet_info = self.release_to_device_buffer[-1]
             # Copy packet info fields.
             packet = packet_info[0]
             source_id = packet_info[1]
@@ -55,8 +55,8 @@ class Link():
             if (network.time - start_time >= self.delay):
                 # Figure out which device to send to and send
                 if (source_id == device_a.network_id):
-                    device_a.receive(packet)
+                    self.device_a.receive(packet)
                 elif (source_id == device_b.network_id):
-                    device_b.receive(packet)
+                    self.device_b.receive(packet)
                 # Remove currenet packet from buffer
-                release_to_device_buffer.pop()
+                self.release_to_device_buffer.pop()
