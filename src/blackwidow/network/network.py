@@ -1,5 +1,6 @@
 from host import Host
 from router import Router
+from link import Link
 from flow import Flow
 
 time = 0
