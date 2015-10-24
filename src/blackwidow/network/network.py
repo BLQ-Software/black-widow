@@ -17,8 +17,7 @@ class Network():
     across all objects.
     """
     def __init__(self):
-        self.hosts = {}
-        self.routers = {}
+        self.devices = {}
         self.links = {}
         self.flows = {}
         self.ids = []
@@ -38,13 +37,13 @@ class Network():
     def add_host(self, host_id):
         """Construct host and add to dictionary of hosts."""
         self.check_id(host_id)
-        self.hosts[host_id] = Host(host_id)
+        self.devices[host_id] = Host(host_id)
         self.ids.append(host_id)
 
     def add_router(self, router_id):
         """Construct router and add to dictionary of routers"""
         self.check_id(router_id)
-        self.routers[router_id] = Router(router_id)
+        self.devices[router_id] = Router(router_id)
         self.ids.append(router_id)
 
     def add_link(self, link_id, device_id1, device_id2, delay, rate, capacity):
@@ -55,18 +54,12 @@ class Network():
             raise KeyError('id {0} does not exist.'.format(device_id2))
 
         # Get devices
-        if device_id1 in self.hosts:
-            device_1 = self.hosts[device_id1]
-        else:
-            device_1 = self.routers[device_id1]
-
-        if device_id2 in self.hosts:
-            device_2 = self.hosts[device_id2]
-        else:
-            device_2 = self.routers[device_id2]
+        device_1 = self.devices[device_id1]
+        device_2 = self.devices[device_id2]
 
         # Create link
-        self.links[link_id] = Link(device_1, device_2, delay, rate, capacity)
+        self.links[link_id] = Link(device_1, device_2, delay, rate, capacity,
+                                  self)
 
     def add_flow(self, flow):
         pass
