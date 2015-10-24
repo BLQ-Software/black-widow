@@ -19,6 +19,7 @@ class Flow(object):
         self.cwnd = 10
         self.ssthresh = 10
         self.packets_sent = []
+        self.packets_arrived = []
         self.env = env
         self.flow_start = time*1000.0
         self.done = False
@@ -37,17 +38,27 @@ class Flow(object):
         """ Send a packet.
         """
         if self.env.time > self.flow_start and self.amount > 0:
+            if (len(self.packets_sent) > self.cwnd):
+                self.pack_num = self.packets_sent[0]
             pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
-            self.packets_sent.append(self.pack_num)
-            self.src.send(pack)
+            if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.packets_arrived):
+                self.packets_sent.append(self.pack_num)
+            if (self.pack_num not in self.packets_arrived):
+                self.src.send(pack)
+                print "Packet {0} sent".format(self.pack_num)
             self.pack_num = self.pack_num + 1
-            print "Packet {0} sent".format(self.pack_num)
             print "{0} bits left".format(self.amount)
             self.amount = self.amount - pack.size
         else:
-            if self.amount <= 0:
-                self.done = True
-            print "Waiting"
+            if self.amount > 0:
+                print "Waiting"
+            else:
+                if (len(self.packets_sent) == 0):
+                    self.done = True
+                else:
+                    self.pack_num = self.packets_sent[0]
+                    pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
+                    self.src.send(pack)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -59,14 +70,18 @@ class Flow(object):
         else:
             #pdb.set_trace()
             self.respond_to_ack()
-            self.packets_sent.remove(packet.pack_id)
-            print "Ack received for packet {0}".format(self.pack_num)
+            if packet.pack_id in self.packets_sent:
+                self.packets_sent.remove(packet.pack_id)
+            if packet.pack_id not in self.packets_arrived:
+                self.packets_arrived.append(packet.pack_id)
+            print "Ack received for packet {0}".format(packet.pack_id)
             if self.amount < 0:# and len(self.packets_sent) == 0:
                 done = True
 
     def respond_to_ack(self):
         """ Update window size.
         """
+        pass
         if self.cwnd < self.ssthresh:
             self.cwnd = self.cwnd + 1
         else:
