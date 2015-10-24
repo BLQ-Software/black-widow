@@ -9,7 +9,7 @@ class Router(Device):
 
     def __init__(self, router_id):
         """Constructor for Router class."""
-        super(Host, self).__init__(router_id)
+        super(Router, self).__init__(router_id)
         self.router_id = router_id
         self.routing_table = {}
 
