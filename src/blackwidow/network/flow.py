@@ -29,11 +29,12 @@ class Flow(object):
             print "Received wrong packet."
         self.src.send(ack_packet)
 
-    def send_packet(self, packet_num):
+    def send_packet(self):
         """ Send a packet.
         """
         pack = DataPacket(packet_num, self.src, self.dest)
         self.src.send(pack)
+        self.pack_num = self.pack_num + 1
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
