@@ -18,7 +18,7 @@ class Link():
         if len(release_into_link_buffer) < capacity:
             release_into_link_buffer.appendleft([packet, source_id, network.time])
 
-    def send(self, packet):
+    def send(self):
         # Release into link
         if (len(release_into_link_buffer) > 0):
             packet_info = release_into_link_buffer[-1]
