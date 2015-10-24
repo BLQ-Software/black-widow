@@ -55,8 +55,8 @@ class Link():
             if (network.time - start_time >= self.delay):
                 # Figure out which device to send to and send
                 if (source_id == device_a.network_id):
-                    self.device_a.receive(packet)
-                elif (source_id == device_b.network_id):
                     self.device_b.receive(packet)
+                elif (source_id == device_b.network_id):
+                    self.device_a.receive(packet)
                 # Remove currenet packet from buffer
                 self.release_to_device_buffer.pop()
