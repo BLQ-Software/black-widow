@@ -26,7 +26,7 @@ class Flow(object):
         """ Creates ack based for packet.
         """
         if self.src == packet.dest and self.dest == packet.src:
-            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src)
+            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self.flow_id)
             self.dest.send(ack_packet)
         else:
             print "Received wrong packet."
@@ -36,7 +36,7 @@ class Flow(object):
         """
         print "Waiting"
         if self.env.time > self.flow_start and self.amount > 0:
-            pack = DataPacket(self.pack_num, self.src, self.dest)
+            pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
             self.packets_sent.append(self.pack_num)
             self.src.send(pack)
             self.pack_num = self.pack_num + 1
