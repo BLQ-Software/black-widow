@@ -9,7 +9,7 @@ class Packet(object):
     """Super class for DataPackets and AckPackets"""
     
     def __init__(self, packet_id, src, dest, size):
-    """Constructor for host class"""
+        """Constructor for host class"""
         self.pack_id = pack_id
         self.src = src
         self.dest = dest   
@@ -18,7 +18,7 @@ class DataPacket(Packet):
     """Class for data packets"""
     
     def __init__(self, size, ack):
-    """Constructor for DataPacket class"""
+        """Constructor for DataPacket class"""
         super(Packet, self).__init__()
         self.size = DATA_PACKET_SIZE
         self.is_ack = False
