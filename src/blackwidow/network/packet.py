@@ -1,30 +1,30 @@
-"""Packet classes
-"""
+#This file contains the Packet class and its two subclasses,
+#DataPacket and AckPacket.
+
+DATA_PACKET_SIZE = 1024 * 8
+ACK_PACKET_SIZE = 64 * 8
 class Packet(object):
-    def __init__(self, pack_id, src, dest, size):
+    """Super class for DataPackets and AckPackets"""
+    
+    def __init__(self, packet_id, src, dest, size):
+    """Constructor for host class"""
         self.pack_id = pack_id
         self.src = src
-        self.dest = dest
-        self.size = size
-        self.ack = 0
-
-    def is_ack(self):
-        """ Returns 0 if not ack packet.
-        """
-        pass
-
+        self.dest = dest   
 
 class DataPacket(Packet):
-    def __init__(self, pack_id, src, dest):
-        self.pack_id = pack_id
-        self.src = src
-        self.dest = dest
-        self.size = 1024*8
+    """Class for data packets"""
+    
+    def __init__(self, size, ack):
+    """Constructor for DataPacket class"""
+        super(Packet, self).__init__()
+        self.size = DATA_PACKET_SIZE
+        self.ack = False
 
 class AckPacket(Packet):
+    """Class for acknowledgement packets"""
+    
     def __init__(self, pack_id, src, dest):
-        self.pack_id = pack_id
-        self.src = src
-        self.dest = dest
-        self.size = 64*8
-        self.ack = 1
+        """Constructor for AckPackets class"""
+        self.size = ACK_PACKET_SIZE
+        self.ack = True
