@@ -29,8 +29,7 @@ class Network():
 
     def dump(self):
         """Prints out network"""
-        print self.hosts
-        print self.routers
+        print self.devices
         print self.links
         print self.flows
 
