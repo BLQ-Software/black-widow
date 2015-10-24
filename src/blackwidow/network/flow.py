@@ -13,7 +13,7 @@ class Flow(object):
         self.flow_id = flow_id
         self.src = source
         self.dest = destination
-        self.amount = amount
+        self.amount = amount*8*10**6
         self.pack_num = 0
         self.cwnd = 1
         self.ssthresh = 10
