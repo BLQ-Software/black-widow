@@ -16,11 +16,11 @@ class Network():
         self.routers = {}
         self.links = {}
         self.flows = {}
+        self.ids = []
 
     def check_id(self, obj_id):
         """Raise an exception if object id is not unique."""
-        if ((obj_id in self.hosts) or (obj_id in self.routers) or
-                (obj_id in self.links) or (obj_id in self.flows)):
+        if obj_id in self.ids:
             raise NameError('id {0} already exists.'.format(obj_id))
 
     def dump(self):
@@ -34,14 +34,34 @@ class Network():
         """Construct host and add to dictionary of hosts."""
         self.check_id(host_id)
         self.hosts[host_id] = Host(host_id)
+        self.ids.append(host_id)
 
     def add_router(self, router_id):
         """Construct router and add to dictionary of routers"""
         self.check_id(router_id)
         self.routers[router_id] = Router(router_id)
+        self.ids.append(router_id)
 
-    def add_link(self, link):
-        pass
+    def add_link(self, link_id, device_id1, device_id2, delay, rate, capacity):
+        self.check_id(link_id)
+        if device_id1 not in self.ids:
+            raise KeyError('id {0} does not exist.'.format(device_id1))
+        if device_id2 not in self.ids:
+            raise KeyError('id {0} does not exist.'.format(device_id2))
+
+        # Get devices
+        if device_id1 in self.hosts:
+            device_1 = self.hosts[device_id1]
+        else:
+            device_1 = self.routers[device_id1]
+
+        if device_id2 in self.hosts:
+            device_2 = self.hosts[device_id2]
+        else:
+            device_2 = self.routers[device_id2]
+
+        # Create link
+        self.links[link_id] = Link(device_1, device_2, delay, rate, capacity)
 
     def add_flow(self, flow):
         pass
