@@ -66,7 +66,7 @@ class Network():
         device_2 = self.devices[flow_dest]
 
 
-        flow = Flow(flow_id, device_1, device_2, data_amt, 
+        flow = Flow(flow_id, device_1, device_2, data_amt,
                         self, flow_start)
         self.flows[flow_id] = flow
 
