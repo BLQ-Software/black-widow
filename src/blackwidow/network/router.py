@@ -19,7 +19,7 @@ class Router(Device):
 
         network_id = link.device_a.network_id
 
-        if (netword_id == self.network_id):
+        if (network_id == self.network_id):
             network_id = link.device_b.network_id
         
         routing_table[network_id] = link
