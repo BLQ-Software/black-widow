@@ -21,7 +21,7 @@ class Link():
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
         print "I am link {0}. I have received packet {1}".format(self.id, packet.pack_id)
-        if len(self.release_into_link_buffer) < capacity:
+        if len(self.release_into_link_buffer) < self.capacity:
             self.release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
             print "I am link {0}. I have successfully received the packet"
