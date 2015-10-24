@@ -16,8 +16,13 @@ class Router(Device):
     def add_link(self, link):
         """Overrides Device.add_link() ."""
         self.links.append(link)
-        device_id = link.endpoint(self.router_id)
-        routing_table[device_id] = link
+
+        network_id = link.device_a.network_id
+
+        if (netword_id == self.network_id):
+            network_id = link.device_b.network_id
+        
+        routing_table[network_id] = link
 
     def send(self, packet):
         """Send packet to appropriate link."""
