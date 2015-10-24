@@ -66,6 +66,7 @@ class Network():
     def run(self):
         global time, end_time
         while True:
+            print "Time: {0} ms".format(time)
             done = True
             for id in self.flows:
                 self.flows[id].send_packet()
