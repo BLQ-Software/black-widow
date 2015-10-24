@@ -17,7 +17,7 @@ class Packet(object):
 class DataPacket(Packet):
     """Class for data packets"""
     
-    def __init__(self, packet_id, src, dest, size, ack):
+    def __init__(self, packet_id, src, dest):
         """Constructor for DataPacket class"""
         super(Packet, self).__init__()
         self.size = DATA_PACKET_SIZE
@@ -26,7 +26,7 @@ class DataPacket(Packet):
 class AckPacket(Packet):
     """Class for acknowledgement packets"""
     
-    def __init__(self,packet_id, src, dest, size, ack):
+    def __init__(self,packet_id, src, dest):
         """Constructor for AckPackets class"""
         super(Packet, self).__init__()
         self.size = ACK_PACKET_SIZE

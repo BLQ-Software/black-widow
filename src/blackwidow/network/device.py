@@ -14,3 +14,6 @@ class Device(object):
     def add_link(self, link):
         """Add link to list of links."""
         self.links.append(link)
+
+    def send(self, packet):
+        pass
