@@ -1,7 +1,7 @@
 """ Flow class
 """
 
-from blackwidow.network.host import Host
+# from blackwidow.network.host import Host
 from blackwidow.network.packet import DataPacket
 from blackwidow.network.packet import AckPacket
 
@@ -10,18 +10,15 @@ class Flow(object):
     Flows will trigger host behavior.
     """
     def __init__(self, source, destination, amount):
-        """ Constructor for Flow class.
+        """ Constructor for Flow class
         """
         self.src = source
         self.dest = destination
         self.amount = amount
         self.pack_num = 0
         self.env = 0
-
-    def set_env(self, env):
-        """ Set the environment.
-        """
-        self.env = env
+        self.cwnd = 1
+        self.ssthresh = 10
 
     def send_ack(self, packet):
         """ Creates ack based for packet.
@@ -39,10 +36,24 @@ class Flow(object):
         self.src.send(pack)
 
     def receive(self, packet):
-        """ Generate an ack or respond to bad packet
+        """ Generate an ack or respond to bad packet.
         """
+        if packet.dest == self.dest:
+            send_ack(self,packet)
+        else:
+            assert
 
-    def timeout(self, packet_num):
-        """ Timeout if packet still not received
+
+def respond_to_ack(self):
+        """ Update window size.
         """
+        if self.cwnd < self.ssthresh:
+            self.cwnd = self.cwnd + 1
+        else:
+            self.cwnd = self.cwnd + 1/self.cwnd
 
+    def timeout(self):
+        """ Timeout if packet still not received.
+        """
+        self.ssthresh = self.cwnd/2
+        self.cwnd = 1
