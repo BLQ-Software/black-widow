@@ -6,6 +6,7 @@ from flow import Flow
 time = 0
 end_time = 1000
 
+
 class Network():
     """Python representation of the network.
 
