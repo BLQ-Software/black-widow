@@ -4,7 +4,6 @@ from link import Link
 from flow import Flow
 
 time = 0
-end_time = 1000
 
 
 class Network():
@@ -64,7 +63,7 @@ class Network():
         pass
 
     def run(self):
-        global time, end_time
+        global time
         while True:
             print "Time: {0} ms".format(time)
             done = True
