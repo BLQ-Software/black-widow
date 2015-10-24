@@ -1,11 +1,9 @@
-import network
 from collections import deque
-import packet
 
 
 class Link():
 
-    def __init__(self, device_a, device_b, delay, rate, capacity):
+    def __init__(self, device_a, device_b, delay, rate, capacity, env):
         self.device_a = device_a
         self.device_b = device_b
         # rate is initially Mbps. rate is stored as bits per ms.
@@ -16,13 +14,14 @@ class Link():
         self.release_into_link_buffer = deque()
         # Packets that are traveling through the link
         self.release_to_device_buffer = deque()
+        self.env = env
 
     def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
         if len(release_into_link_buffer) < capacity:
             release_into_link_buffer.appendleft(
-                [packet, source_id, network.time])
+                [packet, source_id, self.env.time])
 
     def send(self):
         # Release into link
@@ -38,12 +37,12 @@ class Link():
                 # Add it to queue of packets traveling through link.
                 # Update the current packet time to the send time
                 release_to_device_buffer.appendLeft(
-                    [packet, source_id, network.time])
+                    [packet, source_id, self.env.time])
                 # Remove current packet from bufer
                 release_into_link_buffer.pop()
                 # Update next packet time arrival time at front of queue
                 if (len(release_into_link_buffer) > 0):
-                    release_into_link_buffer[-1][2] = network.time
+                    release_into_link_buffer[-1][2] = self.env.time
 
         # Release to device
         if (len(release_to_device_buffer) > 0):
