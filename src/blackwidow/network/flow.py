@@ -32,7 +32,7 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
-        pack = DataPacket(packet_num, self.src, self.dest)
+        pack = DataPacket(self.pack_num, self.src, self.dest)
         self.src.send(pack)
         self.pack_num = self.pack_num + 1
 
@@ -42,7 +42,7 @@ class Flow(object):
         if packet.dest == self.dest:
             send_ack(self,packet)
         else:
-            assert
+            pass
 
 
 def respond_to_ack(self):
