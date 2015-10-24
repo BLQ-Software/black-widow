@@ -2,7 +2,7 @@ from host import Host
 from router import Router
 from flow import Flow
 
-global time = 0.0
+global time = 0
 global end_time = 1000
 
 class Network():
