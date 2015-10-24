@@ -79,5 +79,5 @@ class Network():
                 print "Attempting to send on link {0}".format(id)
                 self.links[id].send()
             self.time += 1
-            if done:
+            if done or self.time > 2000:
                 break
