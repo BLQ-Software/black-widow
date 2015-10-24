@@ -2,6 +2,8 @@ from host import Host
 from router import Router
 from flow import Flow
 
+global time
+
 class Network():
     """Python representation of the network.
 
