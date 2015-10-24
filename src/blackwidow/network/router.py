@@ -1,9 +1,9 @@
-from blackwidow.network.device import Device
+from device import Device
 
 class Router(Device):
     """Class for routers.
 
-    Routers are responsible for initializing and updating their 
+    Routers are responsible for initializing and updating their
     routing table, and sending packets based on their routing table.
     """
 
@@ -23,7 +23,7 @@ class Router(Device):
         """Send packet to appropriate link."""
         link = routing_table[packet.dest]
         link.send(packet)
-    
+
     def receive(self, packet):
         """Process packet."""
         if packet.is_routing:
