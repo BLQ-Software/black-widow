@@ -2,7 +2,8 @@ from host import Host
 from router import Router
 from flow import Flow
 
-global time
+global time = 0
+global end_time = 1000
 
 class Network():
     """Python representation of the network.
@@ -67,3 +68,12 @@ class Network():
 
     def add_flow(self, flow):
         pass
+
+    def run(self):
+        global time, end_time
+        while time < end_time:
+            for id in self.flows:
+                self.flows[id].send_packet()
+            for id in self.links:
+                self.links[id].send()
+            time += 1
