@@ -2,8 +2,8 @@ from host import Host
 from router import Router
 from flow import Flow
 
-global time = 0
-global end_time = 1000
+time = 0
+end_time = 1000
 
 class Network():
     """Python representation of the network.
