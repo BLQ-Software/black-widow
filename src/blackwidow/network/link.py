@@ -3,7 +3,7 @@ from collections import deque
 
 class Link():
 
-    def __init__(self, device_a, device_b, delay, rate, capacity, env):
+    def __init__(self, id, device_a, device_b, delay, rate, capacity, env):
         self.device_a = device_a
         self.device_b = device_b
         # rate is initially Mbps. rate is stored as bits per ms.
@@ -55,8 +55,8 @@ class Link():
             if (network.time - start_time >= self.delay):
                 # Figure out which device to send to and send
                 if (source_id == device_a.network_id):
-                    self.device_a.receive(packet)
-                elif (source_id == device_b.network_id):
                     self.device_b.receive(packet)
+                elif (source_id == device_b.network_id):
+                    self.device_a.receive(packet)
                 # Remove currenet packet from buffer
                 self.release_to_device_buffer.pop()
