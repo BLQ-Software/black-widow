@@ -26,6 +26,7 @@ class Link():
         if (len(release_into_link_buffer) > 0):
             # Peak at head
             packet_info = release_into_link_buffer[-1]
+            # Copy packet info fields.
             packet = packet_info[0]
             source_id = packet_info[1]
             start_time = packet_info[2]
@@ -41,9 +42,11 @@ class Link():
         # Release to device
         if (len(release_to_device_buffer) > 0):
             packet_info = release_to_device_buffer[-1]
+            # Copy packet info fields.
             packet = packet_info[0]
             source_id = packet_info[1]
             start_time = packet_info[2]
+            # Check if packet has arrived at end of link.
             if (network.time - start_time >= self.delay):
                 if (source_id == device_a.network_id):
                     device_a.receive(packet)
