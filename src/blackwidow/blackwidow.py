@@ -14,7 +14,7 @@ class BlackWidow(object):
         whether to graph in real time or write to files. 
     show_verbose : bool
         whether to print statements labeled verbose.
-    data_file : str  
+    log_file : str  
         name of file to write to.
 
     Methods
@@ -46,11 +46,7 @@ class BlackWidow(object):
         self.show_verbose = False 
         if 'show_verbose' in settings:
             self.real_time = settings['show_verbose']
-
-        self.file_name = None
-        if 'file_name' in settings: 
-            self.file_name = settings['file_name']
-
+        
         self.log_file = None
         if 'log_file' in settings:
             self.log_file = settings['log_file']
@@ -75,10 +71,9 @@ class BlackWidow(object):
         print "\nRunning network: \n"
         network.run()
 
-        #TODO: integrate graph (will graph if we
-        # produced log files).
+        #TODO: integrate graph (will graph if we produced log files).
         #if self.log_file is not None:
-        #     graph.display(self.log_file)
+        #     graph.plot(self.log_file)
 
 
 
@@ -106,12 +101,18 @@ class BlackWidow(object):
             Type of data, will be used as a file extension.
 
         Standard data types:
-            link.drop
-            link.rate
+            link.drop    -  "Time in ms", "Number of drops"
+            link.sent    -  "Time in ms", "Number of packets sent"
+            flow.window  -  "Time in ms", "Window size"
+            flow.sent    -  "Time in ms", "Mega bits"
+            flow.delay   -  "Time in ms", "Delay in ms"
         """
         if self.real_time:
             graph.plot(data, data_type) # TODO: integrate with graph module. 
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
+            # appends to the end of the file.
             with open('{0}.{1}'.format(self.log_file, data_type), 'a') as f:
                 f.write(data)
+        elif self.show_verbose:
+            print data
