@@ -4,7 +4,7 @@ This script parses user arguments and configures the blackwidow
 module to run based on user arguments.
 """
 import argparse
-import blackwidow
+from blackwidow import BlackWidow 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run a network simulation.')
@@ -12,6 +12,10 @@ if __name__ == "__main__":
                         help='a file to process')
     args = parser.parse_args()
 
+    
+    settings = {}
+
+    bw = BlackWidow(settings)
     # Iterate through config files specified.
     for f in args.files:
-        blackwidow.run(f)
+        bw.run(f)
