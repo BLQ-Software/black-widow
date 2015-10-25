@@ -1,4 +1,4 @@
-import parser as parser
+import parser
 import graph
 
 def run(filename):
