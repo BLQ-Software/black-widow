@@ -112,7 +112,7 @@ class BlackWidow(object):
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.
-            with open('{0}.{1}'.format(self.log_file, data_type), 'a') as f:
+            with open('{0}.{1}.csv'.format(self.log_file, data_type), 'a') as f:
                 f.write(data)
         elif self.show_verbose:
             print data
