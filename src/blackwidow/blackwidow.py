@@ -63,7 +63,7 @@ class BlackWidow(object):
         """
 
         print "Parsing {0} ...".format(file_name), "\n"
-        network = parser.config_network(file_name)
+        network = parser.config_network(file_name, self)
 
         print "Parsed network: \n"
         network.dump()
@@ -113,6 +113,6 @@ class BlackWidow(object):
             # Write data to file with extension based on data type.
             # appends to the end of the file.
             with open('{0}.{1}.csv'.format(self.log_file, data_type), 'a') as f:
-                f.write(data)
+                f.write(data + '\n')
         elif self.show_verbose:
             print data

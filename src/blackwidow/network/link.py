@@ -3,7 +3,7 @@ from collections import deque
 
 class Link():
 
-    def __init__(self, id, device_a, device_b, delay, rate, capacity, env):
+    def __init__(self, id, device_a, device_b, delay, rate, capacity, env, bw):
         self.id = id
         self.device_a = device_a
         self.device_b = device_b
@@ -20,6 +20,7 @@ class Link():
         self.release_to_device_buffer = deque()
 
         self.env = env
+        self.bw = bw 
         self.size = 0
 
     def receive(self, packet, source_id):
@@ -36,6 +37,7 @@ class Link():
             self.size += packet.size
         else:
             print "Packet dropped."
+            self.bw.record('"{0}","1"'.format(self.env.time), 'drop')
 
     def send(self):
         # Release into link
