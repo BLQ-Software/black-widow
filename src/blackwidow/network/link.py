@@ -37,7 +37,7 @@ class Link():
             self.size += packet.size
         else:
             print "Packet dropped."
-            self.bw.record('"{0}","1"'.format(self.env.time), 'drop')
+            self.bw.record('{0}'.format(self.env.time), 'drop')
 
     def send(self):
         # Release into link
