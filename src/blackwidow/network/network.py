@@ -79,7 +79,7 @@ class Network():
 
     def run(self):
         while True:
-            if self.time % 10 == 0:
+            if self.time % 100 == 0:
                 print "Time: {0} ms".format(self.time)
             done = True
             for id in self.links:

@@ -23,6 +23,7 @@ class Flow(object):
         self.env = env
         self.flow_start = time*1000.0
         self.done = False
+        self.last_packet = 0
 
     def send_ack(self, packet):
         """ Creates ack based for packet.
@@ -37,6 +38,8 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
+        if self.env.time % 100 != 0:
+            return
         if self.env.time > self.flow_start and self.amount > 0:
             if (len(self.packets_sent) > self.cwnd):
                 self.pack_num = self.packets_sent[0]
@@ -48,6 +51,7 @@ class Flow(object):
                 print "Packet {0} sent".format(self.pack_num)
             self.pack_num = self.pack_num + 1
             print "{0} bits left".format(self.amount)
+            # Shouldn't subtract pack.size if sent before.
             self.amount = self.amount - pack.size
         else:
             if self.amount > 0:
@@ -63,7 +67,6 @@ class Flow(object):
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
         """
-        print "indeed, flow called"
         if packet.dest == self.dest:
             print "Packet {0} received".format(self.pack_num)
             self.send_ack(packet)
