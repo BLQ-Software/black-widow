@@ -34,6 +34,7 @@ class Link():
             self.release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
             self.size += packet.size
+            print "Current size of link {}: {}".format(self.id, self.size)
         else:
             print "Packet dropped."
             self.bw.record('{0}'.format(self.env.time), 'drop')

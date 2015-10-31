@@ -16,10 +16,10 @@ class Flow(object):
         self.dest = destination
         self.amount = amount*8*10**6
         self.pack_num = 0
-        self.cwnd = 10
+        self.cwnd = 100
         self.ssthresh = 10
         self.packets_sent = []
-        self.packets_arrived = []
+        self.packets_arrived = set()
         self.env = env
         self.flow_start = time*1000.0
         self.done = False
@@ -38,21 +38,22 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
-        if self.env.time % 100 != 0:
+        if self.env.time % 1 != 0:
             return
         if self.env.time > self.flow_start and self.amount > 0:
             if (len(self.packets_sent) > self.cwnd):
                 self.pack_num = self.packets_sent[0]
             pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
-            if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.packets_arrived):
-                self.packets_sent.append(self.pack_num)
             if (self.pack_num not in self.packets_arrived):
                 self.src.send(pack)
                 print "Packet {0} sent".format(self.pack_num)
             self.pack_num = self.pack_num + 1
             print "{0} bits left".format(self.amount)
             # Shouldn't subtract pack.size if sent before.
-            self.amount = self.amount - pack.size
+            if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.packets_arrived):
+                self.amount = self.amount - pack.size
+            if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.packets_arrived):
+                self.packets_sent.append(self.pack_num)
         else:
             if self.amount > 0:
                 print "Waiting"
@@ -75,8 +76,7 @@ class Flow(object):
             self.respond_to_ack()
             if packet.pack_id in self.packets_sent:
                 self.packets_sent.remove(packet.pack_id)
-            if packet.pack_id not in self.packets_arrived:
-                self.packets_arrived.append(packet.pack_id)
+            self.packets_arrived.add(packet.pack_id)
             print "Ack received for packet {0}".format(packet.pack_id)
             if self.amount < 0:# and len(self.packets_sent) == 0:
                 done = True
