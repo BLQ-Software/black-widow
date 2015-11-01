@@ -38,7 +38,7 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
-        if self.env.time % 1 != 0:
+        if self.env.time % 2 != 0:
             return
         if self.env.time > self.flow_start and self.amount > 0:
             if (len(self.packets_sent) > self.cwnd):
