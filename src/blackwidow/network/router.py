@@ -1,4 +1,7 @@
 from device import Device
+from packet import RoutingPacket
+
+ROUTING_PKT_ID = 'Routing Packet'
 
 class Router(Device):
     """Class for routers.
@@ -22,21 +25,54 @@ class Router(Device):
         if (network_id == self.network_id):
             network_id = link.device_b.network_id
         
-        routing_table[network_id] = link
+        self.routing_table[network_id] = {'link': link, 'distance': link.rate }
 
     def send(self, packet):
         """Send packet to appropriate link."""
-        link = routing_table[packet.dest]
-        link.send(packet)
+        route = None
+        if packet.dest.network_id in self.routing_table:
+            route = self.routing_table[packet.dest.network_id]
+        
+        if route is not None and 'link' in route:
+            route['link'].receive(packet, self.network_id)
 
     def receive(self, packet):
         """Process packet."""
         if packet.is_routing:
-            update_route(packet)
+            self.update_route(packet)
+            print "{} received routing packet from {}".format(self.network_id, packet.src)
         else:
             self.send(packet)
+
+    def send_routing(self):
+        """Send routing packets to all neighbors."""
+        for link in self.links:
+            other_device = link.device_a
+            if (other_device.network_id == self.network_id):
+                other_device = link.device_b
+            packet = RoutingPacket(ROUTING_PKT_ID, self.network_id, 
+                                   other_device.network_id, None,
+                                   self.routing_table)
+            link.receive(packet, self.network_id)
+            print "Sent routing packet from {}".format(self.network_id)
+
 
     def update_route(self, packet):
         """Update routing table."""
         # TODO: Add Dijkstra's algorithm.
-        pass
+        link = None
+        if packet.src in self.routing_table:
+            route = self.routing_table[packet.src]
+            if 'link' in route:
+                link = route['link']
+        else:
+            raise ValueError('{} not found in {} \'s routing table.'.format(
+                                packet.src, self.network_id))
+
+        for dest, route in packet.routing_table.items():
+            distance = route['distance'] + link.rate
+            if dest not in self.routing_table:
+                self.routing_table[dest] = {'link': link, 'distance': distance}
+            elif distance < self.routing_table[dest]['distance']:
+                self.routing_table[dest] = {'link': link, 'distance': distance}
+
