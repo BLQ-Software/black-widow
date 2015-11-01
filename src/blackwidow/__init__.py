@@ -1,1 +1,1 @@
-from blackwidow import run
+from blackwidow import BlackWidow

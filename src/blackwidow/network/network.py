@@ -43,7 +43,8 @@ class Network():
         self.devices[router_id] = Router(router_id)
         self.ids.append(router_id)
 
-    def add_link(self, link_id, device_id1, device_id2, delay, rate, capacity):
+    def add_link(self, link_id, device_id1, device_id2, 
+                 delay, rate, capacity, bw):
         self.check_id(link_id)
         if device_id1 not in self.ids:
             raise KeyError('id {0} does not exist.'.format(device_id1))
@@ -56,7 +57,7 @@ class Network():
 
         # Create link
         self.links[link_id] = Link(link_id, device_1, device_2, delay, rate, capacity,
-                                  self)
+                                  self, bw)
         device_1.add_link(self.links[link_id])
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
@@ -78,7 +79,7 @@ class Network():
 
     def run(self):
         while True:
-            if self.time % 10 == 0:
+            if self.time % 100 == 0:
                 print "Time: {0} ms".format(self.time)
             done = True
             for id in self.links:

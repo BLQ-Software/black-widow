@@ -1,21 +1,25 @@
 from collections import deque
 
-
 class Link():
 
-    def __init__(self, id, device_a, device_b, delay, rate, capacity, env):
+    def __init__(self, id, device_a, device_b, delay, rate, capacity, env, bw):
         self.id = id
         self.device_a = device_a
         self.device_b = device_b
+
         # rate is initially Mbps. rate is stored as bits per ms.
         self.rate = rate * 10 ** 9
         self.delay = delay
         self.capacity = capacity * 1000 * 8
+
         # Buffer to enter link
         self.release_into_link_buffer = deque()
+
         # Packets that are traveling through the link
         self.release_to_device_buffer = deque()
+
         self.env = env
+        self.bw = bw
         self.size = 0
 
     def receive(self, packet, source_id):
@@ -30,8 +34,11 @@ class Link():
             self.release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
             self.size += packet.size
+            print "Current size of link {}: {}".format(self.id, self.size)
         else:
             print "Packet dropped."
+            self.bw.record('{0}'.format(self.env.time), 'drop')
+
 
     def send(self):
         # Release into link
@@ -43,7 +50,7 @@ class Link():
             source_id = packet_info[1]
             start_time = packet_info[2]
             # Check if packet has been sent by router.
-            if (self.env.time - start_time >= packet.size / self.rate):
+            if (self.env.time - start_time >= float(packet.size) / float(self.rate)):
                 # Add it to queue of packets traveling through link.
                 # Update the current packet time to the send time
                 self.release_to_device_buffer.appendleft(
