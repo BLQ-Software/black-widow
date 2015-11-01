@@ -10,8 +10,10 @@ TCP Network Simulator for Caltech CS 143.
 - ```cd src; python run_simulator.py cases/case*.json```
 
 #### Writing your own simulator script
-- ```>>> import blackwidow```
-- ```>>> blackwidow.run('caseN.json')```
+- ```>>> from blackwidow import BlackWidow```
+- ```>>> settings = {'verbose': True}```
+- ```>>> bw = BlackWidow(settings)```
+- ```>>> bw.run('caseN.json')```
 
 <br/>
 
