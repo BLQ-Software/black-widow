@@ -31,24 +31,26 @@ class Flow(object):
         if self.src == packet.src and self.dest == packet.dest:
             ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self.flow_id)
             self.dest.send(ack_packet)
-            print "Ack packet {0} sent".format(self.pack_num)
+            print "Flow sent ack packet {0}".format(self.pack_num)
         else:
             print "Received wrong packet."
 
     def send_packet(self):
         """ Send a packet.
         """
-        if self.env.time % 2 != 0:
+        if self.env.time % 1 != 0:
             return
         if self.env.time > self.flow_start and self.amount > 0:
             if (len(self.packets_sent) > self.cwnd):
+                # Wait for ack to catch up.
+                self.flow_start = self.env.time + 100
                 self.pack_num = self.packets_sent[0]
             pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
             if (self.pack_num not in self.packets_arrived):
                 self.src.send(pack)
-                print "Packet {0} sent".format(self.pack_num)
+                print "Flow sent packet {0}".format(self.pack_num)
             self.pack_num = self.pack_num + 1
-            print "{0} bits left".format(self.amount)
+            print "Flow has {0} bits left".format(self.amount)
             # Shouldn't subtract pack.size if sent before.
             if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.packets_arrived):
                 self.amount = self.amount - pack.size
@@ -56,7 +58,7 @@ class Flow(object):
                 self.packets_sent.append(self.pack_num)
         else:
             if self.amount > 0:
-                print "Waiting"
+                pass
             else:
                 if (len(self.packets_sent) == 0):
                     self.done = True
@@ -69,15 +71,17 @@ class Flow(object):
         """ Generate an ack or respond to bad packet.
         """
         if packet.dest == self.dest:
-            print "Packet {0} received".format(self.pack_num)
-            self.send_ack(packet)
+            print "Flow received packet {0}".format(self.pack_num)
+            if packet.pack_id not in self.packets_arrived:
+                self.send_ack(packet)
         else:
             #pdb.set_trace()
-            self.respond_to_ack()
-            if packet.pack_id in self.packets_sent:
-                self.packets_sent.remove(packet.pack_id)
-            self.packets_arrived.add(packet.pack_id)
-            print "Ack received for packet {0}".format(packet.pack_id)
+            if packet.pack_id not in self.packets_arrived:
+                self.respond_to_ack()
+                if packet.pack_id in self.packets_sent:
+                    self.packets_sent.remove(packet.pack_id)
+                self.packets_arrived.add(packet.pack_id)
+                print "Flow received ack for packet {0}".format(packet.pack_id)
             if self.amount < 0:# and len(self.packets_sent) == 0:
                 done = True
 

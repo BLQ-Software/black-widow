@@ -50,7 +50,7 @@ class Link():
             source_id = packet_info[1]
             start_time = packet_info[2]
             # Check if packet has been sent by router.
-            if (self.env.time - start_time >= float(packet.size) / float(self.rate)):
+            while (self.env.time - start_time >= float(packet.size) / float(self.rate)):
                 # Add it to queue of packets traveling through link.
                 # Update the current packet time to the send time
                 self.release_to_device_buffer.appendleft(
@@ -65,7 +65,16 @@ class Link():
                 self.size -= packet.size
                 # Update next packet time arrival time at front of queue
                 if (len(self.release_into_link_buffer) > 0):
-                    self.release_into_link_buffer[-1][2] = self.env.time
+                    packet_info = self.release_into_link_buffer[-1]
+                    # Next packet's start time is this packet's start time + time to send
+                    packet_info[2] = start_time + float(packet.size)/float(self.rate)
+                    # Get next packet info fields.
+                    packet = packet_info[0]
+                    source_id = packet_info[1]
+                    start_time = packet_info[2]
+                else:
+                    # Exit while loop if no more packets to send.
+                    break;
 
         # Release to device
         if (len(self.release_to_device_buffer) > 0):
