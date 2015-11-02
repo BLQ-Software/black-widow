@@ -38,10 +38,12 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
-        if self.env.time % 2 != 0:
+        if self.env.time % 1 != 0:
             return
         if self.env.time > self.flow_start and self.amount > 0:
             if (len(self.packets_sent) > self.cwnd):
+                # Wait for ack to catch up.
+                self.flow_start = self.env.time + 100
                 self.pack_num = self.packets_sent[0]
             pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
             if (self.pack_num not in self.packets_arrived):
@@ -56,7 +58,7 @@ class Flow(object):
                 self.packets_sent.append(self.pack_num)
         else:
             if self.amount > 0:
-                print "Waiting"
+                pass
             else:
                 if (len(self.packets_sent) == 0):
                     self.done = True
