@@ -3,6 +3,9 @@ from router import Router
 from link import Link
 from flow import Flow
 
+# Constants
+# Time to update router info, in ms.
+ROUTER_UPDATE_PERIOD = 100 
 
 class Network():
     """Python representation of the network.
@@ -15,6 +18,7 @@ class Network():
     """
     def __init__(self):
         self.devices = {}
+        self.routers = {}
         self.links = {}
         self.flows = {}
         self.ids = []
@@ -41,6 +45,7 @@ class Network():
         """Construct router and add to dictionary of routers"""
         self.check_id(router_id)
         self.devices[router_id] = Router(router_id)
+        self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
 
     def add_link(self, link_id, device_id1, device_id2, 
@@ -90,6 +95,11 @@ class Network():
                 self.flows[id].send_packet()
                 if not self.flows[id].done:
                     done = False
+
+            if self.time % 100 == 0:
+                for network_id in self.routers:
+                    self.routers[network_id].send_routing()
+
             self.time += 1
             if done:# or self.time > 1050:
                 break
