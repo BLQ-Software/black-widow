@@ -45,13 +45,13 @@ class Link():
         packet_info = self.release_into_link_buffer.pop()
         packet = packet_info[0]
         source_id = packet_info[1]
+
+        delay = float(packet.size) / float(self.rate)
         # Wait for packet.size / self.rate time before packet is traveling
-        self.env.add_event(Event("Send to link", self.release, packet_info=packet_info), float(packet.size) / float(self.rate))
+        self.env.add_event(Event("Send to link", self.release, packet_info=packet_info), delay)
         if len(self.release_into_link_buffer) > 0:
-            if self.release_into_link_buffer[-1][1] == source_id:
-                delay = float(packet.size) / float(self.rate)
-            else:
-                delay = float(packet.size) / float(self.rate) + self.delay
+            if self.release_into_link_buffer[-1][1] != source_id:
+                delay += self.delay
             # Begin sending the next packet in the link after the previous packet is finished traveling
             self.env.add_event(Event("Wait to send to link", self.send), delay)
 
