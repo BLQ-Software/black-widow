@@ -2,10 +2,12 @@ from host import Host
 from router import Router
 from link import Link
 from flow import Flow
+from Queue import PriorityQueue
 
 # Constants
 # Time to update router info, in ms.
-ROUTER_UPDATE_PERIOD = 100 
+ROUTER_UPDATE_PERIOD = 100
+events = PriorityQueue()
 
 class Network():
     """Python representation of the network.
@@ -48,7 +50,7 @@ class Network():
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
 
-    def add_link(self, link_id, device_id1, device_id2, 
+    def add_link(self, link_id, device_id1, device_id2,
                  delay, rate, capacity, bw):
         self.check_id(link_id)
         if device_id1 not in self.ids:
@@ -82,24 +84,11 @@ class Network():
 
         self.ids.append(flow_id)
 
+    def add_event(self, event, delay):
+        events.put((self.time + delay, event))
+
     def run(self):
-        while True:
-            if self.time % 100 == 0:
-                print "Time: {0} ms".format(self.time)
-            done = True
-            for id in self.links:
-                # print "Attempting to send on link {0}".format(id)
-                self.links[id].send()
-            for id in self.flows:
-                # print "Attempting to send on flow {0}".format(id)
-                self.flows[id].send_packet()
-                if not self.flows[id].done:
-                    done = False
-
-            if self.time % 100 == 0:
-                for network_id in self.routers:
-                    self.routers[network_id].send_routing()
-
-            self.time += 1
-            if done:# or self.time > 1050:
-                break
+        while not events.empty():
+            (time, current_event) = events.get()
+            self.time = time
+            current_event.run()
