@@ -21,6 +21,13 @@ class Link():
         self.bw = bw
         self.size = 0
 
+    def __str__(self):
+        msg = "Link {0} connected to {1} and {2}\n"
+        msg += "\t Rate: {3} mbps\n"
+        msg += "\t Delay: {4} mbps\n"
+        msg += "\t Capacity: {5} bits\n"
+        return msg.format(self.id, self.device_a.network_id, self.device_b.network_id, self.rate, self.delay, self.capacity)
+
     def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
