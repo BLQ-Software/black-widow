@@ -1,5 +1,6 @@
 from collections import deque
 from event import Event
+import pdb
 
 class Link():
 
@@ -15,6 +16,7 @@ class Link():
 
         # Buffer to enter link
         self.release_into_link_buffer = deque()
+        self.packets_waiting = 0
 
         self.env = env
         self.bw = bw
@@ -35,20 +37,23 @@ class Link():
                 [packet, source_id])
             self.size += packet.size
             print "Current size of link {}: {}".format(self.id, self.size)
+            # pdb.set_trace()
+
+            # If we only have one packet in the buffer, send it with no delay
+            if len(self.release_into_link_buffer) - self.packets_waiting == 1:
+                # Begin sending the packet in the link
+                # pdb.set_trace()
+                self.send()
 
         # The buffer is full
         else:
             print "Packet dropped."
             self.bw.record('{0}'.format(self.env.time), 'drop')
 
-        # If we only have one packet in the buffer, send it with no delay
-        if len(self.release_into_link_buffer) == 1:
-            # Begin sending the packet in the link
-            self.send()
-
 
     def send(self):
-        packet_info = self.release_into_link_buffer.pop()
+        # pdb.set_trace()
+        packet_info = self.release_into_link_buffer[-1 - self.packets_waiting]
         packet = packet_info[0]
         source_id = packet_info[1]
 
@@ -58,8 +63,10 @@ class Link():
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release, packet_info=packet_info), delay)
-        if len(self.release_into_link_buffer) > 0:
+        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release), delay)
+        self.packets_waiting += 1
+        # pdb.set_trace()
+        if len(self.release_into_link_buffer) - self.packets_waiting > 0:
             # Wait for propagation delay time before sending the next packet if
             # the current packet and the next packet are not sending to the same
             # destination.
@@ -70,9 +77,11 @@ class Link():
             self.env.add_event(Event(msg.format(self.id), self.send), delay)
 
 
-    def release(self, packet_info):
-        packet, source_id = packet_info
+    def release(self):
+        # pdb.set_trace()
+        packet, source_id = self.release_into_link_buffer.pop()
         self.size -= packet.size
+        self.packets_waiting -= 1
         # Figure out which device to send to
         if (source_id == self.device_a.network_id):
             f = self.device_b.receive
@@ -84,3 +93,4 @@ class Link():
             msg += "ACK "
         msg += "packet {1}"
         self.env.add_event(Event(msg.format(self.id, packet.pack_id), f, packet=packet), self.delay)
+        self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link.sent')
