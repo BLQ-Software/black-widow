@@ -70,7 +70,7 @@ class Flow(object):
         """ Generate an ack or respond to bad packet.
         """
         if packet.dest == self.dest:
-            print "Flow received packet {0}".format(self.pack_num)
+            print "Flow received packet {0}".format(packet.pack_id)
             if packet.pack_id not in self.acks_arrived:
                 self.send_ack(packet)
         else:
