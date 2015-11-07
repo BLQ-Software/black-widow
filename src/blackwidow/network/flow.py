@@ -34,7 +34,7 @@ class Flow(object):
         if self.src == packet.src and self.dest == packet.dest:
             ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self.flow_id)
             self.dest.send(ack_packet)
-            print "Flow sent ack packet {0}".format(self.pack_num)
+            print "Flow sent ack packet {0}".format(packet.pack_id)
         else:
             print "Received wrong packet."
 
@@ -46,7 +46,7 @@ class Flow(object):
                 pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
                 if (self.pack_num not in self.acks_arrived):
                     self.src.send(pack)
-                    print "Flow sent packet {0}".format(self.pack_num)
+                    print "Flow sent packet {0}".format(pack.pack_id)
                 self.env.add_event(Event("Timeout", self.timeout, pack_num = self.pack_num), 10000)
                 print "Flow has {0} bits left".format(self.amount)
                 # Shouldn't subtract pack.size if sent before.
