@@ -85,9 +85,24 @@ class Network():
         self.ids.append(flow_id)
 
     def add_event(self, event, delay):
+        """
+        Function to add an event to the queue
+
+        This function adds an event to the queue to be run after delay time.
+
+        Parameters
+        ----------
+        event : `Event`
+            The event to be run.
+        delay : float
+            The amount of time in ms to wait before running the event.
+
+        """
         events.put((self.time + delay, event))
 
     def run(self):
+        # Keep running while we have events to run. The first events will be
+        # enqueued by the flows when they are initialized.
         while not events.empty():
             (time, current_event) = events.get()
             print "Running: {0} at time {1}".format(current_event.type, time)
