@@ -47,7 +47,6 @@ class Flow(object):
                 if (self.pack_num not in self.acks_arrived):
                     self.src.send(pack)
                     print "Flow sent packet {0}".format(self.pack_num)
-                self.pack_num = self.pack_num + 1
                 self.env.add_event(Event("Timeout", self.timeout), 10000)
                 print "Flow has {0} bits left".format(self.amount)
                 # Shouldn't subtract pack.size if sent before.
@@ -55,6 +54,7 @@ class Flow(object):
                     self.amount = self.amount - pack.size
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.packets_sent.append(self.pack_num)
+                self.pack_num = self.pack_num + 1
                 if self.amount <= 0:
                     break
         else:
