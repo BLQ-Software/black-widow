@@ -98,7 +98,8 @@ class Flow(object):
         if pack_num not in self.acks_arrived:
             self.env.add_event(Event("Resend", self.send_packet), 10)
             # Go back n
-            self.packets_time_out.append(pack_num)
+            if pack_num not in self.packets_time_out:
+                self.packets_time_out.append(pack_num)
             self.pack_num = pack_num
             self.ssthresh = self.cwnd/2
             self.cwnd = 1
