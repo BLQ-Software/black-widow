@@ -98,7 +98,8 @@ class Flow(object):
         """
         if pack_num not in self.acks_arrived:
             self.env.add_event(Event("Resend", self.send_packet), 0)
+            self.packets_sent.remove(pack_num)
             # Go back n
-            self.pack_num = self.packets_sent[0]
+            self.pack_num = pack_num
             self.ssthresh = self.cwnd/2
             self.cwnd = 1
