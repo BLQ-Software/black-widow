@@ -3,6 +3,7 @@ from router import Router
 from link import Link
 from flow import Flow
 from Queue import PriorityQueue
+import time as t
 
 # Constants
 # Time to update router info, in ms.
@@ -108,3 +109,4 @@ class Network():
             print "Running: {0} at time {1}".format(current_event.type, time)
             self.time = time
             current_event.run()
+            t.sleep(0.1)
