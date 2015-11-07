@@ -20,7 +20,7 @@ class Host(Device):
 
     def send(self, packet):
         """Connects to a link."""
-        self.links[0].receive(packet, self.host_id)
+        self.links[0].receive(packet)
 
     def receive(self, packet):
         """Send packet to flow to process."""

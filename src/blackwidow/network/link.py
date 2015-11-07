@@ -3,6 +3,36 @@ from event import Event
 import pdb
 
 class Link():
+    """Simulates a link connected to two Devices in the network.
+
+    Represents a physical link in the network. In addition to simple send and
+    receive, this class also handles the packet buffer for sending packets.
+
+    Parameters
+    ----------
+    id : string
+        A unique id for the link.
+    device_a : `Device`
+        A `Device` to which the link is connected.
+    device_b : `Device`
+        A `Device` to which the link is connected.
+    delay : float
+        The propagation delay to send packets across the link. Specified in ms.
+    rate : float
+        The rate at which the link can send a packet. Specified in Mbps.
+    capacity : int
+        The capacity of the link buffer. Specified in KB.
+    env : `Network`
+        The network that the link belongs to.
+    bw : `Blackwidow`
+        The printer to print data to.
+
+    Methods
+    -------
+    receive(packet)
+        Receives a packet from a `Device`.
+    """
+
 
     def __init__(self, id, device_a, device_b, delay, rate, capacity, env, bw):
         self.id = id
@@ -28,7 +58,7 @@ class Link():
         msg += "\t Capacity: {5} bits\n"
         return msg.format(self.id, self.device_a.network_id, self.device_b.network_id, self.rate, self.delay, self.capacity)
 
-    def receive(self, packet, source_id):
+    def receive(self, packet):
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
         message = "I am link {0}. I have received "
@@ -40,7 +70,7 @@ class Link():
         # The buffer is not yet full, so enqueue the packet
         if self.size + packet.size < self.capacity:
             self.release_into_link_buffer.appendleft(
-                [packet, source_id])
+                [packet, packet.src])
             self.size += packet.size
             print "Current size of link {}: {}".format(self.id, self.size)
             # pdb.set_trace()

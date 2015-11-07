@@ -9,21 +9,29 @@ class BlackWidow(object):
     and direct different types of messages to different outputs
     including files, or functions that dynamically generate graphs.
 
-    Attributes
+    Parameters
     ----------
-    real_time : bool
-        whether to graph in real time or write to files.
-    show_verbose : bool
-        whether to print statements labeled verbose.
-    log_file : str
-        name of file to write to.
+    settings : dict
+        Contains settings to initialize the printer. Values include:
+            real_time : bool
+                Whether to graph in real time or write to files.
+            show_verbose : bool
+                Whether to print statements labelled verbose.
+            log_file : str
+                Name of file to write to.
 
     Methods
     -------
-    __init__(settings)
-        Construct printer based on settings dictionary.
+    run(file_name)
+        Runs the overall simulation based on settings specified when
+        the BlackWidow object is constructed.
+    print_verbose(msg)
+        Handles a verbose message based on specified settings.
+    record(data, data_type)
+        Records data based on specified settings.
 
-    Example
+
+    Examples
     -------
     >>> from blackwidow import BlackWidow
     >>> settings = {'filename': 'case0.json' ... }
@@ -31,15 +39,6 @@ class BlackWidow(object):
     >>> bw.run()
     """
     def __init__(self, settings):
-        """Configures printer based on settings dictionary.
-
-        The settings dictionary contains exactly all non-default
-        settings.
-
-        Parameters
-        ----------
-        settings : dict
-        """
         self.real_time = False # Default setting
         if 'real_time' in settings:
             self.real_time = settings['real_time'] # Override default
@@ -58,9 +57,10 @@ class BlackWidow(object):
         """Runs the overall simulation based on settings specified when
         the BlackWidow object is constructed.
 
-        :param filename: name of config file
-        :type filename: string
-
+        Parameters
+        ----------
+        file_name : string
+            Name of config file
         """
 
         print "Parsing {0} ...".format(file_name), "\n"
@@ -101,6 +101,8 @@ class BlackWidow(object):
         data_type : str
             Type of data, will be used as a file extension.
 
+        Notes
+        -----
         Standard data types:
             link.drop    -  "Time in ms", "Number of drops"
             link.sent    -  "Time in ms", "Number of packets sent"
