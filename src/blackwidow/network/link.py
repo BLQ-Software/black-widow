@@ -42,7 +42,7 @@ class Link():
             if len(self.release_into_link_buffer) == 1:
                 # Begin sending the packet in the link
                 # pdb.set_trace()
-                self.send(float(packet.size) / float(self.rate))
+                self.send()
 
         # The buffer is full
         else:
@@ -50,12 +50,13 @@ class Link():
             self.bw.record('{0}'.format(self.env.time), 'drop')
 
 
-    def send(self, delay):
+    def send(self):
         # pdb.set_trace()
         # Wait for packet.size / self.rate time before packet is traveling
         packet_info = self.release_into_link_buffer[-1]
         packet = packet_info[0]
         source_id = packet_info[1]
+        delay = float(packet.size) / float(self.rate)
         msg = "I am link {0}. I have begun sending "
         if packet.is_ack:
             msg += "ACK "
@@ -86,9 +87,12 @@ class Link():
             next_packet = packet_info[0]
             next_source_id = packet_info[1]
 
-            delay = float(next_packet.size) / float(self.rate)
-
             if next_source_id != source_id:
-                delay += self.delay
-
-            self.send(delay)
+                delay = self.delay
+            else:
+                delay = 0
+            msg = "I am link {0}. I am ready to send "
+            if next_packet.is_ack:
+                msg += "ACK "
+            msg += "packet {1}"
+            self.env.add_event(Event(msg.format(self.id, next_packet.pack_id), self.send), delay)
