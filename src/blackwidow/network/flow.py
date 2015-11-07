@@ -79,6 +79,8 @@ class Flow(object):
                 self.respond_to_ack()
                 if packet.pack_id in self.packets_sent:
                     self.packets_sent.remove(packet.pack_id)
+                if packet.pack_id in self.packets_time_out:
+                    self.packets_time_out.remove(packet.pack_id)
                 self.acks_arrived.add(packet.pack_id)
                 print "Flow received ack for packet {0}".format(packet.pack_id)
 
