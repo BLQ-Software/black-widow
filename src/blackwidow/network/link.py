@@ -1,4 +1,5 @@
 from collections import deque
+from event import Event
 
 class Link():
 
@@ -8,15 +9,12 @@ class Link():
         self.device_b = device_b
 
         # rate is initially Mbps. rate is stored as bits per ms.
-        self.rate = rate * 10 ** 9
+        self.rate = rate * 10 ** 3
         self.delay = delay
         self.capacity = capacity * 1000 * 8
 
         # Buffer to enter link
         self.release_into_link_buffer = deque()
-
-        # Packets that are traveling through the link
-        self.release_to_device_buffer = deque()
 
         self.env = env
         self.bw = bw
@@ -30,71 +28,59 @@ class Link():
             message += "ACK "
         message += "packet {1} at time {2}"
         print message.format(self.id, packet.pack_id, self.env.time)
+
+        # The buffer is not yet full, so enqueue the packet
         if self.size + packet.size < self.capacity:
             self.release_into_link_buffer.appendleft(
-                [packet, source_id, self.env.time])
+                [packet, source_id])
             self.size += packet.size
             print "Current size of link {}: {}".format(self.id, self.size)
+
+        # The buffer is full
         else:
             print "Packet dropped."
             self.bw.record('{0}'.format(self.env.time), 'drop')
 
+        # If we only have one packet in the buffer, send it with no delay
+        if len(self.release_into_link_buffer) == 1:
+            # Begin sending the packet in the link
+            self.send()
+
 
     def send(self):
-        # Release into link
-        if (len(self.release_into_link_buffer) > 0):
-            # Peek at head
-            packet_info = self.release_into_link_buffer[-1]
-            # Copy packet info fields.
-            packet = packet_info[0]
-            source_id = packet_info[1]
-            start_time = packet_info[2]
-            # Check if packet has been sent by router.
-            while (self.env.time - start_time >= float(packet.size) / float(self.rate)):
-                # Add it to queue of packets traveling through link.
-                # Update the current packet time to the send time
-                self.release_to_device_buffer.appendleft(
-                    [packet, source_id, self.env.time])
-                message = "I am link {0}. I have released "
-                if (packet.is_ack):
-                    message += "ACK "
-                message += "packet {1} to my link at time {2}"
-                print message.format(self.id, packet.pack_id, self.env.time)
-                # Remove current packet from bufer
-                self.release_into_link_buffer.pop()
-                self.size -= packet.size
-                # Update next packet time arrival time at front of queue
-                if (len(self.release_into_link_buffer) > 0):
-                    packet_info = self.release_into_link_buffer[-1]
-                    # Next packet's start time is this packet's start time + time to send
-                    packet_info[2] = start_time + float(packet.size)/float(self.rate)
-                    # Get next packet info fields.
-                    packet = packet_info[0]
-                    source_id = packet_info[1]
-                    start_time = packet_info[2]
-                else:
-                    # Exit while loop if no more packets to send.
-                    break;
+        packet_info = self.release_into_link_buffer.pop()
+        packet = packet_info[0]
+        source_id = packet_info[1]
 
-        # Release to device
-        if (len(self.release_to_device_buffer) > 0):
-            packet_info = self.release_to_device_buffer[-1]
-            # Copy packet info fields.
-            packet = packet_info[0]
-            source_id = packet_info[1]
-            start_time = packet_info[2]
-            # Check if packet has arrived at end of link.
-            if (self.env.time - start_time >= self.delay):
-                # Figure out which device to send to and send
-                message = "I am link {0}. I have released "
-                if (packet.is_ack):
-                    message += "ACK "
-                message += "packet {1} to {2} at time {3}"
-                if (source_id == self.device_a.network_id):
-                    self.device_b.receive(packet)
-                    print message.format(self.id, packet.pack_id, self.device_b.network_id, self.env.time)
-                elif (source_id == self.device_b.network_id):
-                    self.device_a.receive(packet)
-                    print message.format(self.id, packet.pack_id, self.device_a.network_id, self.env.time)
-                # Remove currenst packet from buffer
-                self.release_to_device_buffer.pop()
+        delay = float(packet.size) / float(self.rate)
+        # Wait for packet.size / self.rate time before packet is traveling
+        msg = "I am link {0}. I have begun sending "
+        if packet.is_ack:
+            msg += "ACK "
+        msg += "packet {1}"
+        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release, packet_info=packet_info), delay)
+        if len(self.release_into_link_buffer) > 0:
+            # Wait for propagation delay time before sending the next packet if
+            # the current packet and the next packet are not sending to the same
+            # destination.
+            if self.release_into_link_buffer[-1][1] != source_id:
+                delay += self.delay
+            # Begin sending the next packet in the link after the previous packet is finished traveling
+            msg = "I am link {0}. I am ready to send the next packet"
+            self.env.add_event(Event(msg.format(self.id), self.send), delay)
+
+
+    def release(self, packet_info):
+        packet, source_id = packet_info
+        self.size -= packet.size
+        # Figure out which device to send to
+        if (source_id == self.device_a.network_id):
+            f = self.device_b.receive
+        else:
+            f = self.device_a.receive
+        # Release to device after self.delay time
+        msg = "I am link {0}. I have sent "
+        if packet.is_ack:
+            msg += "ACK "
+        msg += "packet {1}"
+        self.env.add_event(Event(msg.format(self.id, packet.pack_id), f, packet=packet), self.delay)

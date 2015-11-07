@@ -2,10 +2,12 @@ from host import Host
 from router import Router
 from link import Link
 from flow import Flow
+from Queue import PriorityQueue
+import time as t
 
 # Constants
 # Time to update router info, in ms.
-ROUTER_UPDATE_PERIOD = 100 
+ROUTER_UPDATE_PERIOD = 100
 
 class Network():
     """Python representation of the network.
@@ -23,6 +25,7 @@ class Network():
         self.flows = {}
         self.ids = []
         self.time = 0
+        self.events = PriorityQueue()
 
     def check_id(self, obj_id):
         """Raise an exception if object id is not unique."""
@@ -48,7 +51,7 @@ class Network():
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
 
-    def add_link(self, link_id, device_id1, device_id2, 
+    def add_link(self, link_id, device_id1, device_id2,
                  delay, rate, capacity, bw):
         self.check_id(link_id)
         if device_id1 not in self.ids:
@@ -82,24 +85,28 @@ class Network():
 
         self.ids.append(flow_id)
 
+    def add_event(self, event, delay):
+        """
+        Function to add an event to the queue
+
+        This function adds an event to the queue to be run after delay time.
+
+        Parameters
+        ----------
+        event : `Event`
+            The event to be run.
+        delay : float
+            The amount of time in ms to wait before running the event.
+
+        """
+        self.events.put((self.time + delay, event))
+
     def run(self):
-        while True:
-            if self.time % 100 == 0:
-                print "Time: {0} ms".format(self.time)
-            done = True
-            for id in self.links:
-                # print "Attempting to send on link {0}".format(id)
-                self.links[id].send()
-            for id in self.flows:
-                # print "Attempting to send on flow {0}".format(id)
-                self.flows[id].send_packet()
-                if not self.flows[id].done:
-                    done = False
-
-            if self.time % 100 == 0:
-                for network_id in self.routers:
-                    self.routers[network_id].send_routing()
-
-            self.time += 1
-            if done:# or self.time > 1050:
-                break
+        # Keep running while we have events to run. The first events will be
+        # enqueued by the flows when they are initialized.
+        while not self.events.empty():
+            (time, current_event) = self.events.get()
+            print "Running: {0} at time {1}".format(current_event.type, time)
+            self.time = time
+            current_event.run()
+            # t.sleep(0.1)
