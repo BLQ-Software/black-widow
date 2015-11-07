@@ -43,7 +43,7 @@ class Flow(object):
         """ Send a packet.
         """
         if self.amount > 0:
-            while (len(self.packets_sent) < self.cwnd) or self.timeout = 1:
+            while (len(self.packets_sent) < self.cwnd) or self.timeout == 1:
                 pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
                 if (self.pack_num not in self.acks_arrived):
                     self.src.send(pack)
