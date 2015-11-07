@@ -83,12 +83,12 @@ class Link():
 
         if len(self.release_into_link_buffer) > 0:
             packet_info = self.release_into_link_buffer[-1]
-            packet = packet_info[0]
-            source_id = packet_info[1]
+            next_packet = packet_info[0]
+            next_source_id = packet_info[1]
 
-            delay = float(packet.size) / float(self.rate)
+            delay = float(next_packet.size) / float(self.rate)
 
-            if self.release_into_link_buffer[-1][1] != source_id:
+            if next_source_id != source_id:
                 delay += self.delay
 
             self.send(delay)
