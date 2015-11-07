@@ -58,7 +58,7 @@ class Link():
         msg += "\t Capacity: {5} bits\n"
         return msg.format(self.id, self.device_a.network_id, self.device_b.network_id, self.rate, self.delay, self.capacity)
 
-    def receive(self, packet):
+    def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
         message = "I am link {0}. I have received "
@@ -70,7 +70,7 @@ class Link():
         # The buffer is not yet full, so enqueue the packet
         if self.size + packet.size < self.capacity:
             self.release_into_link_buffer.appendleft(
-                [packet, packet.src])
+                [packet, source_id])
             self.size += packet.size
             print "Current size of link {}: {}".format(self.id, self.size)
             # pdb.set_trace()
