@@ -18,6 +18,9 @@ class Link():
         self.release_into_link_buffer = deque()
         self.packets_waiting = 0
 
+        self.first_send_start = 0
+        self.last_send_end = 0
+
         self.env = env
         self.bw = bw
         self.size = 0
@@ -43,6 +46,8 @@ class Link():
             if len(self.release_into_link_buffer) - self.packets_waiting == 1:
                 # Begin sending the packet in the link
                 # pdb.set_trace()
+                if (self.last_send_end == 0):
+                    self.last_send_end = self.env.time
                 self.send()
 
         # The buffer is full
@@ -63,7 +68,11 @@ class Link():
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release), delay)
+        p_delay = 0
+        if (self.last_send_end - self.env.time > 0):
+            p_delay += self.last_send_end - self.env.time
+        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release), delay + p_delay)
+        self.last_send_end = self.env.time + delay + p_delay
         self.packets_waiting += 1
         # pdb.set_trace()
         if len(self.release_into_link_buffer) - self.packets_waiting > 0:
@@ -74,7 +83,8 @@ class Link():
                 delay += self.delay
             # Begin sending the next packet in the link after the previous packet is finished traveling
             msg = "I am link {0}. I am ready to send the next packet"
-            self.env.add_event(Event(msg.format(self.id), self.send), delay)
+            # self.env.add_event(Event(msg.format(self.id), self.send), delay)
+            self.send()
 
 
     def release(self):
