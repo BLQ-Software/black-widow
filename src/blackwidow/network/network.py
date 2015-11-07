@@ -109,4 +109,4 @@ class Network():
             print "Running: {0} at time {1}".format(current_event.type, time)
             self.time = time
             current_event.run()
-            t.sleep(0.1)
+            # t.sleep(0.1)
