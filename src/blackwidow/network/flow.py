@@ -60,12 +60,12 @@ class Flow(object):
                     break
         else:
             # Just keep resending last few packets until done
-            pass
-            while (len(self.packets_sent) - len(self.packets_time_out) < self.cwnd):
-                self.pack_num = self.packets_sent[0]
+            while len(self.packets_time_out) > 0:
+                self.pack_num = self.packets_time_out[0]
                 pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
                 self.src.send(pack)
-                self.env.add_event(Event("Timeout", self.timeout, pack_num = self.pack_num), 10000)
+                self.packets_time_out.remove(self.pack_num)
+                self.env.add_event(Event("Timeout", self.timeout, pack_num = self.pack_num), 1000)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
