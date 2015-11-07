@@ -17,7 +17,7 @@ class Flow(object):
         self.dest = destination
         self.amount = amount*8*10**6
         self.pack_num = 0
-        self.cwnd = 1
+        self.cwnd = 1000000
         self.ssthresh = 10
         self.packets_sent = []
         self.packets_arrived = []
@@ -56,15 +56,12 @@ class Flow(object):
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.packets_sent.append(self.pack_num)
         else:
-            if self.amount > 0:
-                pass
+            if (len(self.packets_sent) == 0):
+                self.done = True
             else:
-                if (len(self.packets_sent) == 0):
-                    self.done = True
-                else:
-                    self.pack_num = self.packets_sent[0]
-                    pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
-                    self.src.send(pack)
+                self.pack_num = self.packets_sent[0]
+                pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
+                self.src.send(pack)
         # self.env.add_event(Event("Send next packet", self.send_packet), 1)
 
     def receive(self, packet):
