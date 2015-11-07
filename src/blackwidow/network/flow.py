@@ -24,6 +24,7 @@ class Flow(object):
         self.flow_start = time*1000.0
         self.done = False
         self.last_packet = 0
+        self.env.add_event(Event("Start flow", self.send_packet), 0)
 
     def send_ack(self, packet):
         """ Creates ack based for packet.
