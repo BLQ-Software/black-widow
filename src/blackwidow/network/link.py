@@ -18,7 +18,6 @@ class Link():
         self.release_into_link_buffer = deque()
         self.packets_waiting = 0
 
-        self.first_send_start = 0
         self.last_send_end = 0
 
         self.env = env
@@ -80,7 +79,7 @@ class Link():
             # the current packet and the next packet are not sending to the same
             # destination.
             if self.release_into_link_buffer[-1][1] != source_id:
-                delay += self.delay
+                self.last_send_end += self.delay
             # Begin sending the next packet in the link after the previous packet is finished traveling
             msg = "I am link {0}. I am ready to send the next packet"
             # self.env.add_event(Event(msg.format(self.id), self.send), delay)
