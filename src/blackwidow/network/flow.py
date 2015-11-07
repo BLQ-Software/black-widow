@@ -27,6 +27,7 @@ class Flow(object):
         self.done = False
         self.last_packet = 0
         self.env.add_event(Event("Start flow", self.send_packet), self.flow_start)
+        self.timeout = 0
 
     def send_ack(self, packet):
         """ Creates ack based for packet.
@@ -42,21 +43,22 @@ class Flow(object):
         """ Send a packet.
         """
         if self.amount > 0:
-            while (len(self.packets_sent) < self.cwnd):
+            while (len(self.packets_sent) < self.cwnd) or self.timeout = 1:
                 pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
                 if (self.pack_num not in self.acks_arrived):
                     self.src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
                 self.env.add_event(Event("Timeout", self.timeout, pack_num = self.pack_num), 10000)
-                print "Flow has {0} bits left".format(self.amount)
                 # Shouldn't subtract pack.size if sent before.
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.amount = self.amount - pack.size
+                print "Flow has {0} bits left".format(self.amount)
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.packets_sent.append(self.pack_num)
                 self.pack_num = self.pack_num + 1
                 if self.amount <= 0:
                     break
+                self.timeout = 0
         else:
             if (len(self.packets_sent) == 0):
                 self.done = True
@@ -98,7 +100,7 @@ class Flow(object):
         """
         if pack_num not in self.acks_arrived:
             self.env.add_event(Event("Resend", self.send_packet), 0)
-            self.packets_sent.remove(pack_num)
+            self.timeout = 1
             # Go back n
             self.pack_num = pack_num
             self.ssthresh = self.cwnd/2
