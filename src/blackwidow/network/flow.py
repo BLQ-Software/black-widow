@@ -88,7 +88,6 @@ class Flow(object):
         """ Update window size.
         """
         self.env.add_event(Event("Send", self.send_packet), 0)
-        pass
         if self.cwnd < self.ssthresh:
             self.cwnd = self.cwnd + 1
         else:
@@ -99,8 +98,7 @@ class Flow(object):
         """
         if pack_num not in self.acks_arrived:
             self.env.add_event(Event("Resend", self.send_packet), 0)
-        # Go back n
-        self.pack_num = self.packets_sent[0]
-        pass
-        self.ssthresh = self.cwnd/2
-        self.cwnd = 1
+            # Go back n
+            self.pack_num = self.packets_sent[0]
+            self.ssthresh = self.cwnd/2
+            self.cwnd = 1
