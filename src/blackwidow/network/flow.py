@@ -60,6 +60,7 @@ class Flow(object):
                     break
         else:
             # Just keep resending last few packets until done
+            pass
             while (len(self.packets_sent) - len(self.packets_time_out) < self.cwnd):
                 self.pack_num = self.packets_sent[0]
                 pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
