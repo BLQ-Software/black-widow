@@ -105,6 +105,6 @@ class Network():
         # enqueued by the flows when they are initialized.
         while not self.events.empty():
             (time, current_event) = self.events.get()
-            print "Running: {0} at time {1}".format(current_event.type, time)
+            print "{0} at time {1}".format(str(current_event), time)
             self.time = time
             current_event.run()
