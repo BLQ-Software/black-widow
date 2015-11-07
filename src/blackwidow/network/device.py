@@ -17,3 +17,9 @@ class Device(object):
 
     def send(self, packet):
         pass
+
+    def __str__(self):
+        msg = "Device {0}, connected to links:\n"
+        for link in self.links:
+            msg += "  " + str(link) + "\n"
+        return msg.format(self.network_id)

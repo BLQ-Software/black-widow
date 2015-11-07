@@ -28,6 +28,10 @@ class Flow(object):
         self.last_packet = 0
         self.env.add_event(Event("Start flow", self.send_packet), self.flow_start)
 
+    def __str__(self):
+        msg = "Flow {0}, sending from {1} to {2}"
+        return msg.format(self.flow_id, self.src.network_id, self.dest.network_id)
+
     def send_ack(self, packet):
         """ Creates ack based for packet.
         """
