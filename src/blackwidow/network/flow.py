@@ -25,7 +25,6 @@ class Flow(object):
         self.acks_arrived = set()
         self.env = env
         self.flow_start = time*1000.0
-        self.done = False
         self.last_packet = 0
         self.env.add_event(Event("Start flow", self.send_packet), self.flow_start)
 
@@ -60,12 +59,10 @@ class Flow(object):
                 if self.amount <= 0:
                     break
         else:
-            if (len(self.packets_sent) == 0):
-                self.done = True
-            else:
-                self.pack_num = self.packets_sent[0]
-                pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
-                self.src.send(pack)
+            self.pack_num = self.packets_sent[0]
+            pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
+            self.src.send(pack)
+            self.env.add_event(Event("Timeout", self.timeout, pack_num = self.pack_num), 10000)
         # self.env.add_event(Event("Send next packet", self.send_packet), 1)
 
     def receive(self, packet):
@@ -83,8 +80,6 @@ class Flow(object):
                     self.packets_sent.remove(packet.pack_id)
                 self.acks_arrived.add(packet.pack_id)
                 print "Flow received ack for packet {0}".format(packet.pack_id)
-            if self.amount < 0:# and len(self.packets_sent) == 0:
-                done = True
 
     def respond_to_ack(self):
         """ Update window size.
