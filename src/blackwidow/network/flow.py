@@ -73,7 +73,6 @@ class Flow(object):
             if packet.pack_id not in self.acks_arrived:
                 self.send_ack(packet)
         else:
-            #pdb.set_trace()
             if packet.pack_id not in self.acks_arrived:
                 self.respond_to_ack()
                 if packet.pack_id in self.packets_sent:
