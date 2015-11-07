@@ -47,7 +47,7 @@ class Flow(object):
                 if (self.pack_num not in self.acks_arrived):
                     self.src.send(pack)
                     print "Flow sent packet {0}".format(self.pack_num)
-                self.env.add_event(Event("Timeout", self.timeout), 10000)
+                self.env.add_event(Event("Timeout", self.timeout, pack_num = self.pack_num), 10000)
                 print "Flow has {0} bits left".format(self.amount)
                 # Shouldn't subtract pack.size if sent before.
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
@@ -94,10 +94,11 @@ class Flow(object):
         else:
             self.cwnd = self.cwnd + 1/self.cwnd
 
-    def timeout(self):
+    def timeout(self, pack_num):
         """ Timeout if packet still not received.
         """
-        self.env.add_event(Event("Resend", self.send_packet), 0)
+        if pack_num not in self.acks_arrived:
+            self.env.add_event(Event("Resend", self.send_packet), 0)
         # Go back n
         self.pack_num = self.packets_sent[0]
         pass
