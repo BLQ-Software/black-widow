@@ -16,9 +16,6 @@ class Link():
 
         # Buffer to enter link
         self.release_into_link_buffer = deque()
-        self.packets_waiting = 0
-
-        self.last_send_end = 0
 
         self.env = env
         self.bw = bw
@@ -70,7 +67,6 @@ class Link():
         # pdb.set_trace()
         packet, source_id = self.release_into_link_buffer.pop()
         self.size -= packet.size
-        self.packets_waiting -= 1
 
         # Figure out which device to send to
         if (source_id == self.device_a.network_id):
