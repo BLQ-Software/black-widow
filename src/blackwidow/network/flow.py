@@ -20,6 +20,7 @@ class Flow(object):
         self.cwnd = 1
         self.ssthresh = 10
         self.packets_sent = []
+        self.packets_time_out = []
         self.packets_arrived = []
         self.acks_arrived = set()
         self.env = env
@@ -27,7 +28,6 @@ class Flow(object):
         self.done = False
         self.last_packet = 0
         self.env.add_event(Event("Start flow", self.send_packet), self.flow_start)
-        self.resend = 0
 
     def send_ack(self, packet):
         """ Creates ack based for packet.
@@ -43,7 +43,7 @@ class Flow(object):
         """ Send a packet.
         """
         if self.amount > 0:
-            while (len(self.packets_sent) < self.cwnd) or self.resend == 1:
+            while (len(self.packets_sent) < self.cwnd):
                 pack = DataPacket(self.pack_num, self.src, self.dest, self.flow_id)
                 if (self.pack_num not in self.acks_arrived):
                     self.src.send(pack)
@@ -55,10 +55,11 @@ class Flow(object):
                 print "Flow has {0} bits left".format(self.amount)
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.packets_sent.append(self.pack_num)
+                if self.pack_num in self.packets_time_out:
+                    self.packets_time_out.remove(self.pack_num)
                 self.pack_num = self.pack_num + 1
                 if self.amount <= 0:
                     break
-                self.resend = 0
         else:
             if (len(self.packets_sent) == 0):
                 self.done = True
@@ -93,15 +94,17 @@ class Flow(object):
         if self.cwnd < self.ssthresh:
             self.cwnd = self.cwnd + 1
         else:
-            self.cwnd = self.cwnd + 1/self.cwnd
+            self.cwnd = self.cwnd + 1.0/self.cwnd
+        print "Window size is {0}".format(self.cwnd)
 
     def timeout(self, pack_num):
         """ Timeout if packet still not received.
         """
         if pack_num not in self.acks_arrived:
-            self.env.add_event(Event("Resend", self.send_packet), 0)
-            self.resend = 1
+            self.env.add_event(Event("Resend", self.send_packet), 10)
             # Go back n
+            self.packets_time_out.append(pack.pack_id)
             self.pack_num = pack_num
             self.ssthresh = self.cwnd/2
             self.cwnd = 1
+            print "Window size is {0}".format(self.cwnd)
