@@ -72,6 +72,7 @@ class Link():
 
     def release(self, packet_info):
         packet, source_id = packet_info
+        self.size -= packet.size
         # Figure out which device to send to
         if (source_id == self.device_a.network_id):
             f = self.device_b.receive
