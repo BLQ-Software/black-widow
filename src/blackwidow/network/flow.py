@@ -55,6 +55,8 @@ class Flow(object):
                     self.amount = self.amount - pack.size
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.packets_sent.append(self.pack_num)
+                if self.amount <= 0:
+                    break
         else:
             if (len(self.packets_sent) == 0):
                 self.done = True
