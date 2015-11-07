@@ -90,5 +90,6 @@ class Network():
     def run(self):
         while not events.empty():
             (time, current_event) = events.get()
+            print "Running: {0} at time {1}".format(current_event.type, time)
             self.time = time
             current_event.run()

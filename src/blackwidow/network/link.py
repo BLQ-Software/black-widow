@@ -48,12 +48,17 @@ class Link():
 
         delay = float(packet.size) / float(self.rate)
         # Wait for packet.size / self.rate time before packet is traveling
-        self.env.add_event(Event("Send to link", self.release, packet_info=packet_info), delay)
+        msg = "I am link {0}. I have begun sending "
+        if packet.is_ack:
+            msg += "ACK "
+        msg += "packet {1}"
+        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release, packet_info=packet_info), delay)
         if len(self.release_into_link_buffer) > 0:
             if self.release_into_link_buffer[-1][1] != source_id:
                 delay += self.delay
             # Begin sending the next packet in the link after the previous packet is finished traveling
-            self.env.add_event(Event("Wait to send to link", self.send), delay)
+            msg = "I am link {0}. I am ready to send the next packet"
+            self.env.add_event(Event(msg.format(self.id), self.send), delay)
 
 
     def release(self, packet_info):
@@ -63,4 +68,8 @@ class Link():
         else:
             f = self.device_a.receive
         # Release to device after self.delay time
-        self.env.add_event(Event("Send to device", f, packet=packet), self.delay)
+        msg = "I am link {0}. I have sent "
+        if packet.is_ack:
+            msg += "ACK "
+        msg += "packet {1}"
+        self.env.add_event(Event(msg.format(self.id, packet.pack_id), f, packet=packet), self.delay)
