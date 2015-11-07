@@ -52,9 +52,8 @@ class Flow(object):
                 # Shouldn't subtract pack.size if sent before.
                 if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.amount = self.amount - pack.size
-                print "Flow has {0} bits left".format(self.amount)
-                if (self.pack_num not in self.packets_sent) and (self.pack_num not in self.acks_arrived):
                     self.packets_sent.append(self.pack_num)
+                print "Flow has {0} bits left".format(self.amount)
                 if self.pack_num in self.packets_time_out:
                     self.packets_time_out.remove(self.pack_num)
                 self.pack_num = self.pack_num + 1
