@@ -9,7 +9,7 @@ class Link():
         self.device_b = device_b
 
         # rate is initially Mbps. rate is stored as bits per ms.
-        self.rate = rate * 10 ** 9
+        self.rate = rate * 10 ** 3
         self.delay = delay
         self.capacity = capacity * 1000 * 8
 
