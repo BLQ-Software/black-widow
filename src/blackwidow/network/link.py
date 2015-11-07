@@ -44,7 +44,7 @@ class Link():
         # If we only have one packet in the buffer, send it with no delay
         if len(self.release_into_link_buffer) == 1:
             # Begin sending the packet in the link
-            self.env.add_event(Event("Packet buffer in link", self.send), 0)
+            self.send()
 
 
     def send(self):
