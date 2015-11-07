@@ -42,12 +42,10 @@ class Link():
             # pdb.set_trace()
 
             # If we only have one packet in the buffer, send it with no delay
-            if len(self.release_into_link_buffer) - self.packets_waiting == 1:
+            if len(self.release_into_link_buffer) == 1:
                 # Begin sending the packet in the link
                 # pdb.set_trace()
-                if (self.last_send_end == 0):
-                    self.last_send_end = self.env.time
-                self.send()
+                self.send(float(packet.size) / float(self.rate))
 
         # The buffer is full
         else:
@@ -55,35 +53,17 @@ class Link():
             self.bw.record('{0}'.format(self.env.time), 'drop')
 
 
-    def send(self):
+    def send(self, delay):
         # pdb.set_trace()
-        packet_info = self.release_into_link_buffer[-1 - self.packets_waiting]
+        # Wait for packet.size / self.rate time before packet is traveling
+        packet_info = self.release_into_link_buffer[-1]
         packet = packet_info[0]
         source_id = packet_info[1]
-
-        delay = float(packet.size) / float(self.rate)
-        # Wait for packet.size / self.rate time before packet is traveling
         msg = "I am link {0}. I have begun sending "
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        p_delay = 0
-        if (self.last_send_end - self.env.time > 0):
-            p_delay += self.last_send_end - self.env.time
-        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release), delay + p_delay)
-        self.last_send_end = self.env.time + delay + p_delay
-        self.packets_waiting += 1
-        # pdb.set_trace()
-        if len(self.release_into_link_buffer) - self.packets_waiting > 0:
-            # Wait for propagation delay time before sending the next packet if
-            # the current packet and the next packet are not sending to the same
-            # destination.
-            if self.release_into_link_buffer[-1][1] != source_id:
-                self.last_send_end += self.delay
-            # Begin sending the next packet in the link after the previous packet is finished traveling
-            msg = "I am link {0}. I am ready to send the next packet"
-            # self.env.add_event(Event(msg.format(self.id), self.send), delay)
-            self.send()
+        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release), delay)
 
 
     def release(self):
@@ -91,6 +71,7 @@ class Link():
         packet, source_id = self.release_into_link_buffer.pop()
         self.size -= packet.size
         self.packets_waiting -= 1
+
         # Figure out which device to send to
         if (source_id == self.device_a.network_id):
             f = self.device_b.receive
@@ -103,3 +84,15 @@ class Link():
         msg += "packet {1}"
         self.env.add_event(Event(msg.format(self.id, packet.pack_id), f, packet=packet), self.delay)
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link.sent')
+
+        if len(self.release_into_link_buffer) > 0:
+            packet_info = self.release_into_link_buffer[-1]
+            packet = packet_info[0]
+            source_id = packet_info[1]
+
+            delay = float(packet.size) / float(self.rate)
+
+            if self.release_into_link_buffer[-1][1] != source_id:
+                delay += self.delay
+
+            self.send(delay)
