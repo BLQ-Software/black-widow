@@ -28,14 +28,20 @@ class Link():
             message += "ACK "
         message += "packet {1} at time {2}"
         print message.format(self.id, packet.pack_id, self.env.time)
+
+        # The buffer is not yet full, so enqueue the packet
         if self.size + packet.size < self.capacity:
             self.release_into_link_buffer.appendleft(
                 [packet, source_id])
             self.size += packet.size
             print "Current size of link {}: {}".format(self.id, self.size)
+
+        # The buffer is full
         else:
             print "Packet dropped."
             self.bw.record('{0}'.format(self.env.time), 'drop')
+
+        # If we only have one packet in the buffer, send it with no delay
         if len(self.release_into_link_buffer) == 1:
             # Begin sending the packet in the link
             self.env.add_event(Event("Packet buffer in link", self.send), 0)
@@ -54,6 +60,9 @@ class Link():
         msg += "packet {1}"
         self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release, packet_info=packet_info), delay)
         if len(self.release_into_link_buffer) > 0:
+            # Wait for propagation delay time before sending the next packet if
+            # the current packet and the next packet are not sending to the same
+            # destination.
             if self.release_into_link_buffer[-1][1] != source_id:
                 delay += self.delay
             # Begin sending the next packet in the link after the previous packet is finished traveling
@@ -63,6 +72,7 @@ class Link():
 
     def release(self, packet_info):
         packet, source_id = packet_info
+        # Figure out which device to send to
         if (source_id == self.device_a.network_id):
             f = self.device_b.receive
         else:
