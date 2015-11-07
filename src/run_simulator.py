@@ -31,7 +31,7 @@ if __name__ == "__main__":
         # Make default log_file name the input name without ext. 
         if 'real_time' not in settings:
             base = os.path.basename(f)
-            settings['log_file'] = os.path.splitext(base)[0]
+            settings['log_file'] = "data/" + os.path.splitext(base)[0]
 
         bw = BlackWidow(settings)
         bw.run(f)
