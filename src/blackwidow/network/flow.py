@@ -1,7 +1,3 @@
-""" Flow class
-"""
-
-import pdb
 from blackwidow.network.packet import AckPacket, DataPacket
 from event import Event
 
