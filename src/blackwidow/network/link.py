@@ -84,7 +84,7 @@ class Link(object):
             # If we only have one packet in the buffer, send it with no delay
             if len(self._release_into_link_buffer) == 1:
                 # Begin sending the packet in the link
-                self.__send()
+                self._send()
 
         # The buffer is full
         else:
@@ -92,7 +92,7 @@ class Link(object):
             self.bw.record('{0}'.format(self.env.time), 'drop')
 
 
-    def __send(self):
+    def _send(self):
         # Wait for packet.size / self._rate time before packet is traveling
         packet_info = self._release_into_link_buffer[-1]
         packet = packet_info[0]
@@ -102,10 +102,10 @@ class Link(object):
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self.__release), delay)
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._release), delay)
 
 
-    def __release(self):
+    def _release(self):
         packet, source_id = self._release_into_link_buffer.pop()
         self._size -= packet.size
 
@@ -135,4 +135,4 @@ class Link(object):
             if next_packet.is_ack:
                 msg += "ACK "
             msg += "packet {1}"
-            self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self.__send), delay)
+            self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self._send), delay)
