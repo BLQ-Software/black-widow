@@ -4,6 +4,22 @@ from event import Event
 class Flow(object):
     """Simple class for flows.
     Flows will trigger host behavior.
+
+    Parameters
+    ----------
+    flow_id : string
+        A unique id for the flow.
+    source : `Device`
+        The source for the flow.
+    destination : `Device`
+        The destination for the flow.
+    amount : int
+        The amount of data to send in MB.
+    env : `Network`
+        The network that the flow belongs to.
+    time : float
+        The amount of time to wait before starting to send in ms.
+
     """
     def __init__(self, flow_id, source, destination, amount, env, time):
         """ Constructor for Flow class
@@ -95,6 +111,12 @@ class Flow(object):
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
+
+        Parameters
+        ----------
+        packet : `Packet`
+            The packet to be received.
+
         """
         if packet.dest == self._dest:
             print "Flow received packet {0}".format(packet.pack_id)
