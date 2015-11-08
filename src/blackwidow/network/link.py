@@ -77,14 +77,14 @@ class Link(object):
 
         # The buffer is not yet full, so enqueue the packet
         if self._size + packet.size < self._capacity:
-            self.release_into_link_buffer.appendleft(
+            self._release_into_link_buffer.appendleft(
                 [packet, source_id])
             self._size += packet.size
             print "Current size of link {}: {}".format(self._id, self._size)
             # pdb.set_trace()
 
             # If we only have one packet in the buffer, send it with no delay
-            if len(self.release_into_link_buffer) == 1:
+            if len(self._release_into_link_buffer) == 1:
                 # Begin sending the packet in the link
                 # pdb.set_trace()
                 self.__send()
@@ -98,7 +98,7 @@ class Link(object):
     def __send(self):
         # pdb.set_trace()
         # Wait for packet.size / self._rate time before packet is traveling
-        packet_info = self.release_into_link_buffer[-1]
+        packet_info = self._release_into_link_buffer[-1]
         packet = packet_info[0]
         source_id = packet_info[1]
         delay = float(packet.size) / float(self._rate)
@@ -111,7 +111,7 @@ class Link(object):
 
     def __release(self):
         # pdb.set_trace()
-        packet, source_id = self.release_into_link_buffer.pop()
+        packet, source_id = self._release_into_link_buffer.pop()
         self._size -= packet.size
 
         # Figure out which device to send to
@@ -127,8 +127,8 @@ class Link(object):
         self.env.add_event(Event(msg.format(self._id, packet.pack_id), f, packet=packet), self._delay)
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link.sent')
 
-        if len(self.release_into_link_buffer) > 0:
-            packet_info = self.release_into_link_buffer[-1]
+        if len(self._release_into_link_buffer) > 0:
+            packet_info = self._release_into_link_buffer[-1]
             next_packet = packet_info[0]
             next_source_id = packet_info[1]
 
