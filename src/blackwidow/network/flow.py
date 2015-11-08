@@ -131,7 +131,7 @@ class Flow(object):
                 if packet.pack_id in self._packets_time_out:
                     self._packets_time_out.remove(packet.pack_id)
                 self._acks_arrived.add(packet.pack_id)
-                print "Flow received ack for packet {0}".format(packet.pack_id)
+                print "Flow {} received ack for packet {}".format(self._flow_id, packet.pack_id)
 
     def _respond_to_ack(self):
         """ Update window size.
@@ -141,7 +141,7 @@ class Flow(object):
             self._cwnd = self._cwnd + 1
         else:
             self._cwnd = self._cwnd + 1.0/self._cwnd
-        print "Window size is {0}".format(self._cwnd)
+        print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
 
     def _timeout(self, pack_num):
         """ Timeout if packet still not received.
@@ -154,4 +154,4 @@ class Flow(object):
             self._pack_num = pack_num
             self._ssthresh = self._cwnd/2
             self._cwnd = 1
-            print "Window size is {0}".format(self._cwnd)
+            print "Flow {} window size is {}".format(self._flow_id, self._cwnd)

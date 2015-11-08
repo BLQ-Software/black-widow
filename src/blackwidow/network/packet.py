@@ -107,3 +107,12 @@ class RoutingPacket(Packet):
         self._size = ROUTING_PACKET_SIZE
         self._is_routing = True
         self._routing_table = routing_table
+    
+    @property
+    def routing_table(self):
+        return self._routing_table
+
+    @routing_table.setter
+    def routing_table(self, value):
+        raise AttributeError("Cannot modify routing table: {0}".format(self._pack_id))
+

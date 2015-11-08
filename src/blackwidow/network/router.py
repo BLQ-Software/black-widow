@@ -1,5 +1,6 @@
 from device import Device
 from packet import RoutingPacket
+from event import Event
 
 ROUTING_PKT_ID = 'Routing Packet'
 
@@ -9,6 +10,7 @@ class Router(Device):
     Routers are responsible for initializing and updating their
     routing table, and sending packets based on their routing table.
     """
+    
 
     def __init__(self, router_id, env, bw):
         """Constructor for Router class."""
@@ -16,6 +18,8 @@ class Router(Device):
         self.env = env
         self.bw = bw
         self._routing_table = {}
+        self.env.add_event(Event('{} sent routing packet'.format(self._network_id), 
+                                 self.send_routing), 0)
 
     def add_link(self, link):
         """Overrides Device.add_link() ."""
@@ -45,6 +49,12 @@ class Router(Device):
         else:
             self.send(packet)
 
+    def start_routing(self):
+        """Add initial"""
+        self.env.add_event(Event('{} sent routing packet'.format(self._network_id), 
+                                 self.send_routing), 0)
+
+
     def send_routing(self):
         """Send routing packets to all neighbors."""
         for link in self._links:
@@ -57,6 +67,10 @@ class Router(Device):
                                    self._routing_table)
             link.receive(packet, self._network_id)
             print "Sent routing packet from {}".format(self._network_id)
+
+        if self.env.time < 5000:
+            self.env.add_event(Event('{} sent routing packet'.format(self._network_id), 
+                               self.send_routing), 100)
 
 
     def update_route(self, packet):

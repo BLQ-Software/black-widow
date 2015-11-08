@@ -113,8 +113,7 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        if self.num_flows_active != 0:
-            self._events.put((self._time + delay, event))
+        self._events.put((self._time + delay, event))
 
     def run(self):
         # Keep running while we have events to run. The first events will be
