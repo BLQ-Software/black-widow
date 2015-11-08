@@ -43,10 +43,10 @@ class Network():
         self.devices[host_id] = Host(host_id)
         self.ids.append(host_id)
 
-    def add_router(self, router_id):
+    def add_router(self, router_id, bw):
         """Construct router and add to dictionary of routers"""
         self.check_id(router_id)
-        self.devices[router_id] = Router(router_id)
+        self.devices[router_id] = Router(router_id, self, bw)
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
 
