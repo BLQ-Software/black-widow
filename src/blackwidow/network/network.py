@@ -3,7 +3,6 @@ from router import Router
 from link import Link
 from flow import Flow
 from Queue import PriorityQueue
-import time as t
 
 # Constants
 # Time to update router info, in ms.
@@ -24,13 +23,22 @@ class Network():
         self.links = {}
         self.flows = {}
         self.ids = []
-        self.time = 0
-        self.events = PriorityQueue()
+        self._time = 0
+        self._events = PriorityQueue()
+        self.num_flows_active = 0
+
+    @property
+    def time(self):
+        return self._time
+
+    @time.setter
+    def time(self, value):
+        raise AttributeError("Cannot modify network time")
 
     def check_id(self, obj_id):
         """Raise an exception if object id is not unique."""
         if obj_id in self.ids:
-            raise NameError('id {0} already exists.'.format(obj_id))
+            raise ValueError('id {0} already exists.'.format(obj_id))
 
     def dump(self):
         """Prints out network"""
@@ -44,10 +52,10 @@ class Network():
         self.devices[host_id] = Host(host_id)
         self.ids.append(host_id)
 
-    def add_router(self, router_id):
+    def add_router(self, router_id, bw):
         """Construct router and add to dictionary of routers"""
         self.check_id(router_id)
-        self.devices[router_id] = Router(router_id)
+        self.devices[router_id] = Router(router_id, self, bw)
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
 
@@ -74,6 +82,8 @@ class Network():
         device_1 = self.devices[flow_src]
         device_2 = self.devices[flow_dest]
 
+        self.num_flows_active += 1
+
 
         flow = Flow(flow_id, device_1, device_2, data_amt,
                         self, flow_start)
@@ -83,7 +93,11 @@ class Network():
         device_2.add_flow(flow)
 
 
+
         self.ids.append(flow_id)
+
+    def decrement_flows(self):
+        self.num_flows_active -= 1
 
     def add_event(self, event, delay):
         """
@@ -99,14 +113,14 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        self.events.put((self.time + delay, event))
+        if self.num_flows_active != 0:
+            self._events.put((self._time + delay, event))
 
     def run(self):
         # Keep running while we have events to run. The first events will be
         # enqueued by the flows when they are initialized.
-        while not self.events.empty():
-            (time, current_event) = self.events.get()
-            print "Running: {0} at time {1}".format(current_event.type, time)
-            self.time = time
+        while not self._events.empty() and self.num_flows_active != 0:
+            (time, current_event) = self._events.get()
+            print "{0} at time {1}".format(str(current_event), time)
+            self._time = time
             current_event.run()
-            # t.sleep(0.1)

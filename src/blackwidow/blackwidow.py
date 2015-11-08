@@ -1,5 +1,6 @@
 import parser
 import graph
+from datetime import datetime
 
 class BlackWidow(object):
     """Runs simulation based on settings.
@@ -7,22 +8,30 @@ class BlackWidow(object):
     Generalizes Python's print to adapt to custom settings,
     and direct different types of messages to different outputs
     including files, or functions that dynamically generate graphs.
-    
-    Attributes
+
+    Parameters
     ----------
-    real_time : bool 
-        whether to graph in real time or write to files. 
-    show_verbose : bool
-        whether to print statements labeled verbose.
-    log_file : str  
-        name of file to write to.
+    settings : dict
+        Contains settings to initialize the printer. Values include:
+            real_time : bool
+                Whether to graph in real time or write to files.
+            show_verbose : bool
+                Whether to print statements labelled verbose.
+            log_file : str
+                Name of file to write to.
 
     Methods
     -------
-    __init__(settings)
-        Construct printer based on settings dictionary.
-    
-    Example
+    run(file_name)
+        Runs the overall simulation based on settings specified when
+        the BlackWidow object is constructed.
+    print_verbose(msg)
+        Handles a verbose message based on specified settings.
+    record(data, data_type)
+        Records data based on specified settings.
+
+
+    Examples
     -------
     >>> from blackwidow import BlackWidow
     >>> settings = {'filename': 'case0.json' ... }
@@ -30,36 +39,28 @@ class BlackWidow(object):
     >>> bw.run()
     """
     def __init__(self, settings):
-        """Configures printer based on settings dictionary.
-
-        The settings dictionary contains exactly all non-default
-        settings.
-
-        Parameters
-        ----------
-        settings : dict 
-        """
         self.real_time = False # Default setting
         if 'real_time' in settings:
             self.real_time = settings['real_time'] # Override default
 
-        self.show_verbose = False 
+        self.show_verbose = False
         if 'show_verbose' in settings:
             self.real_time = settings['show_verbose']
-        
+
         self.log_file = None
         if 'log_file' in settings:
-            self.log_file = settings['log_file']
-  
+            self.log_file = settings['log_file'] + "_" + datetime.now().strftime("%m-%d-%Y_%H:%M")
+
 
 
     def run(self, file_name):
         """Runs the overall simulation based on settings specified when
         the BlackWidow object is constructed.
 
-        :param filename: name of config file
-        :type filename: string
-
+        Parameters
+        ----------
+        file_name : string
+            Name of config file
         """
 
         print "Parsing {0} ...".format(file_name), "\n"
@@ -87,7 +88,7 @@ class BlackWidow(object):
         """
         if self.show_verbose:
             print msg
-       
+
 
 
     def record(self, data, data_type):
@@ -97,9 +98,11 @@ class BlackWidow(object):
         ----------
         data : str
             Data point to record/plot.
-        data_type : str 
+        data_type : str
             Type of data, will be used as a file extension.
 
+        Notes
+        -----
         Standard data types:
             link.drop    -  "Time in ms", "Number of drops"
             link.sent    -  "Time in ms", "Number of packets sent"
@@ -108,7 +111,7 @@ class BlackWidow(object):
             flow.delay   -  "Time in ms", "Delay in ms"
         """
         if self.real_time:
-            graph.plot(data, data_type) # TODO: integrate with graph module. 
+            graph.plot(data, data_type) # TODO: integrate with graph module.
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.
