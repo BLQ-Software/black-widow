@@ -65,6 +65,38 @@ class Link(object):
     def id(self, value):
         raise AttributeError("Cannot modify link id: {0}".format(self._id))
 
+    @property
+    def device_a(self):
+        return self._device_a
+
+    @device_a.setter
+    def device_a(self, value):
+        raise AttributeError("Cannot modify link device: {0}".format(self._id))
+
+    @property
+    def device_b(self):
+        return self._device_b
+
+    @device_b.setter
+    def device_b(self, value):
+        raise AttributeError("Cannot modify link device: {0}".format(self._id))
+
+    @property
+    def delay(self):
+        return self._delay
+
+    @delay.setter
+    def delay(self, value):
+        raise AttributeError("Cannot modify link delay: {0}".format(self._id))
+
+    @property
+    def rate(self):
+        return self._rate
+
+    @rate.setter
+    def rate(self, value):
+        raise AttributeError("Cannot modify link rate: {0}".format(self._id))
+
     def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
         # Drop packet if the buffer is full
