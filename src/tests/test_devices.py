@@ -9,5 +9,5 @@ def test_host():
     h1 = Host('H1')
     h2 = Host('H2')
     h1.add_link('L1')
-    assert h1.links[0] == 'L1'
-    assert h2.links == []
+    assert h1._links[0] == 'L1'
+    assert h2._links == []
