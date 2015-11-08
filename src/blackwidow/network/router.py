@@ -24,7 +24,7 @@ class Router(Device):
 
         if (network_id == self.network_id):
             network_id = link.device_b.network_id
-        
+
         self.routing_table[network_id] = {'link': link, 'distance': link.rate }
 
     def send(self, packet):
@@ -32,7 +32,7 @@ class Router(Device):
         route = None
         if packet.dest.network_id in self.routing_table:
             route = self.routing_table[packet.dest.network_id]
-        
+
         if route is not None and 'link' in route:
             route['link'].receive(packet, self.network_id)
 
@@ -50,7 +50,7 @@ class Router(Device):
             other_device = link.device_a
             if (other_device.network_id == self.network_id):
                 other_device = link.device_b
-            packet = RoutingPacket(ROUTING_PKT_ID, self.network_id, 
+            packet = RoutingPacket(ROUTING_PKT_ID, self.network_id,
                                    other_device.network_id, None,
                                    self.routing_table)
             link.receive(packet, self.network_id)
@@ -75,4 +75,3 @@ class Router(Device):
                 self.routing_table[dest] = {'link': link, 'distance': distance}
             elif distance < self.routing_table[dest]['distance']:
                 self.routing_table[dest] = {'link': link, 'distance': distance}
-
