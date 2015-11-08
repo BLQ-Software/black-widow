@@ -23,8 +23,16 @@ class Network():
         self.links = {}
         self.flows = {}
         self.ids = []
-        self.time = 0
-        self.events = PriorityQueue()
+        self._time = 0
+        self._events = PriorityQueue()
+
+    @property
+    def time(self):
+        return self._time
+
+    @time.setter
+    def time(self, value):
+        raise AttributeError("Cannot modify network time")
 
     def check_id(self, obj_id):
         """Raise an exception if object id is not unique."""
@@ -98,13 +106,13 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        self.events.put((self.time + delay, event))
+        self._events.put((self._time + delay, event))
 
     def run(self):
         # Keep running while we have events to run. The first events will be
         # enqueued by the flows when they are initialized.
-        while not self.events.empty():
-            (time, current_event) = self.events.get()
+        while not self._events.empty():
+            (time, current_event) = self._events.get()
             print "{0} at time {1}".format(str(current_event), time)
-            self.time = time
+            self._time = time
             current_event.run()
