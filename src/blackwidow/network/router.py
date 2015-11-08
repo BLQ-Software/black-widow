@@ -49,11 +49,6 @@ class Router(Device):
         else:
             self.send(packet)
 
-    def start_routing(self):
-        """Add initial"""
-        self.env.add_event(Event('{} sent routing packet'.format(self._network_id), 
-                                 self.send_routing), 0)
-
 
     def send_routing(self):
         """Send routing packets to all neighbors."""
