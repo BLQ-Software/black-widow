@@ -108,6 +108,7 @@ class Flow(object):
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
                 self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
+            self.env.decrement_flows()
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.

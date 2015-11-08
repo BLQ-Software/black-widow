@@ -25,6 +25,7 @@ class Network():
         self.ids = []
         self._time = 0
         self._events = PriorityQueue()
+        self.num_flows_active = 0
 
     @property
     def time(self):
@@ -81,6 +82,8 @@ class Network():
         device_1 = self.devices[flow_src]
         device_2 = self.devices[flow_dest]
 
+        self.num_flows_active += 1
+
 
         flow = Flow(flow_id, device_1, device_2, data_amt,
                         self, flow_start)
@@ -90,7 +93,11 @@ class Network():
         device_2.add_flow(flow)
 
 
+
         self.ids.append(flow_id)
+
+    def decrement_flows(self):
+        self.num_flows_active -= 1
 
     def add_event(self, event, delay):
         """
@@ -106,12 +113,13 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        self._events.put((self._time + delay, event))
+        if self.num_flows_active != 0:
+            self._events.put((self._time + delay, event))
 
     def run(self):
         # Keep running while we have events to run. The first events will be
         # enqueued by the flows when they are initialized.
-        while not self._events.empty():
+        while not self._events.empty() and self.num_flows_active != 0:
             (time, current_event) = self._events.get()
             print "{0} at time {1}".format(str(current_event), time)
             self._time = time
