@@ -29,7 +29,7 @@ class Link(object):
 
     Methods
     -------
-    receive(packet)
+    receive(packet, source_id)
         Receives a packet from a `Device`.
     """
 
