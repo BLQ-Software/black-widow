@@ -1,6 +1,5 @@
 from collections import deque
 from event import Event
-import pdb
 
 class Link(object):
     """Simulates a link connected to two Devices in the network.
@@ -81,12 +80,10 @@ class Link(object):
                 [packet, source_id])
             self._size += packet.size
             print "Current size of link {}: {}".format(self._id, self._size)
-            # pdb.set_trace()
 
             # If we only have one packet in the buffer, send it with no delay
             if len(self._release_into_link_buffer) == 1:
                 # Begin sending the packet in the link
-                # pdb.set_trace()
                 self.__send()
 
         # The buffer is full
@@ -96,7 +93,6 @@ class Link(object):
 
 
     def __send(self):
-        # pdb.set_trace()
         # Wait for packet.size / self._rate time before packet is traveling
         packet_info = self._release_into_link_buffer[-1]
         packet = packet_info[0]
@@ -110,7 +106,6 @@ class Link(object):
 
 
     def __release(self):
-        # pdb.set_trace()
         packet, source_id = self._release_into_link_buffer.pop()
         self._size -= packet.size
 

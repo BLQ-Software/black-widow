@@ -3,9 +3,17 @@ class Device(object):
     """
     def __init__(self, net_addr):
         """Constructor for device."""
-        self.network_id = net_addr
-        self.links = []
+        self._network_id = net_addr
+        self._links = []
         self.env = None
+
+    @property
+    def network_id(self):
+        return self._network_id
+
+    @network_id.setter
+    def network_id(self, value):
+        raise AttributeError("Cannot modify device id: {0}".format(self._network_id))
 
     def set_env(self, env):
         """Set simpy environment"""
@@ -13,13 +21,13 @@ class Device(object):
 
     def add_link(self, link):
         """Add link to list of links."""
-        self.links.append(link)
+        self._links.append(link)
 
     def send(self, packet):
         pass
 
     def __str__(self):
         msg = "Device {0}, connected to links:\n"
-        for link in self.links:
+        for link in self._links:
             msg += "  " + str(link) + "\n"
-        return msg.format(self.network_id)
+        return msg.format(self._network_id)
