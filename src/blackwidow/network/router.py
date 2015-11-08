@@ -24,9 +24,9 @@ class Router(Device):
         network_id = link._device_a.network_id
 
         if (network_id == self._network_id):
-            network_id = link.device_b.network_id
+            network_id = link._device_b.network_id
 
-        self._routing_table[network_id] = {'link': link, 'distance': link.rate }
+        self._routing_table[network_id] = {'link': link, 'distance': link._delay }
 
     def send(self, packet):
         """Send packet to appropriate link."""
