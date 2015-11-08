@@ -2,7 +2,7 @@ from collections import deque
 from event import Event
 import pdb
 
-class Link():
+class Link(object):
     """Simulates a link connected to two Devices in the network.
 
     Represents a physical link in the network. In addition to simple send and
@@ -35,28 +35,36 @@ class Link():
 
 
     def __init__(self, id, device_a, device_b, delay, rate, capacity, env, bw):
-        self.id = id
-        self.device_a = device_a
-        self.device_b = device_b
+        self._id = id
+        self._device_a = device_a
+        self._device_b = device_b
 
         # rate is initially Mbps. rate is stored as bits per ms.
-        self.rate = rate * 10 ** 3
-        self.delay = delay
-        self.capacity = capacity * 1000 * 8
+        self._rate = rate * 10 ** 3
+        self._delay = delay
+        self._capacity = capacity * 1000 * 8
 
         # Buffer to enter link
-        self.release_into_link_buffer = deque()
+        self._release_into_link_buffer = deque()
 
         self.env = env
         self.bw = bw
-        self.size = 0
+        self._size = 0
 
     def __str__(self):
         msg = "Link {0} connected to {1} and {2}\n"
         msg += "\t Rate: {3} mbps\n"
         msg += "\t Delay: {4} mbps\n"
         msg += "\t Capacity: {5} bits\n"
-        return msg.format(self.id, self.device_a.network_id, self.device_b.network_id, self.rate, self.delay, self.capacity)
+        return msg.format(self._id, self._device_a.network_id, self._device_b.network_id, self._rate, self._delay, self._capacity)
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        raise AttributeError("Cannot modify link id: {0}".format(self._id))
 
     def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
@@ -65,21 +73,21 @@ class Link():
         if packet.is_ack:
             message += "ACK "
         message += "packet {1} at time {2}"
-        print message.format(self.id, packet.pack_id, self.env.time)
+        print message.format(self._id, packet.pack_id, self.env.time)
 
         # The buffer is not yet full, so enqueue the packet
-        if self.size + packet.size < self.capacity:
+        if self._size + packet.size < self._capacity:
             self.release_into_link_buffer.appendleft(
                 [packet, source_id])
-            self.size += packet.size
-            print "Current size of link {}: {}".format(self.id, self.size)
+            self._size += packet.size
+            print "Current size of link {}: {}".format(self._id, self._size)
             # pdb.set_trace()
 
             # If we only have one packet in the buffer, send it with no delay
             if len(self.release_into_link_buffer) == 1:
                 # Begin sending the packet in the link
                 # pdb.set_trace()
-                self.send()
+                self.__send()
 
         # The buffer is full
         else:
@@ -87,36 +95,36 @@ class Link():
             self.bw.record('{0}'.format(self.env.time), 'drop')
 
 
-    def send(self):
+    def __send(self):
         # pdb.set_trace()
-        # Wait for packet.size / self.rate time before packet is traveling
+        # Wait for packet.size / self._rate time before packet is traveling
         packet_info = self.release_into_link_buffer[-1]
         packet = packet_info[0]
         source_id = packet_info[1]
-        delay = float(packet.size) / float(self.rate)
+        delay = float(packet.size) / float(self._rate)
         msg = "I am link {0}. I have begun sending "
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self.id, packet.pack_id), self.release), delay)
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self.__release), delay)
 
 
-    def release(self):
+    def __release(self):
         # pdb.set_trace()
         packet, source_id = self.release_into_link_buffer.pop()
-        self.size -= packet.size
+        self._size -= packet.size
 
         # Figure out which device to send to
-        if (source_id == self.device_a.network_id):
-            f = self.device_b.receive
+        if (source_id == self._device_a.network_id):
+            f = self._device_b.receive
         else:
-            f = self.device_a.receive
-        # Release to device after self.delay time
+            f = self._device_a.receive
+        # Release to device after self._delay time
         msg = "I am link {0}. I have sent "
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self.id, packet.pack_id), f, packet=packet), self.delay)
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id), f, packet=packet), self._delay)
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link.sent')
 
         if len(self.release_into_link_buffer) > 0:
@@ -125,11 +133,11 @@ class Link():
             next_source_id = packet_info[1]
 
             if next_source_id != source_id:
-                delay = self.delay
+                delay = self._delay
             else:
                 delay = 0
             msg = "I am link {0}. I am ready to send "
             if next_packet.is_ack:
                 msg += "ACK "
             msg += "packet {1}"
-            self.env.add_event(Event(msg.format(self.id, next_packet.pack_id), self.send), delay)
+            self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self.__send), delay)

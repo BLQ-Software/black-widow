@@ -29,7 +29,7 @@ class Network():
     def check_id(self, obj_id):
         """Raise an exception if object id is not unique."""
         if obj_id in self.ids:
-            raise NameError('id {0} already exists.'.format(obj_id))
+            raise ValueError('id {0} already exists.'.format(obj_id))
 
     def dump(self):
         """Prints out network"""
