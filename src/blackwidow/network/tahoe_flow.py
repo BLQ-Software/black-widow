@@ -27,47 +27,23 @@ class TahoeFlow(Flow):
         """
         Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
         self._packets_arrived = []
-        self._packets_arrived = range(0,(int)(self._amount/1024*8)) 
+        self._packets_arrived = range(0,(int)(self._amount/(1024*8))) 
+        self._total_num_pack = (int)(self._amount/(1024*8)) + 1
+        self._last_pack_rec = -1
+        self._counter = 0
 
     def _send_ack(self, packet):
         """ Creates ack based for packet.
         """
         if self._src == packet.src and self._dest == packet.dest:
-            next_ack_expected = self_packets_arrived[0]
+            next_ack_expected = self._total_num_pack
+            if len(self._packets_arrived) > 0:
+                next_ack_expected = self._packets_arrived[0]
             ack_packet = AckPacket(next_ack_expected, packet.dest, packet.src, self._flow_id)
             self._dest.send(ack_packet)
             print "Flow sent ack packet {0}".format(packet.pack_id)
         else:
             print "Received wrong packet."
-
-    def send_packet(self):
-        """ Send a packet.
-        """
-        if self._amount > 0:
-            while (len(self._packets_sent) - len(self._packets_time_out) < self._cwnd):
-                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
-                if (self._pack_num not in self._acks_arrived):
-                    self._src.send(pack)
-                    print "Flow sent packet {0}".format(pack.pack_id)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
-                # Shouldn't subtract pack.size if sent before.
-                if (self._pack_num not in self._packets_sent) and (self._pack_num not in self._acks_arrived):
-                    self._amount = self._amount - pack.size
-                    self._packets_sent.append(self._pack_num)
-                print "Flow has {0} bits left".format(self._amount)
-                if self._pack_num in self._packets_time_out:
-                    self._packets_time_out.remove(self._pack_num)
-                self._pack_num = self._pack_num + 1
-                if self._amount <= 0:
-                    break
-        else:
-            # Just keep resending last few packets until done
-            while len(self._packets_time_out) > 0:
-                self._pack_num = self._packets_time_out[0]
-                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
-                self._src.send(pack)
-                self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -82,8 +58,8 @@ class TahoeFlow(Flow):
             print "Flow received packet {0}".format(packet.pack_id)
             if packet.pack_id not in self._acks_arrived:
                 self._send_ack(packet)
-            if packet.pack_id not in self._packets_arrived:
-                self._packets_arrived.add(packet.pack_id)
+            if packet.pack_id in self._packets_arrived:
+                self._packets_arrived.remove(packet.pack_id)
         else:
             if packet.pack_id not in self._acks_arrived:
                 self._respond_to_ack()
