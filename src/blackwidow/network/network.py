@@ -10,11 +10,8 @@ import matplotlib.pyplot as plt
 # Time to update router info, in ms.
 ROUTER_UPDATE_PERIOD = 100
 
-g = nx.Graph()
 plt.ion()
-edge_labels = {}
-router_labels = []
-host_labels = []
+
 
 class Network():
     """Python representation of the network.
@@ -34,6 +31,10 @@ class Network():
         self._time = 0
         self._events = PriorityQueue()
         self.num_flows_active = 0
+        self.g = nx.Graph()
+        self.edge_labels = {}
+        self.router_labels = []
+        self.host_labels = []
 
     @property
     def time(self):
@@ -54,12 +55,12 @@ class Network():
         print self.devices
         print self.links
         print self.flows
-        pos = nx.graphviz_layout(g)
-        nx.draw_networkx_nodes(g, pos, nodelist=host_labels, node_size=800, node_color="blue")
-        nx.draw_networkx_nodes(g, pos, nodelist=router_labels, node_size=800, node_color="red")
-        nx.draw_networkx_edges(g, pos, width=4, alpha=0.5, edge_color='black')
-        nx.draw_networkx_labels(g, pos, font_size=20)
-        nx.draw_networkx_edge_labels(g, pos, edge_labels)
+        pos = nx.graphviz_layout(self.g)
+        nx.draw_networkx_nodes(self.g, pos, nodelist=self.host_labels, node_size=800, node_color="blue")
+        nx.draw_networkx_nodes(self.g, pos, nodelist=self.router_labels, node_size=800, node_color="red")
+        nx.draw_networkx_edges(self.g, pos, width=4, alpha=0.5, edge_color='black')
+        nx.draw_networkx_labels(self.g, pos, font_size=20)
+        nx.draw_networkx_edge_labels(self.g, pos, self.edge_labels)
         plt.draw()
         plt.show()
 
@@ -68,8 +69,8 @@ class Network():
         self.check_id(host_id)
         self.devices[host_id] = Host(host_id)
         self.ids.append(host_id)
-        g.add_node(host_id)
-        host_labels.append(host_id)
+        self.g.add_node(host_id)
+        self.host_labels.append(host_id)
 
     def add_router(self, router_id, bw):
         """Construct router and add to dictionary of routers"""
@@ -77,8 +78,8 @@ class Network():
         self.devices[router_id] = Router(router_id, self, bw)
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
-        g.add_node(router_id)
-        router_labels.append(router_id)
+        self.g.add_node(router_id)
+        self.router_labels.append(router_id)
 
     def add_link(self, link_id, device_id1, device_id2,
                  delay, rate, capacity, bw):
@@ -99,8 +100,8 @@ class Network():
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
 
-        g.add_edge(device_id1, device_id2, len=str(delay))
-        edge_labels[(device_id1, device_id2)] = link_id
+        self.g.add_edge(device_id1, device_id2, len=str(delay))
+        self.edge_labels[(device_id1, device_id2)] = link_id
 
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
         device_1 = self.devices[flow_src]
