@@ -27,13 +27,14 @@ class TahoeFlow(Flow):
         """
         Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
         self._packets_arrived = []
-        self._packets_arrived = range(0,((int)(self._amount/1024*8))+1) 
+        self._packets_arrived = range(0,(int)(self._amount/1024*8)) 
 
     def _send_ack(self, packet):
         """ Creates ack based for packet.
         """
         if self._src == packet.src and self._dest == packet.dest:
-            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id)
+            next_ack_expected = self_packets_arrived[0]
+            ack_packet = AckPacket(next_ack_expected, packet.dest, packet.src, self._flow_id)
             self._dest.send(ack_packet)
             print "Flow sent ack packet {0}".format(packet.pack_id)
         else:

@@ -144,7 +144,7 @@ class Flow(object):
         else:
             self._cwnd = self._cwnd + 1.0/self._cwnd
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')
+        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
 
     def _timeout(self, pack_num):
         """ Generate an ack or respond to bad packet.
@@ -164,4 +164,4 @@ class Flow(object):
             self._ssthresh = self._cwnd/2
             self._cwnd = 1
             print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-            self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')
+            self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
