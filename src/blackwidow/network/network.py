@@ -78,7 +78,7 @@ class Network():
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
 
-    def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
+    def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start, bw):
         device_1 = self.devices[flow_src]
         device_2 = self.devices[flow_dest]
 
@@ -86,7 +86,7 @@ class Network():
 
 
         flow = Flow(flow_id, device_1, device_2, data_amt,
-                        self, flow_start)
+                        self, flow_start, bw)
         self.flows[flow_id] = flow
 
         device_1.add_flow(flow)

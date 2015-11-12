@@ -21,7 +21,7 @@ class Flow(object):
         The amount of time to wait before starting to send in ms.
 
     """
-    def __init__(self, flow_id, source, destination, amount, env, time):
+    def __init__(self, flow_id, source, destination, amount, env, time, bw):
         """ Constructor for Flow class
         """
         self._flow_id = flow_id
@@ -36,6 +36,7 @@ class Flow(object):
         self._packets_arrived = []
         self._acks_arrived = set()
         self.env = env
+        self.bw = bw
         self._flow_start = time*1000.0
         self._last_packet = 0
         self.env.add_event(Event("Start flow", self.send_packet), self._flow_start)
@@ -143,6 +144,7 @@ class Flow(object):
         else:
             self._cwnd = self._cwnd + 1.0/self._cwnd
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
+        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')
 
     def _timeout(self, pack_num):
         """ Generate an ack or respond to bad packet.
@@ -162,3 +164,4 @@ class Flow(object):
             self._ssthresh = self._cwnd/2
             self._cwnd = 1
             print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
+            self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')

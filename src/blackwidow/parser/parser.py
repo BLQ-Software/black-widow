@@ -22,6 +22,6 @@ def config_network(filename, bw):
     for flow in config['Flows']:
         network.add_flow(flow['network_id'], flow['src'],
                          flow['dest'], flow['amount'],
-                         flow['start'])
+                         flow['start'], bw)
 
     return network
