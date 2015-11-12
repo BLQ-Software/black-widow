@@ -3,10 +3,18 @@ from router import Router
 from link import Link
 from flow import Flow
 from Queue import PriorityQueue
+import networkx as nx
+import matplotlib.pyplot as plt
 
 # Constants
 # Time to update router info, in ms.
 ROUTER_UPDATE_PERIOD = 100
+
+g = nx.Graph()
+plt.ion()
+edge_labels = {}
+router_labels = []
+host_labels = []
 
 class Network():
     """Python representation of the network.
@@ -42,15 +50,26 @@ class Network():
 
     def dump(self):
         """Prints out network"""
+
         print self.devices
         print self.links
         print self.flows
+        pos = nx.spring_layout(g)
+        nx.draw_networkx_nodes(g, pos, nodelist=host_labels, node_size=700, node_color="blue")
+        nx.draw_networkx_nodes(g, pos, nodelist=router_labels, node_size=700, node_color="red")
+        nx.draw_networkx_edges(g, pos, width=4, alpha=0.5, edge_color='black')
+        nx.draw_networkx_labels(g, pos, font_size=20)
+        nx.draw_networkx_edge_labels(g, pos, edge_labels)
+        plt.draw()
+        plt.show()
 
     def add_host(self, host_id):
         """Construct host and add to dictionary of hosts."""
         self.check_id(host_id)
         self.devices[host_id] = Host(host_id)
         self.ids.append(host_id)
+        g.add_node(host_id)
+        host_labels.append(host_id)
 
     def add_router(self, router_id, bw):
         """Construct router and add to dictionary of routers"""
@@ -58,6 +77,8 @@ class Network():
         self.devices[router_id] = Router(router_id, self, bw)
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
+        g.add_node(router_id)
+        router_labels.append(router_id)
 
     def add_link(self, link_id, device_id1, device_id2,
                  delay, rate, capacity, bw):
@@ -77,6 +98,9 @@ class Network():
         device_1.add_link(self.links[link_id])
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
+
+        g.add_edge(device_id1, device_id2)
+        edge_labels[(device_id1, device_id2)] = link_id
 
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
         device_1 = self.devices[flow_src]
@@ -117,6 +141,7 @@ class Network():
             self._events.put((self._time + delay, event))
 
     def run(self):
+
         # Keep running while we have events to run. The first events will be
         # enqueued by the flows when they are initialized.
         while not self._events.empty() and self.num_flows_active != 0:
