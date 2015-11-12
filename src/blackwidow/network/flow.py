@@ -33,7 +33,6 @@ class Flow(object):
         self._ssthresh = 10
         self._packets_sent = []
         self._packets_time_out = []
-        self._packets_arrived = []
         self._acks_arrived = set()
         self.env = env
         self.bw = bw
