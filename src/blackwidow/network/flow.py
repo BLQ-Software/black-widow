@@ -108,7 +108,6 @@ class Flow(object):
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
                 self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
-            # self.env.decrement_flows()
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -132,6 +131,8 @@ class Flow(object):
                     self._packets_time_out.remove(packet.pack_id)
                 self._acks_arrived.add(packet.pack_id)
                 print "Flow {} received ack for packet {}".format(self._flow_id, packet.pack_id)
+                if len(self._packets_sent) + len(self._acks_arrived) == 0:
+                    self.env.decrement_flows()
 
     def _respond_to_ack(self):
         """ Update window size.
@@ -144,7 +145,13 @@ class Flow(object):
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
 
     def _timeout(self, pack_num):
-        """ Timeout if packet still not received.
+        """ Generate an ack or respond to bad packet.
+
+        Parameters
+        ----------
+        pack_num : `Packet`number
+            The packet number of the packet to check for timeout.
+
         """
         if pack_num not in self._acks_arrived:
             self.env.add_event(Event("Resend", self.send_packet), 10)
