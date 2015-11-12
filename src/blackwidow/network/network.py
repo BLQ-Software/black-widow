@@ -54,9 +54,9 @@ class Network():
         print self.devices
         print self.links
         print self.flows
-        pos = nx.spring_layout(g)
-        nx.draw_networkx_nodes(g, pos, nodelist=host_labels, node_size=700, node_color="blue")
-        nx.draw_networkx_nodes(g, pos, nodelist=router_labels, node_size=700, node_color="red")
+        pos = nx.graphviz_layout(g)
+        nx.draw_networkx_nodes(g, pos, nodelist=host_labels, node_size=800, node_color="blue")
+        nx.draw_networkx_nodes(g, pos, nodelist=router_labels, node_size=800, node_color="red")
         nx.draw_networkx_edges(g, pos, width=4, alpha=0.5, edge_color='black')
         nx.draw_networkx_labels(g, pos, font_size=20)
         nx.draw_networkx_edge_labels(g, pos, edge_labels)
@@ -99,7 +99,7 @@ class Network():
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
 
-        g.add_edge(device_id1, device_id2)
+        g.add_edge(device_id1, device_id2, len=str(delay))
         edge_labels[(device_id1, device_id2)] = link_id
 
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
