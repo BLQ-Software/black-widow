@@ -1,8 +1,8 @@
-from blackwidow.network.packet import AckPacket, DataPacket
-from event import Event
+from flow import Flow
 
-class Flow(object):
-    """Simple class for flows.
+class TahoeFlow(Flow):
+    """ Implements TCP Tahoe.
+    Adds Fast Retransmit
     Flows will trigger host behavior.
     Has slow start and congestion avoidance.
 
@@ -25,51 +25,9 @@ class Flow(object):
     def __init__(self, flow_id, source, destination, amount, env, time, bw):
         """ Constructor for Flow class
         """
-        self._flow_id = flow_id
-        self._src = source
-        self._dest = destination
-        self._amount = amount*8*10**6
-        self._pack_num = 0
-        self._cwnd = 1
-        self._ssthresh = 10
-        self._packets_sent = []
-        self._packets_time_out = []
-        self._acks_arrived = set()
-        self.env = env
-        self.bw = bw
-        self._flow_start = time*1000.0
-        self._last_packet = 0
-        self.env.add_event(Event("Start flow", self.send_packet), self._flow_start)
-
-    @property
-    def flow_id(self):
-        return self._flow_id
-
-    @flow_id.setter
-    def flow_id(self, value):
-        raise AttributeError("Cannot change flow id: {0}".format(self._flow_id))
-
-    @property
-    def src(self):
-        return self._src
-
-    @src.setter
-    def src(self, value):
-        raise AttributeError("Cannot change flow source: {0}".format(self._flow_id))
-
-    @property
-    def dest(self):
-        return self._dest
-
-    @dest.setter
-    def dest(self, value):
-        raise AttributeError("Cannot change flow destination: {0}".format(self._flow_id))
-
-
-
-    def __str__(self):
-        msg = "Flow {0}, sending from {1} to {2}"
-        return msg.format(self._flow_id, self._src.network_id, self._dest.network_id)
+        Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
+        self._packets_arrived = []
+        self._packets_arrived = range(0,((int)(self._amount/1024*8))+1) 
 
     def _send_ack(self, packet):
         """ Creates ack based for packet.
@@ -123,6 +81,8 @@ class Flow(object):
             print "Flow received packet {0}".format(packet.pack_id)
             if packet.pack_id not in self._acks_arrived:
                 self._send_ack(packet)
+            if packet.pack_id not in self._packets_arrived:
+                self._packets_arrived.add(packet.pack_id)
         else:
             if packet.pack_id not in self._acks_arrived:
                 self._respond_to_ack()
