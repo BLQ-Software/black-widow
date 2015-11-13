@@ -92,11 +92,12 @@ class DataPacket(Packet):
 class AckPacket(Packet):
     """Class for acknowledgement packets"""
 
-    def __init__(self, packet_id, src, dest, flow_id):
+    def __init__(self, packet_id, src, dest, flow_id, next_expected_id=0):
         """Constructor for AckPackets class"""
         super(AckPacket, self).__init__(packet_id, src, dest, flow_id)
         self._size = ACK_PACKET_SIZE
         self._is_ack = True
+        self.next_expected = next_expected_id
 
 class RoutingPacket(Packet):
     """Class for routing packets"""
