@@ -75,7 +75,6 @@ class TahoeFlow(Flow):
                 self._last_pack_rec = packet.next_expected
             # Fast retransmit/Fast recovery
             if self._counter == 3:
-                self._counter = 0
                 if len(self._packets_sent) > 4:
                     self._ssthresh = len(self._packets_sent)/2
                 else:
@@ -83,7 +82,7 @@ class TahoeFlow(Flow):
                 # Go back n
                 self._pack_num = packet.next_expected
                 # window inflation where ndup = 3
-                self._cwnd = self._ssthresh + 3
+                self._cwnd = self._ssthresh + self._counter
                 self.env.add_event(Event("Resend", self.send_packet), 10)
                 if packet.next_expected not in self._packets_time_out:
                     self._packets_time_out.append(packet.next_expected)
