@@ -80,6 +80,9 @@ class TahoeFlow(Flow):
                 self._pack_num = packet.next_expected
                 # window inflation where ndup = 3
                 self._cwnd = self._ssthresh + 3
+                self.env.add_event(Event("Resend", self.send_packet), 10)
+                if packet.next_expected not in self._packets_time_out:
+                    self._packets_time_out.append(packet.next_expected)
             if packet.pack_id not in self._acks_arrived:
                 self._respond_to_ack()
                 if packet.pack_id in self._packets_sent:
@@ -90,34 +93,3 @@ class TahoeFlow(Flow):
                 print "Flow {} received ack for packet {}".format(self._flow_id, packet.pack_id)
                 if len(self._packets_sent) + len(self._acks_arrived) == 0:
                     self.env.decrement_flows()
-
-    def _respond_to_ack(self):
-        """ Update window size.
-        """
-        self.env.add_event(Event("Send", self.send_packet), 0)
-        if self._cwnd < self._ssthresh:
-            self._cwnd = self._cwnd + 1
-        else:
-            self._cwnd = self._cwnd + 1.0/self._cwnd
-        print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')
-
-    def _timeout(self, pack_num):
-        """ Generate an ack or respond to bad packet.
-
-        Parameters
-        ----------
-        pack_num : `Packet`number
-            The packet number of the packet to check for timeout.
-
-        """
-        if pack_num not in self._acks_arrived:
-            self.env.add_event(Event("Resend", self.send_packet), 10)
-            # Go back n
-            if pack_num not in self._packets_time_out:
-                self._packets_time_out.append(pack_num)
-            self._pack_num = pack_num
-            self._ssthresh = self._cwnd/2
-            self._cwnd = 1
-            print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-            self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')
