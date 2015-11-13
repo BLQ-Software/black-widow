@@ -66,11 +66,6 @@ class TahoeFlow(Flow):
             if packet.next_expected == self._last_pack_rec:
                 self._counter = self._counter + 1
             else:
-                if self._counter >= 3:
-                    # window deflation on non-dup ACK
-                    self._cwnd = self._ssthresh
-                    print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
-                    self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
                 self._counter = 0
                 self._last_pack_rec = packet.next_expected
             # Fast retransmit/Fast recovery
@@ -81,8 +76,7 @@ class TahoeFlow(Flow):
                     self._ssthresh = 2
                 # Go back n
                 self._pack_num = packet.next_expected
-                # window inflation where ndup = 3
-                self._cwnd = self._ssthresh + self._counter
+                self._cwnd = self._ssthresh
                 self.env.add_event(Event("Resend", self.send_packet), 10)
                 if packet.next_expected not in self._packets_time_out:
                     self._packets_time_out.append(packet.next_expected)
