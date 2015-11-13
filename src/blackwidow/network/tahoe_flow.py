@@ -77,7 +77,7 @@ class TahoeFlow(Flow):
                     self._ssthresh = 2
                 # Go back n
                 self._pack_num = packet.next_expected
-                self._cwnd = self._ssthresh
+                self._cwnd = 1
                 self.env.add_event(Event("Resend", self.send_packet), 10)
                 if packet.next_expected not in self._packets_time_out:
                     self._packets_time_out.append(packet.next_expected)

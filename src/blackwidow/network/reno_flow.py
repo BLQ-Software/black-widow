@@ -97,3 +97,15 @@ class RenoFlow(Flow):
                 self._acks_arrived.add(packet.pack_id)
                 if len(self._packets_sent) + len(self._acks_arrived) == 0:
                     self.env.decrement_flows()
+
+    def _timeout(self, pack_num):
+        """ Generate an ack or respond to bad packet.
+
+        Parameters
+        ----------
+        pack_num : `Packet`number
+            The packet number of the packet to check for timeout.
+
+        """
+        Flow._timeout(pack_num)
+        self._cwnd = self.ssthresh
