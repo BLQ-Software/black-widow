@@ -2,9 +2,9 @@ from blackwidow.network.packet import AckPacket, DataPacket
 from event import Event
 from flow import Flow
 
-class TahoeFlow(Flow):
-    """ Implements TCP Tahoe.
-    Adds Fast Retransmit
+class RenoFlow(Flow):
+    """ Implements TCP Reno.
+    Adds Fast Retransmit and Fast Recovery
     Flows will trigger host behavior.
     Has slow start and congestion avoidance.
 
