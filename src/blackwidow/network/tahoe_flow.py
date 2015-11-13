@@ -39,7 +39,7 @@ class TahoeFlow(Flow):
             next_ack_expected = self._total_num_pack
             if len(self._packets_arrived) > 0:
                 next_ack_expected = self._packets_arrived[0]
-            ack_packet = AckPacket(next_ack_expected, packet.dest, packet.src, self._flow_id)
+            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, next_ack_expected)
             self._dest.send(ack_packet)
             print "Flow sent ack packet {0}".format(packet.pack_id)
         else:
@@ -56,11 +56,28 @@ class TahoeFlow(Flow):
         """
         if packet.dest == self._dest:
             print "Flow received packet {0}".format(packet.pack_id)
-            if packet.pack_id not in self._acks_arrived:
-                self._send_ack(packet)
             if packet.pack_id in self._packets_arrived:
                 self._packets_arrived.remove(packet.pack_id)
+            self._send_ack(packet)
         else:
+            if packet.next_expected == self._last_pack_rec:
+                self._counter = self._counter + 1
+            else:
+                if counter >= 3:
+                    # window deflation on non-dup ACK
+                    self._cwnd = self._ssthresh
+                self._counter = 0
+            # Fast retransmit/Fast recovery
+            if counter == 3:
+                self._counter = 0
+                if len(self._packets_sent) > 4:
+                    self._ssthresh = len(self._packets_sent)/2
+                else
+                    self._ssthresh = 2
+                # Go back n
+                self._pack_num = packet.next_expected
+                # window inflation where ndup = 3
+                self._cwnd = self._ssthresh + 3
             if packet.pack_id not in self._acks_arrived:
                 self._respond_to_ack()
                 if packet.pack_id in self._packets_sent:
