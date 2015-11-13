@@ -75,8 +75,8 @@ class RenoFlow(Flow):
                 self._last_pack_rec = packet.next_expected
             # Fast retransmit/Fast recovery
             if self._counter == 3:
-                if len(self._packets_sent) > 4:
-                    self._ssthresh = len(self._packets_sent)/2
+                if self._cwnd > 4:
+                    self._ssthresh = self._cwnd/2
                 else:
                     self._ssthresh = 2
                 # Go back n
