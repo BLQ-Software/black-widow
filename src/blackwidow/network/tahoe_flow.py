@@ -65,12 +65,12 @@ class TahoeFlow(Flow):
             # Check for duplicate acknowledgements
             if packet.next_expected == self._last_pack_rec:
                 self._counter = self._counter + 1
+            else:
                 if self._counter >= 3:
                     # window deflation on non-dup ACK
                     self._cwnd = self._ssthresh
                     print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
                     self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
-            else:
                 self._counter = 0
                 self._last_pack_rec = packet.next_expected
             # Fast retransmit/Fast recovery
