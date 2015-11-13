@@ -65,12 +65,12 @@ class TahoeFlow(Flow):
             if packet.next_expected == self._last_pack_rec:
                 self._counter = self._counter + 1
             else:
-                if counter >= 3:
+                if self._counter >= 3:
                     # window deflation on non-dup ACK
                     self._cwnd = self._ssthresh
                 self._counter = 0
             # Fast retransmit/Fast recovery
-            if counter == 3:
+            if self._counter == 3:
                 self._counter = 0
                 if len(self._packets_sent) > 4:
                     self._ssthresh = len(self._packets_sent)/2
