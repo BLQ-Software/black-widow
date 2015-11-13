@@ -1,3 +1,5 @@
+from blackwidow.network.packet import AckPacket, DataPacket
+from event import Event
 from flow import Flow
 
 class TahoeFlow(Flow):
@@ -72,7 +74,7 @@ class TahoeFlow(Flow):
                 self._counter = 0
                 if len(self._packets_sent) > 4:
                     self._ssthresh = len(self._packets_sent)/2
-                else
+                else:
                     self._ssthresh = 2
                 # Go back n
                 self._pack_num = packet.next_expected
