@@ -48,7 +48,7 @@ class BlackWidow(object):
         if 'show_verbose' in settings:
             self.real_time = settings['show_verbose']
 
-        self.data_dir = None
+        self.data_dir = './data'
         if 'data_dir' in settings:
             self.data_dir = settings['data_dir']
 
@@ -84,10 +84,6 @@ class BlackWidow(object):
 
         print "\nRunning network: \n"
         network.run()
-
-        #TODO: integrate graph (will graph if we produced log files).
-        #if self.log_file is not None:
-        #     graph.plot(self.log_file)
 
 
 
