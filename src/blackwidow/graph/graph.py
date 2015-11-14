@@ -33,20 +33,21 @@ window_size = window_size.astype(int)
 window_size_times = window_size[:,0]
 window_size = window_size[:,1]
 
+plt.figure(1)
+plt.subplot(211)
 plt.plot(window_size_times, window_size)
 
 
-"""
+
+
 # Determine the x-axis
 sim_time = 30000 
 t = np.arange(sim_time)
  
 # Plot the packet loss
+plt.subplot(212)
 plt.plot(t, packet_loss, markersize=5)
-plt.title('Packet loss over time')
 plt.xlabel('Time (ms)')
 plt.ylabel('Packet loss (pkts)')
 
 
-
-"""
