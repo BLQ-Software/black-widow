@@ -1,6 +1,7 @@
 import parser
 import graph
-from datetime import datetime
+import re
+import os
 
 class BlackWidow(object):
     """Runs simulation based on settings.
@@ -47,9 +48,21 @@ class BlackWidow(object):
         if 'show_verbose' in settings:
             self.real_time = settings['show_verbose']
 
+        self.data_dir = None
+        if 'data_dir' in settings:
+            self.data_dir = settings['data_dir']
+
         self.log_file = None
         if 'log_file' in settings:
-            self.log_file = settings['log_file'] + "_" + datetime.now().strftime("%m-%d-%Y_%H:%M")
+            # Regex to match old version of particular case.
+            regex = re.compile('{}.*'.format(settings['log_file']))
+            
+            for f in os.listdir(self.data_dir):
+                if regex.match(f) is not None:
+                    os.remove('{}/{}'.format(self.data_dir, f))
+                    
+
+            self.log_file = settings['log_file'] 
 
 
 
@@ -115,7 +128,8 @@ class BlackWidow(object):
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.
-            with open('{0}.{1}.csv'.format(self.log_file, data_type), 'a') as f:
+            with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file, 
+                                            data_type), 'a') as f:
                 f.write(data + '\n')
         elif self.show_verbose:
             print data
