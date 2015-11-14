@@ -31,7 +31,7 @@ class Flow(object):
         self._amount = amount*8*10**6
         self._pack_num = 0
         self._cwnd = 1
-        self._ssthresh = 40
+        self._ssthresh = 10000
         self._packets_sent = []
         self._packets_time_out = []
         self._acks_arrived = set()
