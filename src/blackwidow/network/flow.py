@@ -161,7 +161,7 @@ class Flow(object):
             if pack_num not in self._packets_time_out:
                 self._packets_time_out.append(pack_num)
             self._pack_num = pack_num
-            self._ssthresh = self._cwnd/2
+            self._ssthresh = self._cwnd / float(2)
             self._cwnd = 1
             print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
             self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
