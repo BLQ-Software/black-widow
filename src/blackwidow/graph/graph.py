@@ -18,6 +18,7 @@ cc_type = 'Fixed Window'
 packet_loss_path = '../data/case0_11-12-2015_21_14.link_L1.drop.csv'
 window_size_path = '../data/case0_11-12-2015_21_14.flowF1.window.csv'
 
+
 # Load in data
 packet_loss_times = np.genfromtxt(packet_loss_path)
 packet_loss_times = packet_loss_times.astype(int)
@@ -36,7 +37,8 @@ window_size = window_size[:,1]
 plt.figure(1)
 plt.subplot(211)
 plt.plot(window_size_times, window_size)
-
+plt.xlabel('time (ms)')
+plt.ylabel('window size (pkts)')
 
 
 
@@ -47,7 +49,7 @@ t = np.arange(sim_time)
 # Plot the packet loss
 plt.subplot(212)
 plt.plot(t, packet_loss, markersize=5)
-plt.xlabel('Time (ms)')
-plt.ylabel('Packet loss (pkts)')
+plt.xlabel('time (ms)')
+plt.ylabel('packet loss (pkts)')
 
 
