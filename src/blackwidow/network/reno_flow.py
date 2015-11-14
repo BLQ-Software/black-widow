@@ -70,7 +70,7 @@ class RenoFlow(Flow):
                     # window deflation on non-dup ACK
                     self._cwnd = self._ssthresh
                     print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
-                    self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
+                    self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
                 self._counter = 0
                 self._last_pack_rec = packet.next_expected
             # Fast retransmit/Fast recovery
@@ -87,7 +87,7 @@ class RenoFlow(Flow):
                 if packet.next_expected not in self._packets_time_out:
                     self._packets_time_out.append(packet.next_expected)
                 print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
-                self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
+                self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
             if packet.pack_id not in self._acks_arrived:
                 self._respond_to_ack()
                 if packet.pack_id in self._packets_sent:
