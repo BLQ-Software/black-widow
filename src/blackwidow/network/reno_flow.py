@@ -76,7 +76,7 @@ class RenoFlow(Flow):
             # Fast retransmit/Fast recovery
             if self._counter == 3:
                 if self._cwnd > 4:
-                    self._ssthresh = (float)self._cwnd/2
+                    self._ssthresh = self._cwnd/float(2)
                 else:
                     self._ssthresh = 2
                 # Go back n
