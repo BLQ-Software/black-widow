@@ -55,7 +55,7 @@ class BlackWidow(object):
         self.log_file = None
         if 'log_file' in settings:
             # Regex to match old version of particular case.
-            regex = re.compile('{}.*'.format(settings['log_file']))
+            regex = re.compile(r'{}\..*'.format(settings['log_file']))
             
             for f in os.listdir(self.data_dir):
                 if regex.match(f) is not None:
