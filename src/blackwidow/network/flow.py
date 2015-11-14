@@ -30,7 +30,7 @@ class Flow(object):
         self._dest = destination
         self._amount = amount*8*10**6
         self._pack_num = 0
-        self._cwnd = 1
+        self._cwnd = 1.0
         self._ssthresh = 10000
         self._packets_sent = []
         self._packets_time_out = []
@@ -140,7 +140,7 @@ class Flow(object):
         """
         self.env.add_event(Event("Send", self.send_packet), 10)
         if self._cwnd < self._ssthresh:
-            self._cwnd = self._cwnd + 1
+            self._cwnd = self._cwnd + 1.0
         else:
             self._cwnd = self._cwnd + 1.0/self._cwnd
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
@@ -162,6 +162,6 @@ class Flow(object):
                 self._packets_time_out.append(pack_num)
             self._pack_num = pack_num
             self._ssthresh = self._cwnd / float(2)
-            self._cwnd = 1
+            self._cwnd = 1.0
             print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
             self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow{0}.window'.format(self.flow_id))
