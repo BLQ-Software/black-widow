@@ -141,7 +141,7 @@ class Link(object):
     def _release(self):
         packet, source_id, time = self._release_into_link_buffer.pop()
         self._size -= packet.size
-        self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'linnk_{0}.buffer'.format(self._id))
+        self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'link_{0}.buffer'.format(self._id))
 
         # Figure out which device to send to
         if (source_id == self._device_a.network_id):
