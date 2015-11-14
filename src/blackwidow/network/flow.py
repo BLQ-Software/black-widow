@@ -90,7 +90,7 @@ class Flow(object):
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 2000)
+                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
                 # Shouldn't subtract pack.size if sent before.
                 if (self._pack_num not in self._packets_sent) and (self._pack_num not in self._acks_arrived):
                     self._amount = self._amount - pack.size
