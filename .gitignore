@@ -8,6 +8,9 @@
 # Sphinx
 docs/build
 
+# Data
+*.csv
+
 # Precompiled Headers
 *.gch
 *.pch
