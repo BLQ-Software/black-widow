@@ -104,8 +104,7 @@ class Router(Device):
                 route_changed = True
 
         if route_changed:
-            self.env.add_event(Event('{} sent routing packet'.format(self._network_id),
-                               self.send_routing), 0)
+            self.send_routing()
 
     def _distance(self, link):
         """Get the distance from the link."""
