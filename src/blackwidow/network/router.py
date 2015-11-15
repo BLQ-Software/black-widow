@@ -51,14 +51,16 @@ class Router(Device):
 
     def start_new_routing(self):
         """Start a new routing round."""
-        # Reset routing table.
-        self._routing_table = {}
-        for link in self._links:
-            network_id = link._device_a.network_id
-            if (network_id == self._network_id):
-                network_id = link._device_b.network_id
-            self._routing_table[network_id] = {'link': link, 'distance': self._distance(link)}
+        # Reset routing table if dynamic routing.
+        if not self.bw.static_routing:
+            self._routing_table = {}
+            for link in self._links:
+                network_id = link._device_a.network_id
+                if (network_id == self._network_id):
+                    network_id = link._device_b.network_id
+                self._routing_table[network_id] = {'link': link, 'distance': self._distance(link)}
 
+        
         self.send_routing()
 
         if self.env.time < 150000: 
@@ -75,7 +77,7 @@ class Router(Device):
                 other_device = link.device_b
             packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
                                    other_device.network_id, None,
-                                   self._routing_table)
+                                   self._routing_table, self.bw.routing_packet)
             link.receive(packet, self._network_id)
             print "Sent routing packet from {}".format(self._network_id)
 
