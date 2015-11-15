@@ -19,13 +19,14 @@ if __name__ == "__main__":
                         help='whether to graph in real time')
     parser.add_argument('-s', '--static-routing', action='store_true',
                         help='uses static routing instead of dynamic routing.')
-    parser.add_argument('-rp', '--routing-packet', type=int,
+    parser.add_argument('-rp', '--routing-packet-size', type=int,
                         help='Sets the size of the routing packet')
     
 
     # Dictionary of alternative settings.
     # Default settings should be set in the BlackWidow class.
     settings = vars(parser.parse_args())
+
     # Iterate through config files specified.
     for f in settings['files']:
         # Make default log_file name the input name without ext. 

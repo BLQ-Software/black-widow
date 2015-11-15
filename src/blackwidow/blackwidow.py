@@ -67,10 +67,10 @@ class BlackWidow(object):
             self.data_dir = settings['data_dir']
 
 
-        self.routing_packet = 32 * 8
-        if ('routing_packet' in settings and 
-                settings['routing_packet'] is not None):
-            self.routing_packet = settings['routing_packet']
+        self.routing_packet_size = 32 * 8
+        if ('routing_packet_size' in settings and 
+                settings['routing_packet_size'] is not None):
+            self.routing_packet_size = settings['routing_packet_size']
 
 
         self.log_file = None

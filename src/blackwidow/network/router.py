@@ -76,8 +76,8 @@ class Router(Device):
 
                 other_device = link.device_b
             packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
-                                   other_device.network_id, None,
-                                   self._routing_table, self.bw.routing_packet)
+                                   other_device.network_id, None, 
+                                   self._routing_table, self.bw.routing_packet_size)
             link.receive(packet, self._network_id)
             print "Sent routing packet from {}".format(self._network_id)
 
