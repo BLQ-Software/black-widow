@@ -8,6 +8,8 @@ import os.path
 from blackwidow import BlackWidow 
 
 if __name__ == "__main__":
+
+    # Configure argument parser
     parser = argparse.ArgumentParser(description='Run a TCP network simulation.')
     parser.add_argument('files', metavar='config_file', type=str, nargs='+',
                         help='name of file to process. e.g. case0.json')
@@ -20,10 +22,10 @@ if __name__ == "__main__":
     parser.add_argument('-rp', '--routing-packet', type=int,
                         help='Sets the size of the routing packet')
     
+
     # Dictionary of alternative settings.
     # Default settings should be set in the BlackWidow class.
     settings = vars(parser.parse_args())
-    
     # Iterate through config files specified.
     for f in settings['files']:
         # Make default log_file name the input name without ext. 
