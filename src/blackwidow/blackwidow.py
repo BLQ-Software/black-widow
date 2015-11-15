@@ -39,18 +39,39 @@ class BlackWidow(object):
     >>> bw = BlackWidow(settings)
     >>> bw.run()
     """
-    def __init__(self, settings):
+    def __init__(self, settings={}):
+        """Initializes settings fields.
+        
+        settings is a dictionary generated from the argsparse arguments,
+        with some extra options added in.
+        """
+        self._settings = settings
+        
         self.real_time = False # Default setting
         if 'real_time' in settings:
             self.real_time = settings['real_time'] # Override default
 
+
         self.show_verbose = False
         if 'show_verbose' in settings:
-            self.real_time = settings['show_verbose']
+            self.show_verbose = settings['show_verbose']
+        
+
+        self.static_routing = False
+        if 'static_routing' in settings:
+            self.static_routing = settings['static_routing']
+
 
         self.data_dir = './data'
         if 'data_dir' in settings:
             self.data_dir = settings['data_dir']
+
+
+        self.routing_packet = 32 * 8
+        if ('routing_packet' in settings and 
+                settings['routing_packet'] is not None):
+            self.routing_packet = settings['routing_packet']
+
 
         self.log_file = None
         if 'log_file' in settings:
@@ -60,10 +81,11 @@ class BlackWidow(object):
             for f in os.listdir(self.data_dir):
                 if regex.match(f) is not None:
                     os.remove('{}/{}'.format(self.data_dir, f))
-                    
 
             self.log_file = settings['log_file'] 
 
+
+        
 
 
     def run(self, file_name):
@@ -83,7 +105,7 @@ class BlackWidow(object):
         network.dump()
 
         print "\nRunning network: \n"
-        network.run()
+        return network.run()
 
 
 

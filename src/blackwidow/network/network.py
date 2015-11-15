@@ -125,3 +125,6 @@ class Network():
             print "{0} at time {1}".format(str(current_event), time)
             self._time = time
             current_event.run()
+
+        # Return end time.
+        return self._time 
