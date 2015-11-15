@@ -107,6 +107,11 @@ class Router(Device):
 
     def _distance(self, link):
         """Get the distance from the link."""
-        return link.delay + link.get_buffer_size() / float(link.rate)
+        distance = link.delay + link.get_buffer_size() / float(link.rate)
+        
+        if self.bw.static_routing:
+            distance = link.delay
+        
+        return distance
 
 
