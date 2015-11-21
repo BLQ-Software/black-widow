@@ -2,6 +2,8 @@ from host import Host
 from router import Router
 from link import Link
 from flow import Flow
+from tahoe_flow import TahoeFlow
+from reno_flow import RenoFlow
 from Queue import PriorityQueue
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -103,15 +105,17 @@ class Network():
         self.g.add_edge(device_id1, device_id2, len=str(delay))
         self.edge_labels[(device_id1, device_id2)] = link_id
 
-    def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
+
+    def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start, bw):
+        
         device_1 = self.devices[flow_src]
         device_2 = self.devices[flow_dest]
 
         self.num_flows_active += 1
 
 
-        flow = Flow(flow_id, device_1, device_2, data_amt,
-                        self, flow_start)
+        flow = RenoFlow(flow_id, device_1, device_2, data_amt,
+                        self, flow_start, bw)
         self.flows[flow_id] = flow
 
         device_1.add_flow(flow)
@@ -138,8 +142,7 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        if self.num_flows_active != 0:
-            self._events.put((self._time + delay, event))
+        self._events.put((self._time + delay, event))
 
     def run(self):
 
@@ -150,3 +153,6 @@ class Network():
             print "{0} at time {1}".format(str(current_event), time)
             self._time = time
             current_event.run()
+
+        # Return end time.
+        return self._time

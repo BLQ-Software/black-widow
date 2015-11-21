@@ -1,6 +1,7 @@
 import parser
 import graph
-from datetime import datetime
+import re
+import os
 
 class BlackWidow(object):
     """Runs simulation based on settings.
@@ -38,19 +39,53 @@ class BlackWidow(object):
     >>> bw = BlackWidow(settings)
     >>> bw.run()
     """
-    def __init__(self, settings):
+    def __init__(self, settings={}):
+        """Initializes settings fields.
+        
+        settings is a dictionary generated from the argsparse arguments,
+        with some extra options added in.
+        """
+        self._settings = settings
+        
         self.real_time = False # Default setting
         if 'real_time' in settings:
             self.real_time = settings['real_time'] # Override default
 
+
         self.show_verbose = False
         if 'show_verbose' in settings:
-            self.real_time = settings['show_verbose']
+            self.show_verbose = settings['show_verbose']
+        
+
+        self.static_routing = False
+        if 'static_routing' in settings:
+            self.static_routing = settings['static_routing']
+
+
+        self.data_dir = './data'
+        if 'data_dir' in settings:
+            self.data_dir = settings['data_dir']
+
+
+        self.routing_packet_size = 32 * 8
+        if ('routing_packet_size' in settings and 
+                settings['routing_packet_size'] is not None):
+            self.routing_packet_size = settings['routing_packet_size']
+
 
         self.log_file = None
         if 'log_file' in settings:
-            self.log_file = settings['log_file'] + "_" + datetime.now().strftime("%m-%d-%Y_%H:%M")
+            # Regex to match old version of particular case.
+            regex = re.compile(r'{}\..*'.format(settings['log_file']))
+            
+            for f in os.listdir(self.data_dir):
+                if regex.match(f) is not None:
+                    os.remove('{}/{}'.format(self.data_dir, f))
 
+            self.log_file = settings['log_file'] 
+
+
+        
 
 
     def run(self, file_name):
@@ -70,11 +105,7 @@ class BlackWidow(object):
         network.dump()
 
         print "\nRunning network: \n"
-        network.run()
-
-        #TODO: integrate graph (will graph if we produced log files).
-        #if self.log_file is not None:
-        #     graph.plot(self.log_file)
+        return network.run()
 
 
 
@@ -115,7 +146,8 @@ class BlackWidow(object):
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.
-            with open('{0}.{1}.csv'.format(self.log_file, data_type), 'a') as f:
+            with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file, 
+                                            data_type), 'a') as f:
                 f.write(data + '\n')
         elif self.show_verbose:
             print data

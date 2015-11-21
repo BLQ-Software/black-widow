@@ -1,5 +1,6 @@
 from device import Device
 from packet import RoutingPacket
+from event import Event
 
 ROUTING_PKT_ID = 'Routing Packet'
 
@@ -9,6 +10,7 @@ class Router(Device):
     Routers are responsible for initializing and updating their
     routing table, and sending packets based on their routing table.
     """
+    
 
     def __init__(self, router_id, env, bw):
         """Constructor for Router class."""
@@ -16,6 +18,8 @@ class Router(Device):
         self.env = env
         self.bw = bw
         self._routing_table = {}
+        self.env.add_event(Event('{} sent routing packet'.format(self._network_id), 
+                                 self.start_new_routing), 0)
 
     def add_link(self, link):
         """Overrides Device.add_link() ."""
@@ -26,7 +30,7 @@ class Router(Device):
         if (network_id == self._network_id):
             network_id = link._device_b.network_id
 
-        self._routing_table[network_id] = {'link': link, 'distance': link._delay }
+        self._routing_table[network_id] = {'link': link, 'distance': self._distance(link)}
 
     def send(self, packet):
         """Send packet to appropriate link."""
@@ -45,6 +49,25 @@ class Router(Device):
         else:
             self.send(packet)
 
+    def start_new_routing(self):
+        """Start a new routing round."""
+        # Reset routing table if dynamic routing.
+        if not self.bw.static_routing:
+            self._routing_table = {}
+            for link in self._links:
+                network_id = link._device_a.network_id
+                if (network_id == self._network_id):
+                    network_id = link._device_b.network_id
+                self._routing_table[network_id] = {'link': link, 'distance': self._distance(link)}
+
+        
+        self.send_routing()
+
+        if self.env.time < 150000: 
+            self.env.add_event(Event('{} reset its routing table.'.format(self._network_id),
+                               self.start_new_routing), 5000)
+
+
     def send_routing(self):
         """Send routing packets to all neighbors."""
         for link in self._links:
@@ -53,15 +76,14 @@ class Router(Device):
 
                 other_device = link.device_b
             packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
-                                   other_device.network_id, None,
-                                   self._routing_table)
+                                   other_device.network_id, None, 
+                                   self._routing_table, self.bw.routing_packet_size)
             link.receive(packet, self._network_id)
             print "Sent routing packet from {}".format(self._network_id)
 
 
     def update_route(self, packet):
         """Update routing table."""
-        # TODO: Add Dijkstra's algorithm.
         link = None
         if packet.src in self._routing_table:
             route = self._routing_table[packet.src]
@@ -71,9 +93,26 @@ class Router(Device):
             raise ValueError('{} not found in {} \'s routing table.'.format(
                                 packet.src, self._network_id))
 
+        route_changed = False
         for dest, route in packet.routing_table.items():
-            distance = route['distance'] + link._delay
+            distance = route['distance'] + self._distance(link)
             if dest not in self._routing_table:
                 self._routing_table[dest] = {'link': link, 'distance': distance}
+                route_changed = True
             elif distance < self._routing_table[dest]['distance']:
                 self._routing_table[dest] = {'link': link, 'distance': distance}
+                route_changed = True
+
+        if route_changed:
+            self.send_routing()
+
+    def _distance(self, link):
+        """Get the distance from the link."""
+        distance = link.delay + link.get_buffer_size() / float(link.rate)
+        
+        if self.bw.static_routing:
+            distance = link.delay
+        
+        return distance
+
+

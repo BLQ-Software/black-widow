@@ -109,8 +109,9 @@ class Link(object):
         # The buffer is not yet full, so enqueue the packet
         if self._size + packet.size < self._capacity:
             self._release_into_link_buffer.appendleft(
-                [packet, source_id])
+                [packet, source_id, self.env.time])
             self._size += packet.size
+            self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'link_{0}.buffer'.format(self._id))
             print "Current size of link {}: {}".format(self._id, self._size)
 
             # If we only have one packet in the buffer, send it with no delay
@@ -121,7 +122,7 @@ class Link(object):
         # The buffer is full
         else:
             print "Packet dropped."
-            self.bw.record('{0}'.format(self.env.time), 'drop')
+            self.bw.record('{0}'.format(self.env.time), 'link_{0}.drop'.format(self._id))
 
 
     def _send(self):
@@ -138,8 +139,9 @@ class Link(object):
 
 
     def _release(self):
-        packet, source_id = self._release_into_link_buffer.pop()
+        packet, source_id, time = self._release_into_link_buffer.pop()
         self._size -= packet.size
+        self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'link_{0}.buffer'.format(self._id))
 
         # Figure out which device to send to
         if (source_id == self._device_a.network_id):
@@ -152,7 +154,8 @@ class Link(object):
             msg += "ACK "
         msg += "packet {1}"
         self.env.add_event(Event(msg.format(self._id, packet.pack_id), f, packet=packet), self._delay)
-        self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link.sent')
+        self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link_{0}.sent'.format(self._id))
+        self.bw.record('{0}, {1}'.format(self.env.time, float(packet.size) / (self.env.time - time + self._delay)), 'link_{0}.rate'.format(self._id))
 
         if len(self._release_into_link_buffer) > 0:
             packet_info = self._release_into_link_buffer[-1]
@@ -168,3 +171,10 @@ class Link(object):
                 msg += "ACK "
             msg += "packet {1}"
             self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self._send), delay)
+
+    def get_buffer_size(self):
+        """Returns the buffer size in bits."""
+        total_size = 0
+        for packet, source_id, time in self._release_into_link_buffer:
+            total_size += packet.size
+        return total_size
