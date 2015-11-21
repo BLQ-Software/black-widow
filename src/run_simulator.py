@@ -8,6 +8,8 @@ import os.path
 from blackwidow import BlackWidow 
 
 if __name__ == "__main__":
+
+    # Configure argument parser
     parser = argparse.ArgumentParser(description='Run a TCP network simulation.')
     parser.add_argument('files', metavar='config_file', type=str, nargs='+',
                         help='name of file to process. e.g. case0.json')
@@ -15,23 +17,20 @@ if __name__ == "__main__":
                         help='whether to print verbose statements')
     parser.add_argument('-r', '--real-time', action='store_true',
                         help='whether to graph in real time')
+    parser.add_argument('-s', '--static-routing', action='store_true',
+                        help='uses static routing instead of dynamic routing.')
+    parser.add_argument('-rp', '--routing-packet-size', type=int,
+                        help='Sets the size of the routing packet')
     
-    args = vars(parser.parse_args())
 
     # Dictionary of alternative settings.
     # Default settings should be set in the BlackWidow class.
-    settings = {}
-
-    if 'real_time' in args and args['real_time']:
-        settings['real_time'] = True 
-
-    if 'verbose' in args and args['verbose']:
-        settings['verbose'] = True
+    settings = vars(parser.parse_args())
 
     # Iterate through config files specified.
-    for f in args['files']:
+    for f in settings['files']:
         # Make default log_file name the input name without ext. 
-        if 'real_time' not in settings:
+        if not settings['real_time']:
             base = os.path.basename(f)
             settings['log_file'] = os.path.splitext(base)[0]
 

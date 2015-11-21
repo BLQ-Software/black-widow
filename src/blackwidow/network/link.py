@@ -171,3 +171,10 @@ class Link(object):
                 msg += "ACK "
             msg += "packet {1}"
             self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self._send), delay)
+
+    def get_buffer_size(self):
+        """Returns the buffer size in bits."""
+        total_size = 0
+        for packet, source_id, time in self._release_into_link_buffer:
+            total_size += packet.size
+        return total_size
