@@ -3,8 +3,6 @@ import cmd
 from blackwidow import BlackWidow
 from blackwidow.network import *
 
-bw = None
-network = None
 
 class BlackWidowInteractive(cmd.Cmd):
 
@@ -23,7 +21,7 @@ class BlackWidowInteractive(cmd.Cmd):
             print "*** invalid number of arguments"
             return
         try:
-            self.network.add_router(args[0], bw)
+            self.network.add_router(args[0], self.bw)
         except Exception as e:
             print e
 
@@ -44,8 +42,7 @@ class BlackWidowInteractive(cmd.Cmd):
             return
 
         try:
-            args.append(self.bw)
-            self.network.add_link(*args)
+            self.network.add_link(args[0], args[1], args[2], float(args[3]), float(args[4]), float(args[5]), self.bw)
         except Exception as e:
             print e
 
@@ -55,8 +52,7 @@ class BlackWidowInteractive(cmd.Cmd):
             print "*** invalid number of arguments"
             return
         try:
-            args.append(self.bw)
-            self.network.add_flow(*args)
+            self.network.add_flow(args[0], args[1], args[2], float(args[3]), float(args[4]), self.bw)
         except AttributeError:
             print "*** network must be created first"
 
@@ -64,12 +60,15 @@ class BlackWidowInteractive(cmd.Cmd):
         self.network.dump(self.filename)
         os.system("dot -T png -Gdpi=3000 {0} > {1}.png ; open {1}.png".format(self.filename, self.filename[0:-4]))
 
+    def do_run(self, line):
+        self.bw.run_network(self.network)
+
 
     def do_EOF(self, line):
         print
         return True
 
 if __name__ == '__main__':
-    bw = BlackWidowInteractive()
-    bw.prompt = "(blackwidow) "
-    bw.cmdloop(intro="Welcome to BlackWidow")
+    b = BlackWidowInteractive()
+    b.prompt = "(blackwidow) "
+    b.cmdloop(intro="Welcome to BlackWidow")
