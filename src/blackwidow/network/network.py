@@ -127,4 +127,4 @@ class Network():
             current_event.run()
 
         # Return end time.
-        return self._time 
+        return self._time
