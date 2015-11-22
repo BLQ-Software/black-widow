@@ -62,8 +62,8 @@ class BlackWidowInteractive(cmd.Cmd):
             return
         try:
             self.network.add_flow(args[0], args[1], args[2], float(args[3]), float(args[4]), self.bw)
-        except AttributeError:
-            print "*** network must be created first"
+        except Exception as e:
+            print e
 
     def do_show_network(self, line):
         d = self.network.dump(self.filename + ".dot")
