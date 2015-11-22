@@ -74,6 +74,7 @@ class BlackWidowInteractive(cmd.Cmd):
         sio.seek(0)
 
         image = mpimg.imread(sio)
+        plt.axis('off')
         plt.imshow(image)
         plt.show()
 
@@ -84,7 +85,8 @@ class BlackWidowInteractive(cmd.Cmd):
         args = line.split()
         if len(args) != 1:
             print "*** invalid number of arguments"
-        self.dpi = dpi
+            return
+        self.dpi = args[0]
 
 
     def do_EOF(self, line):
