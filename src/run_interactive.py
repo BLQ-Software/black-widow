@@ -34,4 +34,4 @@ class BlackWidowInteractive(cmd.Cmd):
 if __name__ == '__main__':
     bw = BlackWidowInteractive()
     bw.prompt = "(blackwidow) "
-    bw.cmdloop()
+    bw.cmdloop(intro="Welcome to BlackWidow")

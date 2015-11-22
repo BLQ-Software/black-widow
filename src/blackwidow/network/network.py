@@ -33,7 +33,7 @@ class Network():
         self._time = 0
         self._events = PriorityQueue()
         self.num_flows_active = 0
-        self.g = nx.Graph()
+        self.g = nx.MultiDiGraph()
         self.edge_labels = {}
         self.router_labels = []
         self.host_labels = []
@@ -51,20 +51,13 @@ class Network():
         if obj_id in self.ids:
             raise ValueError('id {0} already exists.'.format(obj_id))
 
-    def dump(self):
+    def dump(self, filename):
         """Prints out network"""
 
         print self.devices
         print self.links
         print self.flows
-        pos = nx.graphviz_layout(self.g)
-        nx.draw_networkx_nodes(self.g, pos, nodelist=self.host_labels, node_size=800, node_color="blue")
-        nx.draw_networkx_nodes(self.g, pos, nodelist=self.router_labels, node_size=800, node_color="red")
-        nx.draw_networkx_edges(self.g, pos, width=4, alpha=0.5, edge_color='black')
-        nx.draw_networkx_labels(self.g, pos, font_size=20)
-        nx.draw_networkx_edge_labels(self.g, pos, self.edge_labels)
-        plt.draw()
-        plt.show()
+        nx.write_dot(self.g, filename)
 
     def add_host(self, host_id):
         """Construct host and add to dictionary of hosts."""
@@ -102,12 +95,12 @@ class Network():
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
 
-        self.g.add_edge(device_id1, device_id2, len=str(delay))
+        self.g.add_edge(device_id1, device_id2, label=link_id, len=str(delay))
         self.edge_labels[(device_id1, device_id2)] = link_id
 
 
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start, bw):
-        
+
         device_1 = self.devices[flow_src]
         device_2 = self.devices[flow_dest]
 
@@ -120,7 +113,7 @@ class Network():
 
         device_1.add_flow(flow)
         device_2.add_flow(flow)
-
+        self.g.add_edge(flow_src, flow_dest, label=flow_id)
 
 
         self.ids.append(flow_id)
