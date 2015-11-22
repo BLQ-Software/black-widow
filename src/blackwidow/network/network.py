@@ -57,7 +57,7 @@ class Network():
         print self.devices
         print self.links
         print self.flows
-        nx.write_dot(self.g, filename)
+        return nx.to_pydot(self.g)
 
     def add_host(self, host_id):
         """Construct host and add to dictionary of hosts."""
@@ -95,7 +95,7 @@ class Network():
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
 
-        self.g.add_edge(device_id1, device_id2, label=link_id, len=str(delay))
+        self.g.add_edge(device_id1, device_id2, label=link_id, dir="none", len=str(delay))
         self.edge_labels[(device_id1, device_id2)] = link_id
 
 

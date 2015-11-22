@@ -1,7 +1,15 @@
 import os
 import cmd
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 from blackwidow import BlackWidow
 from blackwidow.network import *
+
+from cStringIO import StringIO
+
+plt.ion()
 
 
 class BlackWidowInteractive(cmd.Cmd):
@@ -11,9 +19,10 @@ class BlackWidowInteractive(cmd.Cmd):
         if len(args) == 1:
             self.filename = args[0]
         else:
-            self.filename = "test.dot"
+            self.filename = "test"
         self.network = Network()
         self.bw = BlackWidow()
+        self.dpi = "300"
 
     def do_add_router(self, line):
         args = line.split()
@@ -57,11 +66,25 @@ class BlackWidowInteractive(cmd.Cmd):
             print "*** network must be created first"
 
     def do_show_network(self, line):
-        self.network.dump(self.filename)
-        os.system("dot -T png -Gdpi=3000 {0} > {1}.png ; open {1}.png".format(self.filename, self.filename[0:-4]))
+        d = self.network.dump(self.filename + ".dot")
+        d.set_dpi(self.dpi)
+        png_str = d.create_png()
+        sio = StringIO()
+        sio.write(png_str)
+        sio.seek(0)
+
+        image = mpimg.imread(sio)
+        plt.imshow(image)
+        plt.show()
 
     def do_run(self, line):
         self.bw.run_network(self.network)
+
+    def do_set_dpi(self, line):
+        args = line.split()
+        if len(args) != 1:
+            print "*** invalid number of arguments"
+        self.dpi = dpi
 
 
     def do_EOF(self, line):
@@ -71,4 +94,5 @@ class BlackWidowInteractive(cmd.Cmd):
 if __name__ == '__main__':
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
+    b.do_create_network("")
     b.cmdloop(intro="Welcome to BlackWidow")
