@@ -33,6 +33,7 @@ class RenoFlow(TahoeFlow):
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._last_pack_rec = -1
         self._counter = 0
+        self._timeout = 3000
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -75,12 +76,4 @@ class RenoFlow(TahoeFlow):
                     self._packets_time_out.append(packet.next_expected)
                 print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
                 self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
-            if packet.pack_id not in self._acks_arrived:
-                self._respond_to_ack()
-                if packet.pack_id in self._packets_sent:
-                    self._packets_sent.remove(packet.pack_id)
-                if packet.pack_id in self._packets_time_out:
-                    self._packets_time_out.remove(packet.pack_id)
-                self._acks_arrived.add(packet.pack_id)
-                if len(self._packets_sent) + len(self._acks_arrived) == 0:
-                    self.env.decrement_flows()
+            self._receive_ack(packet)

@@ -87,7 +87,7 @@ class Network():
         self.num_flows_active += 1
 
 
-        flow = RenoFlow(flow_id, device_1, device_2, data_amt,
+        flow = TahoeFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
         self.flows[flow_id] = flow
 
@@ -122,7 +122,7 @@ class Network():
         # enqueued by the flows when they are initialized.
         while not self._events.empty() and self.num_flows_active != 0:
             (time, current_event) = self._events.get()
-            print "{0} at time {1}".format(str(current_event), time)
+            print "{0} at time {1} with {2} flows active".format(str(current_event), time, self.num_flows_active)
             self._time = time
             current_event.run()
 

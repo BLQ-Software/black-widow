@@ -35,12 +35,13 @@ class TahoeFlow(Flow):
         self._counter = 0
 
     def _send_ack(self, packet):
-        """ Creates ack based for packet.
+        """ Creates ack for packet.
         """
         if self._src == packet.src and self._dest == packet.dest:
-            next_ack_expected = self._total_num_pack
             if len(self._packets_arrived) > 0:
                 next_ack_expected = self._packets_arrived[0]
+            else:
+                next_ack_expected = self._total_num_pack
             ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, next_ack_expected)
             self._dest.send(ack_packet)
             print "Flow sent ack packet {0}".format(packet.pack_id)
@@ -62,33 +63,4 @@ class TahoeFlow(Flow):
                 self._packets_arrived.remove(packet.pack_id)
             self._send_ack(packet)
         else:
-            # Check for duplicate acknowledgements
-            if packet.next_expected == self._last_pack_rec:
-                self._counter = self._counter + 1
-            else:
-                self._counter = 0
-                self._last_pack_rec = packet.next_expected
-            # Fast retransmit/Fast recovery
-            if self._counter == 3:
-                # flightsize = num packets sent and waiting for ack 
-                if len(self._packets_sent) > 4:
-                    self._ssthresh = len(self._packets_sent)/2
-                else:
-                    self._ssthresh = 2
-                # Go back n
-                self._pack_num = packet.next_expected
-                self._cwnd = 1
-                self.env.add_event(Event("Resend", self.send_packet), 10)
-                if packet.next_expected not in self._packets_time_out:
-                    self._packets_time_out.append(packet.next_expected)
-                print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
-                self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
-            if packet.pack_id not in self._acks_arrived:
-                self._respond_to_ack()
-                if packet.pack_id in self._packets_sent:
-                    self._packets_sent.remove(packet.pack_id)
-                if packet.pack_id in self._packets_time_out:
-                    self._packets_time_out.remove(packet.pack_id)
-                self._acks_arrived.add(packet.pack_id)
-                if len(self._packets_sent) + len(self._acks_arrived) == 0:
-                    self.env.decrement_flows()
+            self._receive_ack(packet)
