@@ -28,7 +28,7 @@ class RenoFlow(TahoeFlow):
         """ Constructor for Flow class
         """
         TahoeFlow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
-        self._ms_before_timeout = 1000
+        self._ms_before_timeout = 10000
         self._ssthresh = 100
         self._packets_arrived = []
         self._packets_arrived = range(0,(int)(self._amount/(1024*8))) 
@@ -72,9 +72,9 @@ class RenoFlow(TahoeFlow):
                 self._pack_num = packet.next_expected
                 # window inflation where ndup = 3
                 self._cwnd = self._ssthresh + self._counter
-                self.env.add_event(Event("Resend", self.send_packet), 10)
                 if packet.next_expected not in self._packets_time_out:
                     self._packets_time_out.append(packet.next_expected)
+                self.env.add_event(Event("Resend", self.send_packet), 100)
                 print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
                 self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
             self._receive_ack(packet)

@@ -148,7 +148,7 @@ class Flow(object):
     def _respond_to_ack(self):
         """ Update window size.
         """
-        self.env.add_event(Event("Send", self.send_packet), 10)
+        self.env.add_event(Event("Send", self.send_packet), 100)
         if self._cwnd < self._ssthresh:
             self._cwnd = self._cwnd + 1.0
         else:

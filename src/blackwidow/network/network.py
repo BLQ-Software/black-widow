@@ -87,7 +87,7 @@ class Network():
         self.num_flows_active += 1
 
 
-        flow = TahoeFlow(flow_id, device_1, device_2, data_amt,
+        flow = RenoFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
         self.flows[flow_id] = flow
 
