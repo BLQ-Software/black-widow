@@ -28,12 +28,13 @@ class RenoFlow(TahoeFlow):
         """ Constructor for Flow class
         """
         TahoeFlow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
+        self._ms_before_timeout = 1000
+        self._ssthresh = 100
         self._packets_arrived = []
         self._packets_arrived = range(0,(int)(self._amount/(1024*8))) 
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._last_pack_rec = -1
         self._counter = 0
-        self._timeout = 3000
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.

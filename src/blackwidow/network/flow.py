@@ -29,6 +29,7 @@ class Flow(object):
         self._src = source
         self._dest = destination
         self._amount = amount*8*10**6
+        self._ms_before_timeout = 1000
         self._pack_num = 0
         self._cwnd = 1.0
         self._ssthresh = 100
@@ -91,7 +92,7 @@ class Flow(object):
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                    self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
+                    self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
                     # Shouldn't subtract pack.size if sent before.
                     if (self._pack_num not in self._packets_sent):
                         self._amount = self._amount - pack.size
@@ -109,7 +110,7 @@ class Flow(object):
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
+                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
