@@ -1,6 +1,8 @@
 from collections import deque
 from event import Event
 
+HALF_DUPLEX = True
+
 class Link(object):
     """Simulates a link connected to two Devices in the network.
 
@@ -162,7 +164,7 @@ class Link(object):
             next_packet = packet_info[0]
             next_source_id = packet_info[1]
 
-            if next_source_id != source_id:
+            if next_source_id != source_id and HALF_DUPLEX:
                 delay = self._delay
             else:
                 delay = 0
