@@ -51,12 +51,15 @@ class Network():
         if obj_id in self.ids:
             raise ValueError('id {0} already exists.'.format(obj_id))
 
-    def dump(self, filename):
+    def dump(self, output=False):
         """Prints out network"""
-
-        print self.devices
-        print self.links
-        print self.flows
+        if output:
+            print "Devices:\n"
+            for device_id in self.devices:
+                print self.devices[device_id]
+            print "Flows:\n"
+            for flow_id in self.flows:
+                print self.flows[flow_id]
         return nx.to_pydot(self.g)
 
     def add_host(self, host_id):
@@ -75,6 +78,20 @@ class Network():
         self.ids.append(router_id)
         self.g.add_node(router_id)
         self.router_labels.append(router_id)
+
+    def delete_device(self, device_id):
+        device = self.devices[device_id]
+        for link in device.links:
+            self.delete_link(link.id)
+        try:
+            for flow in devices.flows:
+                self.delete_flow(flow.flow_id)
+        except:
+            pass
+
+        self.g.remove_node(device_id)
+        self.ids.remove(device_id)
+        del self.devices[device_id]
 
     def add_link(self, link_id, device_id1, device_id2,
                  delay, rate, capacity, bw):
@@ -98,9 +115,22 @@ class Network():
         self.g.add_edge(device_id1, device_id2, label=link_id, dir="none", len=str(delay))
         self.edge_labels[(device_id1, device_id2)] = link_id
 
+    def delete_link(self, link_id):
+        link = self.links[link_id]
+        link.device_a.delete_link(link)
+        link.device_b.delete_link(link)
+        try:
+            self.g.remove_edge(link.device_a.network_id, link.device_b.network_id)
+        except:
+            self.g.remove_edge(link.device_b.network_id, link.device_a.network_id)
+
+        self.ids.remove(link_id)
+        del self.links[link_id]
+
 
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start, bw):
 
+        self.check_id(flow_id)
         device_1 = self.devices[flow_src]
         device_2 = self.devices[flow_dest]
 
@@ -115,8 +145,17 @@ class Network():
         device_2.add_flow(flow)
         self.g.add_edge(flow_src, flow_dest, label=flow_id)
 
-
         self.ids.append(flow_id)
+
+    def delete_flow(self, flow_id):
+        flow = self.flows[flow_id]
+        flow.src.delete_flow(flow)
+        flow.dest.delete_flow(flow)
+
+        self.g.remove_edge(flow.src.network_id, flow.dest.network_id)
+        self.ids.remove(flow_id)
+        del self.flows[flow_id]
+        self.num_flows_active -= 1
 
     def decrement_flows(self):
         self.num_flows_active -= 1

@@ -19,6 +19,10 @@ class Host(Device):
         super(Host, self).__init__(host_id)
         self._flows = []
 
+    @property
+    def flows(self):
+        return self._flows
+
     def add_flow(self, flow):
         """Add receiving flow to host.
 
@@ -29,6 +33,9 @@ class Host(Device):
 
         """
         self._flows.append(flow)
+
+    def delete_flow(self, flow):
+        self._flows.remove(flow)
 
     def send(self, packet):
         """Connects to a link.

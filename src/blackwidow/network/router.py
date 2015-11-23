@@ -10,7 +10,7 @@ class Router(Device):
     Routers are responsible for initializing and updating their
     routing table, and sending packets based on their routing table.
     """
-    
+
 
     def __init__(self, router_id, env, bw):
         """Constructor for Router class."""
@@ -18,7 +18,7 @@ class Router(Device):
         self.env = env
         self.bw = bw
         self._routing_table = {}
-        self.env.add_event(Event('{} sent routing packet'.format(self._network_id), 
+        self.env.add_event(Event('{} sent routing packet'.format(self._network_id),
                                  self.start_new_routing), 0)
 
     def add_link(self, link):
@@ -60,10 +60,10 @@ class Router(Device):
                     network_id = link._device_b.network_id
                 self._routing_table[network_id] = {'link': link, 'distance': self._distance(link)}
 
-        
+
         self.send_routing()
 
-        if self.env.time < 150000: 
+        if self.env.time < 150000:
             self.env.add_event(Event('{} reset its routing table.'.format(self._network_id),
                                self.start_new_routing), 5000)
 
@@ -76,7 +76,7 @@ class Router(Device):
 
                 other_device = link.device_b
             packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
-                                   other_device.network_id, None, 
+                                   other_device.network_id, None,
                                    self._routing_table, self.bw.routing_packet_size)
             link.receive(packet, self._network_id)
             print "Sent routing packet from {}".format(self._network_id)
@@ -109,10 +109,8 @@ class Router(Device):
     def _distance(self, link):
         """Get the distance from the link."""
         distance = link.delay + link.get_buffer_size() / float(link.rate)
-        
+
         if self.bw.static_routing:
             distance = link.delay
-        
+
         return distance
-
-
