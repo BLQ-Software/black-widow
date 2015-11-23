@@ -46,7 +46,10 @@ class Host(Device):
             The packet to send.
 
         """
-        self._links[0].receive(packet, self._network_id)
+        if len(self._links) > 0:
+            self._links[0].receive(packet, self._network_id)
+        else:
+            raise Exception("Host {0} does not have any links".format(self.network_id))
 
     def receive(self, packet):
         """Send packet to flow to process.

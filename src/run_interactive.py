@@ -151,7 +151,10 @@ class BlackWidowInteractive(cmd.Cmd):
 
     def do_run(self, line):
         """Run the network"""
-        self.bw.run_network(self.network)
+        try:
+            self.bw.run_network(self.network)
+        except Exception as e:
+            print e
 
     def do_set_show(self, line):
         """set_show [show]

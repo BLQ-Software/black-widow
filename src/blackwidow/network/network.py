@@ -81,10 +81,10 @@ class Network():
 
     def delete_device(self, device_id):
         device = self.devices[device_id]
-        for link in device.links:
+        for link in device.links[:]:
             self.delete_link(link.id)
         try:
-            for flow in devices.flows:
+            for flow in devices.flows[:]:
                 self.delete_flow(flow.flow_id)
         except:
             pass
@@ -119,6 +119,7 @@ class Network():
         link = self.links[link_id]
         link.device_a.delete_link(link)
         link.device_b.delete_link(link)
+
         try:
             self.g.remove_edge(link.device_a.network_id, link.device_b.network_id)
         except:
