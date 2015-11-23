@@ -194,6 +194,11 @@ class BlackWidowInteractive(cmd.Cmd):
             return
         self.proj = args[0]
 
+    def do_exit(self, line):
+        """End the program"""
+        print
+        return True
+
 
     def do_EOF(self, line):
         """End the program"""
