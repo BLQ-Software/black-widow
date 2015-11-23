@@ -39,7 +39,7 @@ class Flow(object):
         self.bw = bw
         self._flow_start = time*1000.0
         self._last_packet = 0
-        self.env.add_event(Event("Start flow", self.send_packet), self._flow_start)
+        self.env.add_event(Event("Start flow", self._flow_id, self.send_packet), self._flow_start, initial=True)
 
     @property
     def flow_id(self):
@@ -90,7 +90,7 @@ class Flow(object):
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 3000)
+                self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), 3000)
                 # Shouldn't subtract pack.size if sent before.
                 if (self._pack_num not in self._packets_sent) and (self._pack_num not in self._acks_arrived):
                     self._amount = self._amount - pack.size
@@ -108,7 +108,7 @@ class Flow(object):
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
+                self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), 1000)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -138,7 +138,7 @@ class Flow(object):
     def _respond_to_ack(self):
         """ Update window size.
         """
-        self.env.add_event(Event("Send", self.send_packet), 10)
+        self.env.add_event(Event("Send", self._flow_id, self.send_packet), 10)
         if self._cwnd < self._ssthresh:
             self._cwnd = self._cwnd + 1.0
         else:
@@ -156,7 +156,7 @@ class Flow(object):
 
         """
         if pack_num not in self._acks_arrived:
-            self.env.add_event(Event("Resend", self.send_packet), 10)
+            self.env.add_event(Event("Resend", self._flow_id, self.send_packet), 10)
             # Go back n
             if pack_num not in self._packets_time_out:
                 self._packets_time_out.append(pack_num)

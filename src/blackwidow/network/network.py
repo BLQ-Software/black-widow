@@ -37,6 +37,7 @@ class Network():
         self.edge_labels = {}
         self.router_labels = []
         self.host_labels = []
+        self.initial_events = {}
 
     @property
     def time(self):
@@ -155,13 +156,14 @@ class Network():
 
         self.g.remove_edge(flow.src.network_id, flow.dest.network_id)
         self.ids.remove(flow_id)
+        del self.initial_events[flow_id]
         del self.flows[flow_id]
         self.num_flows_active -= 1
 
     def decrement_flows(self):
         self.num_flows_active -= 1
 
-    def add_event(self, event, delay):
+    def add_event(self, event, delay, initial=False):
         """
         Function to add an event to the queue
 
@@ -175,10 +177,15 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        self._events.put((self._time + delay, event))
+        if initial:
+            self.initial_events[event.src_id] = (self._time + delay, event)
+        else:
+            self._events.put((self._time + delay, event))
 
     def run(self):
 
+        for i in self.initial_events:
+            self._events.put((self.initial_events[i][0], self.initial_events[i][1]))
         # Keep running while we have events to run. The first events will be
         # enqueued by the flows when they are initialized.
         while not self._events.empty() and self.num_flows_active != 0:

@@ -19,7 +19,7 @@ class Router(Device):
         self.bw = bw
         self._routing_table = {}
         self.env.add_event(Event('{} sent routing packet'.format(self._network_id),
-                                 self.start_new_routing), 0)
+                                 self._network_id, self.start_new_routing), 0)
 
     def add_link(self, link):
         """Overrides Device.add_link() ."""
@@ -65,7 +65,7 @@ class Router(Device):
 
         if self.env.time < 150000:
             self.env.add_event(Event('{} reset its routing table.'.format(self._network_id),
-                               self.start_new_routing), 5000)
+                               self._network_id, self.start_new_routing), 5000)
 
 
     def send_routing(self):

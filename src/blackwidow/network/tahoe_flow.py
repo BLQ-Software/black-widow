@@ -29,7 +29,7 @@ class TahoeFlow(Flow):
         """
         Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
         self._packets_arrived = []
-        self._packets_arrived = range(0,(int)(self._amount/(1024*8))) 
+        self._packets_arrived = range(0,(int)(self._amount/(1024*8)))
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._last_pack_rec = -1
         self._counter = 0
@@ -70,7 +70,7 @@ class TahoeFlow(Flow):
                 self._last_pack_rec = packet.next_expected
             # Fast retransmit/Fast recovery
             if self._counter == 3:
-                # flightsize = num packets sent and waiting for ack 
+                # flightsize = num packets sent and waiting for ack
                 if len(self._packets_sent) > 4:
                     self._ssthresh = len(self._packets_sent)/2
                 else:
@@ -78,7 +78,7 @@ class TahoeFlow(Flow):
                 # Go back n
                 self._pack_num = packet.next_expected
                 self._cwnd = 1
-                self.env.add_event(Event("Resend", self.send_packet), 10)
+                self.env.add_event(Event("Resend", self._flow_id, self.send_packet), 10)
                 if packet.next_expected not in self._packets_time_out:
                     self._packets_time_out.append(packet.next_expected)
                 print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
