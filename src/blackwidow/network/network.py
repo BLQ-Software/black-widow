@@ -68,7 +68,7 @@ class Network():
         self.check_id(host_id)
         self.devices[host_id] = Host(host_id)
         self.ids.append(host_id)
-        self.g.add_node(host_id)
+        self.g.add_node(host_id, shape="square")
         self.host_labels.append(host_id)
 
     def add_router(self, router_id, bw):
