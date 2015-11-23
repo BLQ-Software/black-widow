@@ -163,6 +163,10 @@ class Network():
     def decrement_flows(self):
         self.num_flows_active -= 1
 
+    def empty(self):
+        self._events = PriorityQueue()
+        self.initial_events = []
+
     def add_event(self, event, delay, initial=False):
         """
         Function to add an event to the queue

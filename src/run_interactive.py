@@ -1,5 +1,6 @@
 import os
 import cmd
+import signal
 
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -199,6 +200,9 @@ class BlackWidowInteractive(cmd.Cmd):
         print
         return True
 
+    def do_stop(self, line):
+        self.network.empty()
+
 
     def do_EOF(self, line):
         """End the program"""
@@ -211,8 +215,14 @@ def check_args(args, n):
         return False
     return True
 
+
 if __name__ == '__main__':
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
     b.do_create_network("")
+    def signal_handler(signal, frame):
+        b.do_stop("")
+
+    signal.signal(signal.SIGINT, signal_handler)
+    
     b.cmdloop(intro="Welcome to BlackWidow")
