@@ -2,6 +2,8 @@ from host import Host
 from router import Router
 from link import Link
 from flow import Flow
+from tahoe_flow import TahoeFlow
+from reno_flow import RenoFlow
 from Queue import PriorityQueue
 
 # Constants
@@ -85,7 +87,7 @@ class Network():
         self.num_flows_active += 1
 
 
-        flow = Flow(flow_id, device_1, device_2, data_amt,
+        flow = RenoFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
         self.flows[flow_id] = flow
 
@@ -123,3 +125,6 @@ class Network():
             print "{0} at time {1}".format(str(current_event), time)
             self._time = time
             current_event.run()
+
+        # Return end time.
+        return self._time 

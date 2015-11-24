@@ -4,7 +4,6 @@
 #Constant sizes of packets in bits
 DATA_PACKET_SIZE = 1024 * 8
 ACK_PACKET_SIZE = 64 * 8
-ROUTING_PACKET_SIZE = 64 * 8
 
 class Packet(object):
     """Super class for DataPackets and AckPackets"""
@@ -92,19 +91,28 @@ class DataPacket(Packet):
 class AckPacket(Packet):
     """Class for acknowledgement packets"""
 
-    def __init__(self, packet_id, src, dest, flow_id):
+    @property
+    def next_expected(self):
+        return self._next_expected
+
+    @next_expected.setter
+    def next_expected(self, value):
+        raise AttributeError("Cannot modify ack data: {0}".format(self._pack_id))
+
+    def __init__(self, packet_id, src, dest, flow_id, next_expected_id=0):
         """Constructor for AckPackets class"""
         super(AckPacket, self).__init__(packet_id, src, dest, flow_id)
         self._size = ACK_PACKET_SIZE
         self._is_ack = True
+        self._next_expected = next_expected_id
 
 class RoutingPacket(Packet):
     """Class for routing packets"""
 
-    def __init__(self, packet_id, src, dest, flow_id, routing_table):
+    def __init__(self, packet_id, src, dest, flow_id, routing_table, size):
         """Constructor for RoutingPacket class"""
         super(RoutingPacket, self).__init__(packet_id, src, dest, flow_id)
-        self._size = ROUTING_PACKET_SIZE
+        self._size = size
         self._is_routing = True
         self._routing_table = routing_table
     

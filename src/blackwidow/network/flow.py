@@ -4,6 +4,7 @@ from event import Event
 class Flow(object):
     """Simple class for flows.
     Flows will trigger host behavior.
+    Has slow start and congestion avoidance.
 
     Parameters
     ----------
@@ -29,11 +30,10 @@ class Flow(object):
         self._dest = destination
         self._amount = amount*8*10**6
         self._pack_num = 0
-        self._cwnd = 1
-        self._ssthresh = 10
+        self._cwnd = 1.0
+        self._ssthresh = 10000
         self._packets_sent = []
         self._packets_time_out = []
-        self._packets_arrived = []
         self._acks_arrived = set()
         self.env = env
         self.bw = bw
@@ -90,7 +90,7 @@ class Flow(object):
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
+                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 3000)
                 # Shouldn't subtract pack.size if sent before.
                 if (self._pack_num not in self._packets_sent) and (self._pack_num not in self._acks_arrived):
                     self._amount = self._amount - pack.size
@@ -138,13 +138,13 @@ class Flow(object):
     def _respond_to_ack(self):
         """ Update window size.
         """
-        self.env.add_event(Event("Send", self.send_packet), 0)
+        self.env.add_event(Event("Send", self.send_packet), 10)
         if self._cwnd < self._ssthresh:
-            self._cwnd = self._cwnd + 1
+            self._cwnd = self._cwnd + 1.0
         else:
             self._cwnd = self._cwnd + 1.0/self._cwnd
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')
+        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
 
     def _timeout(self, pack_num):
         """ Generate an ack or respond to bad packet.
@@ -161,7 +161,7 @@ class Flow(object):
             if pack_num not in self._packets_time_out:
                 self._packets_time_out.append(pack_num)
             self._pack_num = pack_num
-            self._ssthresh = self._cwnd/2
-            self._cwnd = 1
+            self._ssthresh = self._cwnd / float(2)
+            self._cwnd = 1.0
             print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-            self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow.window')
+            self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
