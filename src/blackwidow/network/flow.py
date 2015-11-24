@@ -33,6 +33,7 @@ class Flow(object):
         self._pack_num = 0
         self._cwnd = 1.0
         self._ssthresh = 100
+        self._resend_time = 100
         self._packets_sent = []
         self._packets_time_out = []
         self._acks_arrived = set()
@@ -148,7 +149,7 @@ class Flow(object):
     def _respond_to_ack(self):
         """ Update window size.
         """
-        self.env.add_event(Event("Send", self.send_packet), 100)
+        self.env.add_event(Event("Send", self.send_packet), self._resend_time)
         if self._cwnd < self._ssthresh:
             self._cwnd = self._cwnd + 1.0
         else:
@@ -166,7 +167,7 @@ class Flow(object):
 
         """
         if pack_num not in self._acks_arrived:
-            self.env.add_event(Event("Resend", self.send_packet), 100)
+            self.env.add_event(Event("Resend", self.send_packet), self._resend_time)
             # Go back n
             if pack_num not in self._packets_time_out:
                 self._packets_time_out.append(pack_num)
