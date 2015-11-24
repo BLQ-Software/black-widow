@@ -84,6 +84,11 @@ class BlackWidow(object):
 
             self.log_file = settings['log_file'] 
 
+        self.tcp_alg = 'Reno'
+        if 'tcp_alg' in settings:
+            self.tcp_alg = settings['tcp_alg']
+            
+
 
         
 
