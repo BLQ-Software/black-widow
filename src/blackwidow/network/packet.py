@@ -26,6 +26,14 @@ class Packet(object):
         return msg.format(self._pack_id, self._src.network_id, self._dest.network_id)
 
     @property
+    def timestamp(self):
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, value):
+        raise AttributeError("Cannot modify timestamp: {0}".format(self._pack_id))
+
+    @property
     def pack_id(self):
         return self._pack_id
 
@@ -84,9 +92,9 @@ class Packet(object):
 class DataPacket(Packet):
     """Class for data packets"""
 
-    def __init__(self, packet_id, src, dest, flow_id):
+    def __init__(self, packet_id, src, dest, flow_id, timestamp=0):
         """Constructor for DataPacket class"""
-        super(DataPacket, self).__init__(packet_id, src, dest, flow_id)
+        super(DataPacket, self).__init__(packet_id, src, dest, flow_id, timestamp)
         self._size = DATA_PACKET_SIZE
 
 class AckPacket(Packet):

@@ -45,7 +45,7 @@ class RenoFlow(TahoeFlow):
                 next_ack_expected = self._packets_arrived[0]
             else:
                 next_ack_expected = self._total_num_pack
-            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, next_ack_expected)
+            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, next_ack_expected, timestamp=packet.timestamp)
             self._dest.send(ack_packet)
             print "Flow sent ack packet {0}".format(packet.pack_id)
         else:

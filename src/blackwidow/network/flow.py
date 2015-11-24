@@ -76,7 +76,7 @@ class Flow(object):
         """ Creates ack for packet.
         """
         if self._src == packet.src and self._dest == packet.dest:
-            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id)
+            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, timestamp=packet.timestamp)
             self._dest.send(ack_packet)
             print "Flow sent ack packet {0}".format(packet.pack_id)
         else:
@@ -88,7 +88,7 @@ class Flow(object):
         if self._amount > 0:
            # Send packets up to the window size.
             while (len(self._packets_sent) - len(self._packets_time_out) < self._cwnd):
-                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
+                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id, timestamp=self.env.time)
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
