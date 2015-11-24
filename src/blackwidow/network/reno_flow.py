@@ -36,6 +36,21 @@ class RenoFlow(TahoeFlow):
         self._last_pack_rec = -1
         self._counter = 0
 
+
+    def _send_ack(self, packet):
+        """ Creates ack for packet.
+        """
+        if self._src == packet.src and self._dest == packet.dest:
+            if len(self._packets_arrived) > 0:
+                next_ack_expected = self._packets_arrived[0]
+            else:
+                next_ack_expected = self._total_num_pack
+            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, next_ack_expected)
+            self._dest.send(ack_packet)
+            print "Flow sent ack packet {0}".format(packet.pack_id)
+        else:
+            print "Received wrong packet."
+
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
 

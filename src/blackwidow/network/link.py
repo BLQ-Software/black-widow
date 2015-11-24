@@ -1,7 +1,7 @@
 from collections import deque
 from event import Event
 
-HALF_DUPLEX = True
+HALF_DUPLEX = False 
 
 class Link(object):
     """Simulates a link connected to two Devices in the network.
