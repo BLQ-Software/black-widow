@@ -19,13 +19,14 @@ class Network():
     construction any new objects. This is a global id constraint
     across all objects.
     """
-    def __init__(self):
+    def __init__(self, bw):
         self.devices = {}
         self.routers = {}
         self.links = {}
         self.flows = {}
         self.ids = []
         self._time = 0
+        self.bw = bw
         self._events = PriorityQueue()
         self.num_flows_active = 0
 
@@ -86,9 +87,17 @@ class Network():
 
         self.num_flows_active += 1
 
-
-        flow = RenoFlow(flow_id, device_1, device_2, data_amt,
+        # Determine TCP alg from bw.tcp_alg 
+        if self.bw.tcp_alg == 'Reno':
+            flow = RenoFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
+        elif self.bw.tcp_alg == 'Tahoe':
+            flow = TahoeFlow(flow_id, device_1, device_2, data_amt,
+                        self, flow_start, bw)
+        else:
+            raise Expection("Unknown TCP algorithm.")
+
+
         self.flows[flow_id] = flow
 
         device_1.add_flow(flow)
