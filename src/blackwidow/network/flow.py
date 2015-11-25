@@ -202,7 +202,10 @@ class Flow(object):
             self._reset_window()
 
     def _reset_window(self):
-        self._ssthresh = self._cwnd / float(2)
+        if self._cwnd > 4:
+            self._ssthresh = self._cwnd / float(2)
+        else:
+            self._ssthresh = 2.0
         self._cwnd = 1.0
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))

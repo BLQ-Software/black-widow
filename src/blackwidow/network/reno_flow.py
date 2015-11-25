@@ -81,7 +81,7 @@ class RenoFlow(TahoeFlow):
                 if self._cwnd > 4:
                     self._ssthresh = self._cwnd/float(2)
                 else:
-                    self._ssthresh = 2
+                    self._ssthresh = 2.0
                 # Go back n
                 self._pack_num = packet.next_expected
                 # window inflation where ndup = 3
@@ -92,3 +92,7 @@ class RenoFlow(TahoeFlow):
                 print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
                 self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
             self._receive_ack(packet)
+
+    def _reset_window(self):
+        super(RenoFlow, self)._reset_window()
+        self._counter = 0
