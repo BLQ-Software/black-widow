@@ -28,7 +28,6 @@ class RenoFlow(TahoeFlow):
         """ Constructor for Flow class
         """
         TahoeFlow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
-        self._ms_before_timeout = 10000
         self._ssthresh = 100
         self._packets_arrived = []
         self._packets_arrived = range(0,(int)(self._amount/(1024*8))) 
