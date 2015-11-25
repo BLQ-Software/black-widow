@@ -27,16 +27,16 @@ class FastFlow(Flow):
         """
         Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
         self._alpha = 20.0
-        self.env.add_event(Event("Start window calc", self._update_window), self._flow_start-1)
+        self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), self._flow_start-1)
 
     def _update_window(self):
         self._cwnd = (self._min_RTT/self._last_RTT)*self._cwnd + self._alpha
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
-        self.env.add_event(Event("Start window calc", self._update_window), 20)
+        self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), 20)
 
     def _respond_to_ack(self):
-        self.env.add_event(Event("Send", self.send_packet),self._resend_time)
+        self.env.add_event(Event("Send", self._flow_id, self.send_packet),self._resend_time)
 
     def _reset_window(self):
         pass
