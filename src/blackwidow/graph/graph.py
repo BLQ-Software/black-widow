@@ -19,6 +19,7 @@ class Grapher(object):
         self.bw = bw
         self.data_dir = bw.data_dir
         self.log_file = bw.log_file
+        self.subplot_id = 1
 
     def graph(self, sim_time):
         """Graphs the simulation."""
@@ -50,13 +51,14 @@ class Grapher(object):
         if (os.path.isfile(link_rate_path)):
             # Load in link rate data
             link_rate = np.genfromtxt(link_rate_path, delimiter=',')
-            link_rate = link_rate.astype(int)
+            link_rate = link_rate.astype(float)
             link_rate_times = link_rate[:,0]
             link_rate = link_rate[:,1]
 
             # Plot the link rate
             plt.subplot(5, 1, 1)
-            plt.plot(link_rate_times[::2], link_rate[::2], markersize=5)
+
+            plt.plot(link_rate_times, link_rate, markersize=5)
             plt.xlabel('time (ms)')
             plt.ylabel('link rate (Mbps)')
 
