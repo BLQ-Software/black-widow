@@ -85,7 +85,7 @@ class BlackWidow(object):
             self.log_file = settings['log_file'] 
 
         self.tcp_alg = 'Reno'
-        if 'tcp_alg' in settings:
+        if ('tcp_alg' in settings and settings['tcp_alg'] is not None):
             self.tcp_alg = settings['tcp_alg']
             
 
@@ -110,7 +110,19 @@ class BlackWidow(object):
         network.dump()
 
         print "\nRunning network: \n"
-        return network.run()
+        sim_time = network.run()
+
+        grapher = Grapher(self)
+        grapher.graph(int(sim_time))
+
+        return sim_time
+
+    def run_network(self, network):
+
+        sim_time = network.run()
+        grapher = Grapher(self)
+        grapher.graph(int(sim_time))
+        return sim_time
 
 
 
