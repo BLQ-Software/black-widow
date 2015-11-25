@@ -18,8 +18,8 @@ class BlackWidowInteractive(cmd.Cmd):
 
     def do_create_network(self, line):
         """Create a new network"""
-        self.network = Network()
         self.bw = BlackWidow()
+        self.network = Network(self.bw)
         self.dpi = "300"
         self.proj = "dot"
         self.show_network = True
@@ -224,5 +224,5 @@ if __name__ == '__main__':
         b.do_stop("")
 
     signal.signal(signal.SIGINT, signal_handler)
-    
+
     b.cmdloop(intro="Welcome to BlackWidow")

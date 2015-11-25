@@ -88,7 +88,7 @@ class BlackWidow(object):
         self.tcp_alg = 'Reno'
         if 'tcp_alg' in settings:
             self.tcp_alg = settings['tcp_alg']
-            
+
 
 
 

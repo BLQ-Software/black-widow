@@ -139,7 +139,7 @@ class Network():
 
         self.num_flows_active += 1
 
-        # Determine TCP alg from bw.tcp_alg 
+        # Determine TCP alg from bw.tcp_alg
         if self.bw.tcp_alg == 'Reno':
             flow = RenoFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
