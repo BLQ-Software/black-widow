@@ -11,8 +11,8 @@ from blackwidow.network import *
 
 from cStringIO import StringIO
 
-plt.ion()
 f = plt.figure(2)
+plt.ion()
 
 
 class BlackWidowInteractive(cmd.Cmd):
@@ -161,6 +161,9 @@ class BlackWidowInteractive(cmd.Cmd):
 
     def do_clear(self, line):
         plt.clf()
+
+    def do_close(self, line):
+        plt.close()
 
     def do_set_show(self, line):
         """set_show [show]
