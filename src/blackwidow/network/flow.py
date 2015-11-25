@@ -38,6 +38,7 @@ class Flow(object):
         self._pack_num = 0
         self._cwnd = 1.0
         self._ssthresh = 1000
+        self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._resend_time = 100
         self._min_RTT = 1000.0
         self._last_RTT = 3000.0
@@ -96,7 +97,7 @@ class Flow(object):
     def send_packet(self):
         """ Send a packet.
         """
-        if self._amount > 0:
+        if self._amount > 0 or (len(self._packets_sent) > 0):
            # Send packets up to the window size.
             while (len(self._packets_sent) - len(self._packets_time_out) < self._cwnd):
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id, timestamp=self.env.time)
@@ -113,16 +114,10 @@ class Flow(object):
                 if self._pack_num in self._packets_time_out:
                     self._packets_time_out.remove(self._pack_num)
                 self._pack_num = self._pack_num + 1
-                if self._amount <= 0:
+                # Ending behavior
+                if self._pack_num == self._total_num_pack:
+                    self._pack_num = self._packets_sent[0]
                     break
-        else:
-            # Just keep resending last few packets until done
-            while len(self._packets_time_out) > 0:
-                self._pack_num = self._packets_time_out[0]
-                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
-                self._src.send(pack)
-                self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -178,7 +173,7 @@ class Flow(object):
         else:
             self._RTTVAR = (1 - beta)*self._RTTVAR + beta*abs(self._SRTT - self._last_RTT)
             self._SRTT = (1 - alpha)*self._SRTT + alpha*self._last_RTT
-        self._RTO = max(self._SRTT + max(G, K*self._RTTVAR), 1000)
+        self._RTO = min(max(self._SRTT + max(G, K*self._RTTVAR), 1000), 5000)
         print "RTO is {}".format(self._RTO)
         if self._last_RTT < self._min_RTT:
             self._min_RTT = self._last_RTT
