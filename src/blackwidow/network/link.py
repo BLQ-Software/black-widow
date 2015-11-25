@@ -51,6 +51,7 @@ class Link(object):
         self.env = env
         self.bw = bw
         self._size = 0
+        self._distance = delay
 
     def __str__(self):
         msg = "Link {0} connected to {1} and {2}\n"
@@ -98,6 +99,14 @@ class Link(object):
     @rate.setter
     def rate(self, value):
         raise AttributeError("Cannot modify link rate: {0}".format(self._id))
+
+    @property
+    def distance(self):
+        return self._distance
+
+    @distance.setter
+    def distance(self, value):
+        raise AttributeError("Cannot modify link distance: {0}".format(self._id))
 
     def receive(self, packet, source_id):
         # Add packet to link buffer as soon as it is received.
@@ -180,3 +189,13 @@ class Link(object):
         for packet, source_id, time in self._release_into_link_buffer:
             total_size += packet.size
         return total_size
+
+    def measure_distance(self):
+        """Measure the link distance."""
+        if self.bw.static_routing:
+            self._distance = self.delay
+        else:
+            self._distance = self.delay + self.get_buffer_size() / float(self.rate)
+
+        
+
