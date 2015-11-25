@@ -55,17 +55,18 @@ class Router(Device):
         if not self.bw.static_routing:
             self._routing_table = {}
             for link in self._links:
+                link.measure_distance()
                 network_id = link._device_a.network_id
                 if (network_id == self._network_id):
                     network_id = link._device_b.network_id
                 self._routing_table[network_id] = {'link': link, 'distance': self._distance(link)}
 
+            self.env.add_event(Event('{} reset its routing table.'.format(self._network_id),
+                               self._network_id, self.start_new_routing), 5000)
+
 
         self.send_routing()
 
-        if self.env.time < 150000:
-            self.env.add_event(Event('{} reset its routing table.'.format(self._network_id),
-                               self._network_id, self.start_new_routing), 5000)
 
 
     def send_routing(self):
@@ -95,7 +96,7 @@ class Router(Device):
 
         route_changed = False
         for dest, route in packet.routing_table.items():
-            distance = route['distance'] + self._distance(link)
+            distance = route['distance'] + link.distance
             if dest not in self._routing_table:
                 self._routing_table[dest] = {'link': link, 'distance': distance}
                 route_changed = True
