@@ -24,13 +24,14 @@ class Network():
     construction any new objects. This is a global id constraint
     across all objects.
     """
-    def __init__(self):
+    def __init__(self, bw):
         self.devices = {}
         self.routers = {}
         self.links = {}
         self.flows = {}
         self.ids = []
         self._time = 0
+        self.bw = bw
         self._events = PriorityQueue()
         self.num_flows_active = 0
         self.g = nx.MultiDiGraph()
@@ -138,9 +139,17 @@ class Network():
 
         self.num_flows_active += 1
 
-
-        flow = RenoFlow(flow_id, device_1, device_2, data_amt,
+        # Determine TCP alg from bw.tcp_alg 
+        if self.bw.tcp_alg == 'Reno':
+            flow = RenoFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
+        elif self.bw.tcp_alg == 'Tahoe':
+            flow = TahoeFlow(flow_id, device_1, device_2, data_amt,
+                        self, flow_start, bw)
+        else:
+            raise Expection("Unknown TCP algorithm.")
+
+
         self.flows[flow_id] = flow
 
         device_1.add_flow(flow)
@@ -194,7 +203,7 @@ class Network():
         # enqueued by the flows when they are initialized.
         while not self._events.empty() and self.num_flows_active != 0:
             (time, current_event) = self._events.get()
-            print "{0} at time {1}".format(str(current_event), time)
+            print "{0} at time {1} with {2} flows active".format(str(current_event), time, self.num_flows_active)
             self._time = time
             current_event.run()
 

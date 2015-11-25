@@ -6,7 +6,7 @@ def config_network(filename, bw):
     f = open(filename)
     config = json.load(f)
     f.close()
-    network = Network()
+    network = Network(bw)
 
     for host_id in config['Hosts']:
         network.add_host(host_id)
