@@ -8,7 +8,7 @@ ACK_PACKET_SIZE = 64 * 8
 class Packet(object):
     """Super class for DataPackets and AckPackets"""
 
-    def __init__(self, packet_id, src, dest, flow_id):
+    def __init__(self, packet_id, src, dest, flow_id, timestamp=0):
         """Constructor for host class"""
         self._pack_id = packet_id
         self._src = src
@@ -17,12 +17,21 @@ class Packet(object):
         self._is_ack = False
         self._is_routing = False
         self._size = 0
+        self._timestamp = timestamp
     def __str__(self):
         msg = ""
         if self._is_ack:
             msg += "ACK "
         msg += "Packet {0} sending from {1} to {2}"
         return msg.format(self._pack_id, self._src.network_id, self._dest.network_id)
+
+    @property
+    def timestamp(self):
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, value):
+        raise AttributeError("Cannot modify timestamp: {0}".format(self._pack_id))
 
     @property
     def pack_id(self):
@@ -83,9 +92,9 @@ class Packet(object):
 class DataPacket(Packet):
     """Class for data packets"""
 
-    def __init__(self, packet_id, src, dest, flow_id):
+    def __init__(self, packet_id, src, dest, flow_id, timestamp=0):
         """Constructor for DataPacket class"""
-        super(DataPacket, self).__init__(packet_id, src, dest, flow_id)
+        super(DataPacket, self).__init__(packet_id, src, dest, flow_id, timestamp)
         self._size = DATA_PACKET_SIZE
 
 class AckPacket(Packet):
@@ -99,9 +108,9 @@ class AckPacket(Packet):
     def next_expected(self, value):
         raise AttributeError("Cannot modify ack data: {0}".format(self._pack_id))
 
-    def __init__(self, packet_id, src, dest, flow_id, next_expected_id=0):
+    def __init__(self, packet_id, src, dest, flow_id, next_expected_id=0, timestamp=0):
         """Constructor for AckPackets class"""
-        super(AckPacket, self).__init__(packet_id, src, dest, flow_id)
+        super(AckPacket, self).__init__(packet_id, src, dest, flow_id, timestamp)
         self._size = ACK_PACKET_SIZE
         self._is_ack = True
         self._next_expected = next_expected_id

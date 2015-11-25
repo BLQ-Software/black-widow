@@ -29,9 +29,11 @@ class Flow(object):
         self._src = source
         self._dest = destination
         self._amount = amount*8*10**6
+        self._ms_before_timeout = 1000
         self._pack_num = 0
         self._cwnd = 1.0
-        self._ssthresh = 10000
+        self._ssthresh = 100
+        self._resend_time = 100
         self._packets_sent = []
         self._packets_time_out = []
         self._acks_arrived = set()
@@ -72,10 +74,10 @@ class Flow(object):
         return msg.format(self._flow_id, self._src.network_id, self._dest.network_id)
 
     def _send_ack(self, packet):
-        """ Creates ack based for packet.
+        """ Creates ack for packet.
         """
         if self._src == packet.src and self._dest == packet.dest:
-            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id)
+            ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, timestamp=packet.timestamp)
             self._dest.send(ack_packet)
             print "Flow sent ack packet {0}".format(packet.pack_id)
         else:
@@ -85,16 +87,17 @@ class Flow(object):
         """ Send a packet.
         """
         if self._amount > 0:
+           # Send packets up to the window size.
             while (len(self._packets_sent) - len(self._packets_time_out) < self._cwnd):
-                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
+                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id, timestamp=self.env.time)
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 3000)
-                # Shouldn't subtract pack.size if sent before.
-                if (self._pack_num not in self._packets_sent) and (self._pack_num not in self._acks_arrived):
-                    self._amount = self._amount - pack.size
-                    self._packets_sent.append(self._pack_num)
+                    self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
+                    # Shouldn't subtract pack.size if sent before.
+                    if (self._pack_num not in self._packets_sent):
+                        self._amount = self._amount - pack.size
+                        self._packets_sent.append(self._pack_num)
                 print "Flow has {0} bits left".format(self._amount)
                 if self._pack_num in self._packets_time_out:
                     self._packets_time_out.remove(self._pack_num)
@@ -108,7 +111,7 @@ class Flow(object):
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), 1000)
+                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -119,26 +122,34 @@ class Flow(object):
             The packet to be received.
 
         """
+        # Packet arrived at destination.  Send ack.
         if packet.dest == self._dest:
             print "Flow received packet {0}".format(packet.pack_id)
             if packet.pack_id not in self._acks_arrived:
                 self._send_ack(packet)
+        # Ack arrived at source. Update window size.
         else:
-            if packet.pack_id not in self._acks_arrived:
-                self._respond_to_ack()
-                if packet.pack_id in self._packets_sent:
-                    self._packets_sent.remove(packet.pack_id)
-                if packet.pack_id in self._packets_time_out:
-                    self._packets_time_out.remove(packet.pack_id)
-                self._acks_arrived.add(packet.pack_id)
-                print "Flow {} received ack for packet {}".format(self._flow_id, packet.pack_id)
-                if len(self._packets_sent) + len(self._acks_arrived) == 0:
-                    self.env.decrement_flows()
+            self._receive_ack(packet)
+
+    def _receive_ack(self, packet):
+        if packet.pack_id not in self._acks_arrived:
+            self._respond_to_ack()
+            # Update lists by removing pack_id
+            if packet.pack_id in self._packets_sent:
+                self._packets_sent.remove(packet.pack_id)
+            if packet.pack_id in self._packets_time_out:
+                self._packets_time_out.remove(packet.pack_id)
+            # Update which acks have arrived
+            self._acks_arrived.add(packet.pack_id)
+            print "Flow {} received ack for packet {}".format(self._flow_id, packet.pack_id)
+            # Check if done
+            if len(self._packets_sent) == 0 and self._amount <= 0:
+                self.env.decrement_flows()
 
     def _respond_to_ack(self):
         """ Update window size.
         """
-        self.env.add_event(Event("Send", self.send_packet), 10)
+        self.env.add_event(Event("Send", self.send_packet), self._resend_time)
         if self._cwnd < self._ssthresh:
             self._cwnd = self._cwnd + 1.0
         else:
@@ -156,12 +167,15 @@ class Flow(object):
 
         """
         if pack_num not in self._acks_arrived:
-            self.env.add_event(Event("Resend", self.send_packet), 10)
+            self.env.add_event(Event("Resend", self.send_packet), self._resend_time)
             # Go back n
             if pack_num not in self._packets_time_out:
                 self._packets_time_out.append(pack_num)
             self._pack_num = pack_num
-            self._ssthresh = self._cwnd / float(2)
-            self._cwnd = 1.0
-            print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-            self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
+            self._reset_window()
+
+    def _reset_window(self):
+        self._ssthresh = self._cwnd / float(2)
+        self._cwnd = 1.0
+        print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
+        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
