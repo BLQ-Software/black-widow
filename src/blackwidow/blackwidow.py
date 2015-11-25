@@ -89,6 +89,10 @@ class BlackWidow(object):
         if ('tcp_alg' in settings and settings['tcp_alg'] is not None):
             self.tcp_alg = settings['tcp_alg']
 
+        self.num_graphs = 5
+
+        self.grapher = Grapher(self.num_graphs, self)
+
 
 
 
@@ -112,16 +116,16 @@ class BlackWidow(object):
         print "\nRunning network: \n"
         sim_time = network.run()
 
-        grapher = Grapher(self)
-        grapher.graph(int(sim_time))
+        if not self.real_time:
+            self.grapher.graph(int(sim_time))
 
         return sim_time
 
     def run_network(self, network):
 
         sim_time = network.run()
-        grapher = Grapher(self)
-        grapher.graph(int(sim_time))
+        if not self.real_time:
+            self.grapher.graph(int(sim_time))
         return sim_time
 
 
@@ -158,8 +162,9 @@ class BlackWidow(object):
             flow.sent    -  "Time in ms", "Mega bits"
             flow.delay   -  "Time in ms", "Delay in ms"
         """
+        data_num = [float(x) for x in data.split(", ")]
         if self.real_time:
-            graph.plot(data, data_type) # TODO: integrate with graph module.
+            self.grapher.plot(data_num, data_type, "time (ms)", data_type) # TODO: integrate with graph module.
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.
