@@ -5,7 +5,6 @@ class Flow(object):
     """Simple class for flows.
     Flows will trigger host behavior.
     Has slow start and congestion avoidance.
-
     Parameters
     ----------
     flow_id : string
@@ -20,7 +19,6 @@ class Flow(object):
         The network that the flow belongs to.
     time : float
         The amount of time to wait before starting to send in ms.
-
     """
     def __init__(self, flow_id, source, destination, amount, env, time, bw):
         """ Constructor for Flow class
@@ -41,7 +39,7 @@ class Flow(object):
         self.bw = bw
         self._flow_start = time*1000.0
         self._last_packet = 0
-        self.env.add_event(Event("Start flow", self.send_packet), self._flow_start)
+        self.env.add_event(Event("Start flow", self._flow_id, self.send_packet), self._flow_start)
 
     @property
     def flow_id(self):
@@ -93,7 +91,7 @@ class Flow(object):
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                    self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
+                    self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
                     # Shouldn't subtract pack.size if sent before.
                     if (self._pack_num not in self._packets_sent):
                         self._amount = self._amount - pack.size
@@ -111,16 +109,14 @@ class Flow(object):
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
+                self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
-
         Parameters
         ----------
         packet : `Packet`
             The packet to be received.
-
         """
         # Packet arrived at destination.  Send ack.
         if packet.dest == self._dest:
@@ -149,7 +145,7 @@ class Flow(object):
     def _respond_to_ack(self):
         """ Update window size.
         """
-        self.env.add_event(Event("Send", self.send_packet), self._resend_time)
+        self.env.add_event(Event("Send", self._flow_id, self.send_packet), self._resend_time)
         if self._cwnd < self._ssthresh:
             self._cwnd = self._cwnd + 1.0
         else:
@@ -159,15 +155,13 @@ class Flow(object):
 
     def _timeout(self, pack_num):
         """ Generate an ack or respond to bad packet.
-
         Parameters
         ----------
         pack_num : `Packet`number
             The packet number of the packet to check for timeout.
-
         """
         if pack_num not in self._acks_arrived:
-            self.env.add_event(Event("Resend", self.send_packet), self._resend_time)
+            self.env.add_event(Event("Resend", self._flow_id, self.send_packet), self._resend_time)
             # Go back n
             if pack_num not in self._packets_time_out:
                 self._packets_time_out.append(pack_num)

@@ -7,7 +7,6 @@ class RenoFlow(TahoeFlow):
     Adds Fast Retransmit and Fast Recovery
     Flows will trigger host behavior.
     Has slow start and congestion avoidance.
-
     Parameters
     ----------
     flow_id : string
@@ -22,7 +21,6 @@ class RenoFlow(TahoeFlow):
         The network that the flow belongs to.
     time : float
         The amount of time to wait before starting to send in ms.
-
     """
     def __init__(self, flow_id, source, destination, amount, env, time, bw):
         """ Constructor for Flow class
@@ -31,7 +29,7 @@ class RenoFlow(TahoeFlow):
         self._ms_before_timeout = 10000
         self._ssthresh = 100
         self._packets_arrived = []
-        self._packets_arrived = range(0,(int)(self._amount/(1024*8))) 
+        self._packets_arrived = range(0,(int)(self._amount/(1024*8)))
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._last_pack_rec = -1
         self._counter = 0
@@ -53,12 +51,10 @@ class RenoFlow(TahoeFlow):
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
-
         Parameters
         ----------
         packet : `Packet`
             The packet to be received.
-
         """
         if packet.dest == self._dest:
             print "Flow received packet {0}".format(packet.pack_id)
@@ -89,7 +85,7 @@ class RenoFlow(TahoeFlow):
                 self._cwnd = self._ssthresh + self._counter
                 if packet.next_expected not in self._packets_time_out:
                     self._packets_time_out.append(packet.next_expected)
-                self.env.add_event(Event("Resend", self.send_packet), 100)
+                self.env.add_event(Event("Resend", self._flow_id, self.send_packet), 100)
                 print "Flow {} window size is {} - fast retransmit".format(self._flow_id, self._cwnd)
                 self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
             self._receive_ack(packet)

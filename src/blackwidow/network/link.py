@@ -137,7 +137,7 @@ class Link(object):
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._release), delay)
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, self._release), delay)
 
 
     def _release(self):
@@ -155,7 +155,7 @@ class Link(object):
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self._id, packet.pack_id), f, packet=packet), self._delay)
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, f, packet=packet), self._delay)
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link_{0}.sent'.format(self._id))
         self.bw.record('{0}, {1}'.format(self.env.time, float(packet.size) / (self.env.time - time + self._delay)), 'link_{0}.rate'.format(self._id))
 
@@ -172,7 +172,7 @@ class Link(object):
             if next_packet.is_ack:
                 msg += "ACK "
             msg += "packet {1}"
-            self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self._send), delay)
+            self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self._id, self._send), delay)
 
     def get_buffer_size(self):
         """Returns the buffer size in bits."""
