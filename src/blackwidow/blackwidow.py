@@ -89,7 +89,7 @@ class BlackWidow(object):
         if ('tcp_alg' in settings and settings['tcp_alg'] is not None):
             self.tcp_alg = settings['tcp_alg']
 
-        self.num_graphs = 5
+        self.num_graphs = 10
 
         self.grapher = Grapher(self.num_graphs, self)
 

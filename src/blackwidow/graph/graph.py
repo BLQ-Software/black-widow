@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-plt.ion()
+# plt.ion()
 
 class Grapher(object):
     """Graphing class for blackwidow."""
