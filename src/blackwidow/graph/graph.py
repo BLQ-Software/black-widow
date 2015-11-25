@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
+# plt.ion()
+
 class Grapher(object):
     """Graphing class for blackwidow."""
 
@@ -17,17 +19,17 @@ class Grapher(object):
         self.bw = bw
         self.data_dir = bw.data_dir
         self.log_file = bw.log_file
-        
+
     def graph(self, sim_time):
         """Graphs the simulation."""
         sns.set()
 
         case_num = self.bw.log_file
         cc_type = 'Fixed Window'
-           
+
         # Determine the x-axis
         t = np.arange(sim_time)
-         
+
 
 
         # Create the paths to the data files
@@ -39,7 +41,7 @@ class Grapher(object):
 
 
         # PLOTTING GRAPHS
-        fig = plt.figure(1)
+        fig = plt.figure(1, figsize=(15,8))
         fig.suptitle(case_num, fontsize=14, fontweight='bold')
 
 
@@ -51,7 +53,7 @@ class Grapher(object):
             link_rate = link_rate.astype(int)
             link_rate_times = link_rate[:,0]
             link_rate = link_rate[:,1]
-            
+
             # Plot the link rate
             plt.subplot(5, 1, 1)
             plt.plot(link_rate_times[::2], link_rate[::2], markersize=5)
@@ -111,5 +113,5 @@ class Grapher(object):
             plt.plot(packet_sent_times, packet_sent)
             plt.xlabel('time (ms)')
             plt.ylabel('packets sent (pkts)')
-
+        plt.draw()
         plt.show()
