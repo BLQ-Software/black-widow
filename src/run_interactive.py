@@ -126,6 +126,7 @@ class BlackWidowInteractive(cmd.Cmd):
             return
         try:
             self.bw = BlackWidow()
+
             self.network = parser.config_network(args[0], self.bw)
             if self.show_network:
                 self.do_show("")
