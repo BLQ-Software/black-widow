@@ -50,8 +50,11 @@ class FastFlow(Flow):
                 if self._pack_num in self._packets_time_out:
                     self._packets_time_out.remove(self._pack_num)
                 self._pack_num = self._pack_num + 1
+                # Ending behavior
                 if self._pack_num == self._total_num_pack:
                     self._pack_num = self._packets_sent[0]
+                    self._cwnd = self._alpha
+                    return
 
     def _update_window(self):
         self._cwnd = (self._min_RTT/self._last_RTT)*self._cwnd + self._alpha
