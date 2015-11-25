@@ -30,6 +30,8 @@ class FastFlow(Flow):
 
     def _update_window(self):
         self._cwnd = (self._min_RTT/self._last_RTT)*self.cwnd + self._alpha
+        print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
+        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
 
     def _respond_to_ack(self):
         self.env.add_event(Event("Send", self.send_packet),self._resend_time)
