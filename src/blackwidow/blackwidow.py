@@ -1,5 +1,5 @@
 import parser
-import graph
+from graph import Grapher
 import re
 import os
 
@@ -110,7 +110,10 @@ class BlackWidow(object):
         network.dump()
 
         print "\nRunning network: \n"
-        return network.run()
+        sim_time = network.run()
+
+        grapher = Grapher(self)
+        grapher.graph(int(sim_time))
 
 
 
