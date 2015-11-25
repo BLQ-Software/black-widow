@@ -37,7 +37,7 @@ class Flow(object):
         self._amount = amount*8*10**6
         self._pack_num = 0
         self._cwnd = 1.0
-        self._ssthresh = 100
+        self._ssthresh = 1000
         self._resend_time = 100
         self._min_RTT = 1000.0
         self._last_RTT = 3000.0
@@ -103,6 +103,7 @@ class Flow(object):
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
+                    self.bw.record('{0},{1}'.format(self.env.time,pack.size), 'flow_{0}.sent'.format(self.flow_id))
                     self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
                     # Shouldn't subtract pack.size if sent before.
                     if (self._pack_num not in self._packets_sent):
@@ -151,6 +152,7 @@ class Flow(object):
             # Update which acks have arrived
             self._acks_arrived.add(packet.pack_id)
             print "Flow {} received ack for packet {}".format(self._flow_id, packet.pack_id)
+            self.bw.record('{0},{1}'.format(self.env.time,packet.size), 'flow_{0}.received'.format(self.flow_id))
             # Check if done
             if len(self._packets_sent) == 0 and self._amount <= 0:
                 self.env.decrement_flows()
