@@ -12,8 +12,6 @@ import matplotlib.pyplot as plt
 # Time to update router info, in ms.
 ROUTER_UPDATE_PERIOD = 100
 
-# plt.ion()
-
 
 class Network():
     """Python representation of the network.

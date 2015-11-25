@@ -145,9 +145,9 @@ class BlackWidowInteractive(cmd.Cmd):
             sio.seek(0)
 
             image = mpimg.imread(sio)
-            plt.axis('off')
-            plt.imshow(image)
-            plt.show()
+            # plt.axis('off')
+            # plt.imshow(image)
+            # plt.show()
         except Exception as e:
             print e
 
