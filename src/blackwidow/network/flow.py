@@ -1,6 +1,14 @@
 from blackwidow.network.packet import AckPacket, DataPacket
 from event import Event
 
+# Variables for timeout calculation from
+# https://tools.ietf.org/html/rfc6298
+K = 4.0
+alpha = 1.0/8.0
+beta = 1.0/4.0
+# clock granularity
+G = 1.0
+
 class Flow(object):
     """Simple class for flows.
     Flows will trigger host behavior.
@@ -27,11 +35,15 @@ class Flow(object):
         self._src = source
         self._dest = destination
         self._amount = amount*8*10**6
-        self._ms_before_timeout = 1000
         self._pack_num = 0
         self._cwnd = 1.0
         self._ssthresh = 100
         self._resend_time = 100
+        self._min_RTT = 1000.0
+        self._last_RTT = 3000.0
+        self._SRTT = 0
+        self._RTTVAR = 0
+        self._RTO = 3000
         self._packets_sent = []
         self._packets_time_out = []
         self._acks_arrived = set()
@@ -91,7 +103,7 @@ class Flow(object):
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                    self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
+                    self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
                     # Shouldn't subtract pack.size if sent before.
                     if (self._pack_num not in self._packets_sent):
                         self._amount = self._amount - pack.size
@@ -109,7 +121,7 @@ class Flow(object):
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._ms_before_timeout)
+                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._RTO)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -130,6 +142,7 @@ class Flow(object):
     def _receive_ack(self, packet):
         if packet.pack_id not in self._acks_arrived:
             self._respond_to_ack()
+            self._update_RTT(packet)
             # Update lists by removing pack_id
             if packet.pack_id in self._packets_sent:
                 self._packets_sent.remove(packet.pack_id)
@@ -153,6 +166,21 @@ class Flow(object):
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
 
+    def _update_RTT(self, packet):
+        """ Update last RTT and min RTT
+        """
+        self._last_RTT = self.env.time - packet.timestamp
+        if self._SRTT == 0:
+            self._SRTT = self._last_RTT
+            self._RTTVAR  = self._last_RTT/2.0
+        else:
+            self._RTTVAR = (1 - beta)*self._RTTVAR + beta*abs(self._SRTT - self._last_RTT)
+            self._SRTT = (1 - alpha)*self._SRTT + alpha*self._last_RTT
+        self._RTO = max(self._SRTT + max(G, K*self._RTTVAR), 1000)
+        print "RTO is {}".format(self._RTO)
+        if self._last_RTT < self._min_RTT:
+            self._min_RTT = self._last_RTT
+
     def _timeout(self, pack_num):
         """ Generate an ack or respond to bad packet.
         Parameters
@@ -169,7 +197,10 @@ class Flow(object):
             self._reset_window()
 
     def _reset_window(self):
-        self._ssthresh = self._cwnd / float(2)
+        if self._cwnd > 4:
+            self._ssthresh = self._cwnd / float(2)
+        else:
+            self._ssthresh = 2.0
         self._cwnd = 1.0
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))

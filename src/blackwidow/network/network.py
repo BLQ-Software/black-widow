@@ -4,6 +4,7 @@ from link import Link
 from flow import Flow
 from tahoe_flow import TahoeFlow
 from reno_flow import RenoFlow
+from fast_flow import FastFlow
 from Queue import PriorityQueue
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -143,6 +144,9 @@ class Network():
                         self, flow_start, bw)
         elif self.bw.tcp_alg == 'Tahoe':
             flow = TahoeFlow(flow_id, device_1, device_2, data_amt,
+                        self, flow_start, bw)
+        elif self.bw.tcp_alg == 'Fast':
+            flow = FastFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
         else:
             raise Exception("Unknown TCP algorithm.")
