@@ -6,10 +6,15 @@ from tahoe_flow import TahoeFlow
 from reno_flow import RenoFlow
 from fast_flow import FastFlow
 from Queue import PriorityQueue
+import networkx as nx
+import matplotlib.pyplot as plt
 
 # Constants
 # Time to update router info, in ms.
 ROUTER_UPDATE_PERIOD = 100
+
+plt.ion()
+
 
 class Network():
     """Python representation of the network.
@@ -30,6 +35,11 @@ class Network():
         self.bw = bw
         self._events = PriorityQueue()
         self.num_flows_active = 0
+        self.g = nx.MultiDiGraph()
+        self.edge_labels = {}
+        self.router_labels = []
+        self.host_labels = []
+        self.initial_events = {}
 
     @property
     def time(self):
@@ -44,17 +54,24 @@ class Network():
         if obj_id in self.ids:
             raise ValueError('id {0} already exists.'.format(obj_id))
 
-    def dump(self):
+    def dump(self, output=False):
         """Prints out network"""
-        print self.devices
-        print self.links
-        print self.flows
+        if output:
+            print "Devices:\n"
+            for device_id in self.devices:
+                print self.devices[device_id]
+            print "Flows:\n"
+            for flow_id in self.flows:
+                print self.flows[flow_id]
+        return nx.to_pydot(self.g)
 
     def add_host(self, host_id):
         """Construct host and add to dictionary of hosts."""
         self.check_id(host_id)
         self.devices[host_id] = Host(host_id)
         self.ids.append(host_id)
+        self.g.add_node(host_id, shape="square")
+        self.host_labels.append(host_id)
 
     def add_router(self, router_id, bw):
         """Construct router and add to dictionary of routers"""
@@ -62,6 +79,22 @@ class Network():
         self.devices[router_id] = Router(router_id, self, bw)
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
+        self.g.add_node(router_id)
+        self.router_labels.append(router_id)
+
+    def delete_device(self, device_id):
+        device = self.devices[device_id]
+        for link in device.links[:]:
+            self.delete_link(link.id)
+        try:
+            for flow in devices.flows[:]:
+                self.delete_flow(flow.flow_id)
+        except:
+            pass
+
+        self.g.remove_node(device_id)
+        self.ids.remove(device_id)
+        del self.devices[device_id]
 
     def add_link(self, link_id, device_id1, device_id2,
                  delay, rate, capacity, bw):
@@ -82,13 +115,32 @@ class Network():
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
 
+        self.g.add_edge(device_id1, device_id2, label=link_id, dir="none", len=str(delay))
+        self.edge_labels[(device_id1, device_id2)] = link_id
+
+    def delete_link(self, link_id):
+        link = self.links[link_id]
+        link.device_a.delete_link(link)
+        link.device_b.delete_link(link)
+
+        try:
+            self.g.remove_edge(link.device_a.network_id, link.device_b.network_id)
+        except:
+            self.g.remove_edge(link.device_b.network_id, link.device_a.network_id)
+
+        self.ids.remove(link_id)
+        del self.links[link_id]
+
+
     def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start, bw):
+
+        self.check_id(flow_id)
         device_1 = self.devices[flow_src]
         device_2 = self.devices[flow_dest]
 
         self.num_flows_active += 1
 
-        # Determine TCP alg from bw.tcp_alg 
+        # Determine TCP alg from bw.tcp_alg
         if self.bw.tcp_alg == 'Reno':
             flow = RenoFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
@@ -106,15 +158,29 @@ class Network():
 
         device_1.add_flow(flow)
         device_2.add_flow(flow)
-
-
+        self.g.add_edge(flow_src, flow_dest, label=flow_id)
 
         self.ids.append(flow_id)
+
+    def delete_flow(self, flow_id):
+        flow = self.flows[flow_id]
+        flow.src.delete_flow(flow)
+        flow.dest.delete_flow(flow)
+
+        self.g.remove_edge(flow.src.network_id, flow.dest.network_id)
+        self.ids.remove(flow_id)
+        del self.initial_events[flow_id]
+        del self.flows[flow_id]
+        self.num_flows_active -= 1
 
     def decrement_flows(self):
         self.num_flows_active -= 1
 
-    def add_event(self, event, delay):
+    def empty(self):
+        self._events = PriorityQueue()
+        self.initial_events = []
+
+    def add_event(self, event, delay, initial=False):
         """
         Function to add an event to the queue
 
@@ -128,9 +194,15 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        self._events.put((self._time + delay, event))
+        if initial:
+            self.initial_events[event.src_id] = (self._time + delay, event)
+        else:
+            self._events.put((self._time + delay, event))
 
     def run(self):
+
+        for i in self.initial_events:
+            self._events.put((self.initial_events[i][0], self.initial_events[i][1]))
         # Keep running while we have events to run. The first events will be
         # enqueued by the flows when they are initialized.
         while not self._events.empty() and self.num_flows_active != 0:
@@ -140,4 +212,4 @@ class Network():
             current_event.run()
 
         # Return end time.
-        return self._time 
+        return self._time
