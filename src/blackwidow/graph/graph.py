@@ -4,17 +4,16 @@ Created on Fri Nov  6 23:11:24 2015
 
 @author: nancywen
 """
+import sys
 import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
 import os
-
-plt.ion()
+from multiprocessing import Process, Queue
 
 class Grapher(object):
     """Graphing class for blackwidow."""
 
-    def __init__(self, num_graphs, bw):
+    def __init__(self, num_graphs, bw, queue = None):
         """Constructor for graph object."""
         self.bw = bw
         self.data_dir = bw.data_dir
@@ -25,22 +24,26 @@ class Grapher(object):
         self.num_graphs = num_graphs
         self.subplots = {}
         self.num_points = 0
+        self.queue = queue
         sns.set()
         case_num = self.bw.log_file
         cc_type = 'Fixed Window'
 
         # Determine the x-axis
 
-        fig = plt.figure(1, figsize=(15,8))
+        if queue is not None:
 
-        fig.suptitle(case_num, fontsize=14, fontweight='bold')
+            process_0 = Process(target=self.ready, args=(queue,))
+            print "Created process"
+            process_0.start()
+            print "Running process"
 
     def init_plot(self, data_type, xlabel, ylabel):
         self.subplots[data_type] = plt.subplot(self.num_graphs, 1, self.subplot_id)
         self.subplots[data_type].set_xlabel(xlabel)
         self.subplots[data_type].set_ylabel(ylabel)
 
-    def plot(self, data, data_type, xlabel, ylabel):
+    def plot(self, data, data_type, xlabel, ylabel, plt):
 
         if len(data) == 1:
             data = (data[0], 1)
@@ -61,6 +64,17 @@ class Grapher(object):
         if (self.num_points % 100 == 0):
             plt.draw()
             plt.show()
+
+    def ready(self, queue):
+        import matplotlib.pyplot as plt
+        plt.ion()
+        fig = plt.figure(1, figsize=(15,8))
+
+        fig.suptitle(case_num, fontsize=14, fontweight='bold')
+        while(True):
+            print "Plotting point"
+            data, data_type, xlabel, ylabel = queue.get()
+            self.plot(data, data_type, xlabel, ylabel, plt)
 
 
     def graph(self, sim_time):

@@ -6,7 +6,6 @@ from tahoe_flow import TahoeFlow
 from reno_flow import RenoFlow
 from Queue import PriorityQueue
 import networkx as nx
-import matplotlib.pyplot as plt
 
 # Constants
 # Time to update router info, in ms.

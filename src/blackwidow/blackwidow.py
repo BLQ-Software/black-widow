@@ -2,6 +2,7 @@ import parser
 from graph import Grapher
 import re
 import os
+from multiprocessing import Queue
 
 class BlackWidow(object):
     """Runs simulation based on settings.
@@ -91,7 +92,12 @@ class BlackWidow(object):
 
         self.num_graphs = 5
 
-        self.grapher = Grapher(self.num_graphs, self)
+        self.queue = None
+
+        if self.real_time:
+            self.queue = Queue()
+
+        self.grapher = Grapher(self.num_graphs, self, self.queue)
 
 
 
@@ -164,7 +170,9 @@ class BlackWidow(object):
         """
         data_num = [float(x) for x in data.split(", ")]
         if self.real_time:
-            self.grapher.plot(data_num, data_type, "time (ms)", data_type) # TODO: integrate with graph module.
+            print "Putting point in queue"
+            self.queue.put((data_num, data_type, "time (ms)", data_type))
+            # self.grapher.plot(data_num, data_type, "time (ms)", data_type) # TODO: integrate with graph module.
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.
