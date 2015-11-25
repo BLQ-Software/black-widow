@@ -41,7 +41,7 @@ class Flow(object):
         self._resend_time = 100
         self._min_RTT = 1000.0
         self._last_RTT = 3000.0
-        self._SRTT = 0
+        self._SRTT = -1
         self._RTTVAR = 0
         self._RTO = 3000
         self._packets_sent = []
@@ -121,7 +121,7 @@ class Flow(object):
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
                 self._src.send(pack)
                 self._packets_time_out.remove(self._pack_num)
-                self.env.add_event(Event("Timeout", self._timeout, pack_num = self._pack_num), self._RTO)
+                self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
@@ -170,7 +170,7 @@ class Flow(object):
         """ Update last RTT and min RTT
         """
         self._last_RTT = self.env.time - packet.timestamp
-        if self._SRTT == 0:
+        if self._SRTT == -1:
             self._SRTT = self._last_RTT
             self._RTTVAR  = self._last_RTT/2.0
         else:
