@@ -12,6 +12,7 @@ from blackwidow.network import *
 from cStringIO import StringIO
 
 plt.ion()
+f = plt.figure(2)
 
 
 class BlackWidowInteractive(cmd.Cmd):
@@ -125,8 +126,8 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         try:
-            self.bw = BlackWidow()
-
+            base = os.path.basename(args[0])
+            self.bw = BlackWidow({'log_file': os.path.splitext(base)[0]})
             self.network = parser.config_network(args[0], self.bw)
             if self.show_network:
                 self.do_show("")
@@ -157,6 +158,9 @@ class BlackWidowInteractive(cmd.Cmd):
             self.bw.run_network(self.network)
         except Exception as e:
             print e
+
+    def do_clear(self, line):
+        plt.clf()
 
     def do_set_show(self, line):
         """set_show [show]

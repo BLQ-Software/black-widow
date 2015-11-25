@@ -21,7 +21,7 @@ if __name__ == "__main__":
                         help='uses static routing instead of dynamic routing.')
     parser.add_argument('-rp', '--routing-packet-size', type=int,
                         help='Sets the size of the routing packet')
-                        
+
     parser.add_argument('-t', '--tcp-alg', type=str,
                         help='Sets the TCP algorithm for the simulation.')
 

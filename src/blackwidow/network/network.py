@@ -12,8 +12,6 @@ import matplotlib.pyplot as plt
 # Time to update router info, in ms.
 ROUTER_UPDATE_PERIOD = 100
 
-plt.ion()
-
 
 class Network():
     """Python representation of the network.
@@ -147,7 +145,7 @@ class Network():
             flow = TahoeFlow(flow_id, device_1, device_2, data_amt,
                         self, flow_start, bw)
         else:
-            raise Expection("Unknown TCP algorithm.")
+            raise Exception("Unknown TCP algorithm.")
 
 
         self.flows[flow_id] = flow
