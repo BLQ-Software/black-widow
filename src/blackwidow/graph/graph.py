@@ -22,7 +22,7 @@ class Grapher(object):
 
     def graph(self, sim_time):
         """Graphs the simulation."""
-        # sns.set()
+        sns.set()
 
         case_num = self.bw.log_file
         cc_type = 'Fixed Window'
@@ -41,7 +41,7 @@ class Grapher(object):
 
 
         # PLOTTING GRAPHS
-        fig = plt.figure(1)
+        fig = plt.figure(1, figsize=(15,8))
         fig.suptitle(case_num, fontsize=14, fontweight='bold')
 
 
