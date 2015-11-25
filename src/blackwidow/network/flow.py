@@ -177,10 +177,11 @@ class Flow(object):
         if self._SRTT == 0:
             self._SRTT = self._last_RTT
             self._RTTVAR  = self._last_RTT/2.0
-            self._RTO = self._SRTT + max(G, K*self._RTTVAR)
         else:
             self._RTTVAR = (1 - beta)*self._RTTVAR + beta*abs(self._SRTT - self._last_RTT)
             self._SRTT = (1 - alpha)*self._SRTT + alpha*self._last_RTT
+        self._RTO = max(self._SRTT + max(G, K*self._RTTVAR), 1000)
+        print "RTO is {}".format(self._RTO)
         if self._last_RTT < self._min_RTT:
             self._min_RTT = self._last_RTT
 
