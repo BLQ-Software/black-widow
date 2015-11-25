@@ -1,7 +1,7 @@
 from collections import deque
 from event import Event
 
-HALF_DUPLEX = False 
+HALF_DUPLEX = False
 
 class Link(object):
     """Simulates a link connected to two Devices in the network.
@@ -166,7 +166,9 @@ class Link(object):
         msg += "packet {1}"
         self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, f, packet=packet), self._delay)
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link_{0}.sent'.format(self._id))
-        self.bw.record('{0}, {1}'.format(self.env.time, float(packet.size) / (self.env.time - time + self._delay)), 'link_{0}.rate'.format(self._id))
+        if not packet.is_ack and not packet.is_routing:
+
+            self.bw.record('{0}, {1}'.format(self.env.time, float(packet.size) / (self.env.time - time) / 1000.0), 'link_{0}.rate'.format(self._id))
 
         if len(self._release_into_link_buffer) > 0:
             packet_info = self._release_into_link_buffer[-1]

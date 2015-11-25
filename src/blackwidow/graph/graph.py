@@ -9,28 +9,64 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-# plt.ion()
+plt.ion()
 
 class Grapher(object):
     """Graphing class for blackwidow."""
 
-    def __init__(self, bw):
+    def __init__(self, num_graphs, bw):
         """Constructor for graph object."""
         self.bw = bw
         self.data_dir = bw.data_dir
         self.log_file = bw.log_file
-
-    def graph(self, sim_time):
-        """Graphs the simulation."""
+        self.subplot_id = 1
+        self.data_type_ids = {}
+        self.data_type_data = {}
+        self.num_graphs = num_graphs
+        self.subplots = {}
+        self.num_points = 0
         sns.set()
-
         case_num = self.bw.log_file
         cc_type = 'Fixed Window'
 
         # Determine the x-axis
+
+        fig = plt.figure(1, figsize=(15,8))
+
+        fig.suptitle(case_num, fontsize=14, fontweight='bold')
+
+    def init_plot(self, data_type, xlabel, ylabel):
+        self.subplots[data_type] = plt.subplot(self.num_graphs, 1, self.subplot_id)
+        self.subplots[data_type].set_xlabel(xlabel)
+        self.subplots[data_type].set_ylabel(ylabel)
+
+    def plot(self, data, data_type, xlabel, ylabel):
+
+        if len(data) == 1:
+            data = (data[0], 1)
+
+        if data_type in self.data_type_ids:
+            subplot_id = self.data_type_ids[data_type]
+        else:
+            subplot_id = 1
+            self.data_type_ids[data_type] = self.subplot_id
+            self.data_type_data[data_type] = ([], [])
+            self.init_plot(data_type, xlabel, ylabel)
+            self.subplot_id += 1
+        self.data_type_data[data_type][0].append(data[0])
+        self.data_type_data[data_type][1].append(data[1])
+
+        self.subplots[data_type].plot(self.data_type_data[data_type][0], self.data_type_data[data_type][1], 'or')
+        self.num_points += 1
+        if (self.num_points % 100 == 0):
+            plt.draw()
+            plt.show()
+
+
+    def graph(self, sim_time):
+        """Graphs the simulation."""
+
         t = np.arange(sim_time)
-
-
 
         # Create the paths to the data files
         link_rate_path = '{}/{}.link_L1.rate.csv'.format(self.data_dir, self.log_file)
@@ -41,8 +77,6 @@ class Grapher(object):
 
 
         # PLOTTING GRAPHS
-        fig = plt.figure(1, figsize=(15,8))
-        fig.suptitle(case_num, fontsize=14, fontweight='bold')
 
 
         # LOADING DATA
