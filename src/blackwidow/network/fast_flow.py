@@ -26,7 +26,7 @@ class FastFlow(Flow):
         """ Constructor for Flow class
         """
         Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
-        self._alpha = 10.0
+        self._alpha = 50.0
         self.env.add_event(Event("Start window calc", self._update_window), self._flow_start-1)
 
     def _update_window(self):
