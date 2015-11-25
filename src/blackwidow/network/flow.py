@@ -117,7 +117,10 @@ class Flow(object):
                 # Ending behavior
                 if self._pack_num == self._total_num_pack:
                     self._pack_num = self._packets_sent[0]
-                    break
+                    print "Reached end {0}".format(len(self._packets_sent))
+                    self.env.add_event(Event("Ending resend", self._flow_id, self.send_packet), self._resend_time)
+                    return
+                    self._cwnd = 20
 
     def receive(self, packet):
         """ Generate an ack or respond to bad packet.
