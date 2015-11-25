@@ -116,7 +116,10 @@ class BlackWidow(object):
         grapher.graph(int(sim_time))
 
     def run_network(self, network):
-        return network.run()
+        sim_time = network.run()
+
+        grapher = Grapher(self)
+        grapher.graph(int(sim_time))
 
 
 
