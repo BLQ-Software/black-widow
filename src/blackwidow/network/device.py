@@ -15,10 +15,6 @@ class Device(object):
     def network_id(self, value):
         raise AttributeError("Cannot modify device id: {0}".format(self._network_id))
 
-    @property
-    def links(self):
-        return self._links
-
     def set_env(self, env):
         """Set simpy environment"""
         self.env = env
@@ -26,9 +22,6 @@ class Device(object):
     def add_link(self, link):
         """Add link to list of links."""
         self._links.append(link)
-
-    def delete_link(self, link):
-        self._links.remove(link)
 
     def send(self, packet):
         pass

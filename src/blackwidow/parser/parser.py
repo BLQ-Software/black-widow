@@ -3,7 +3,6 @@ import json
 
 def config_network(filename, bw):
     """Returns config object."""
-
     f = open(filename)
     config = json.load(f)
     f.close()
@@ -21,7 +20,6 @@ def config_network(filename, bw):
                          link['rate'], link['buffer'], bw)
 
     for flow in config['Flows']:
-
         network.add_flow(flow['network_id'], flow['src'],
                          flow['dest'], flow['amount'],
                          flow['start'], bw)

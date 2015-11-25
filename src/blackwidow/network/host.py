@@ -19,10 +19,6 @@ class Host(Device):
         super(Host, self).__init__(host_id)
         self._flows = []
 
-    @property
-    def flows(self):
-        return self._flows
-
     def add_flow(self, flow):
         """Add receiving flow to host.
 
@@ -34,9 +30,6 @@ class Host(Device):
         """
         self._flows.append(flow)
 
-    def delete_flow(self, flow):
-        self._flows.remove(flow)
-
     def send(self, packet):
         """Connects to a link.
 
@@ -46,10 +39,7 @@ class Host(Device):
             The packet to send.
 
         """
-        if len(self._links) > 0:
-            self._links[0].receive(packet, self._network_id)
-        else:
-            raise Exception("Host {0} does not have any links".format(self.network_id))
+        self._links[0].receive(packet, self._network_id)
 
     def receive(self, packet):
         """Send packet to flow to process.

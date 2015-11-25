@@ -1,5 +1,5 @@
 import parser
-from graph import Grapher
+import graph
 import re
 import os
 
@@ -41,12 +41,12 @@ class BlackWidow(object):
     """
     def __init__(self, settings={}):
         """Initializes settings fields.
-
+        
         settings is a dictionary generated from the argsparse arguments,
         with some extra options added in.
         """
         self._settings = settings
-
+        
         self.real_time = False # Default setting
         if 'real_time' in settings:
             self.real_time = settings['real_time'] # Override default
@@ -55,7 +55,7 @@ class BlackWidow(object):
         self.show_verbose = False
         if 'show_verbose' in settings:
             self.show_verbose = settings['show_verbose']
-
+        
 
         self.static_routing = False
         if 'static_routing' in settings:
@@ -68,7 +68,7 @@ class BlackWidow(object):
 
 
         self.routing_packet_size = 32 * 8
-        if ('routing_packet_size' in settings and
+        if ('routing_packet_size' in settings and 
                 settings['routing_packet_size'] is not None):
             self.routing_packet_size = settings['routing_packet_size']
 
@@ -77,20 +77,20 @@ class BlackWidow(object):
         if 'log_file' in settings:
             # Regex to match old version of particular case.
             regex = re.compile(r'{}\..*'.format(settings['log_file']))
-
+            
             for f in os.listdir(self.data_dir):
                 if regex.match(f) is not None:
                     os.remove('{}/{}'.format(self.data_dir, f))
 
-            self.log_file = settings['log_file']
-
+            self.log_file = settings['log_file'] 
 
         self.tcp_alg = 'Reno'
         if 'tcp_alg' in settings:
             self.tcp_alg = settings['tcp_alg']
+            
 
 
-
+        
 
 
     def run(self, file_name):
@@ -110,12 +110,6 @@ class BlackWidow(object):
         network.dump()
 
         print "\nRunning network: \n"
-        sim_time = network.run()
-
-        grapher = Grapher(self)
-        grapher.graph(int(sim_time))
-
-    def run_network(self, network):
         return network.run()
 
 
@@ -157,7 +151,7 @@ class BlackWidow(object):
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.
-            with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file,
+            with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file, 
                                             data_type), 'a') as f:
                 f.write(data + '\n')
         elif self.show_verbose:
