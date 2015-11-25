@@ -159,6 +159,9 @@ class BlackWidowInteractive(cmd.Cmd):
         except Exception as e:
             print e
 
+    def do_clear(self, line):
+        plt.clf()
+
     def do_set_show(self, line):
         """set_show [show]
         Show the network after every command if show == True"""
