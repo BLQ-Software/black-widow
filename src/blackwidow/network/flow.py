@@ -34,6 +34,8 @@ class Flow(object):
         self._cwnd = 1.0
         self._ssthresh = 100
         self._resend_time = 100
+        self._min_RTT = 1000
+        self._last_RTT = 3000
         self._packets_sent = []
         self._packets_time_out = []
         self._acks_arrived = set()
@@ -134,6 +136,7 @@ class Flow(object):
     def _receive_ack(self, packet):
         if packet.pack_id not in self._acks_arrived:
             self._respond_to_ack()
+            self._update_RTT(packet)
             # Update lists by removing pack_id
             if packet.pack_id in self._packets_sent:
                 self._packets_sent.remove(packet.pack_id)
@@ -156,6 +159,13 @@ class Flow(object):
             self._cwnd = self._cwnd + 1.0/self._cwnd
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
+
+    def _update_RTT(self, packet):
+        """ Update last RTT and min RTT
+        """
+        self._last_RTT = self.env.time - packet.timestamp
+        if self._last_RTT < self._min_RTT:
+            self._min_RTT = self._last_RTT
 
     def _timeout(self, pack_num):
         """ Generate an ack or respond to bad packet.
