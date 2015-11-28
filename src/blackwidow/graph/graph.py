@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-plt.ion()
+# plt.ion()
 
 class Grapher(object):
     """Graphing class for blackwidow."""
@@ -26,14 +26,8 @@ class Grapher(object):
         self.subplots = {}
         self.num_points = 0
         sns.set()
-        case_num = self.bw.log_file
-        cc_type = 'Fixed Window'
 
         # Determine the x-axis
-
-        fig = plt.figure(1, figsize=(15,8))
-
-        fig.suptitle(case_num, fontsize=14, fontweight='bold')
 
     def init_plot(self, data_type, xlabel, ylabel):
         self.subplots[data_type] = plt.subplot(self.num_graphs, 1, self.subplot_id)
@@ -66,6 +60,13 @@ class Grapher(object):
     def graph(self, sim_time):
         """Graphs the simulation."""
 
+        case_num = self.bw.log_file
+        cc_type = 'Fixed Window'
+
+        fig = plt.figure(1, figsize=(15,8))
+
+        fig.suptitle(case_num, fontsize=14, fontweight='bold')
+
         t = np.arange(sim_time)
 
         # Create the paths to the data files
@@ -85,12 +86,14 @@ class Grapher(object):
             # Load in link rate data
             link_rate = np.genfromtxt(link_rate_path, delimiter=',')
             link_rate = link_rate.astype(float)
+            link_rate = bin(link_rate, 100)
+
             link_rate_times = link_rate[:,0]
             link_rate = link_rate[:,1]
 
             # Plot the link rate
             plt.subplot(5, 1, 1)
-            plt.scatter(link_rate_times, link_rate)
+            plt.plot(link_rate_times[::2], link_rate[::2], markersize=5)
             plt.xlabel('time (ms)')
             plt.ylabel('link rate (Mbps)')
 
@@ -149,3 +152,28 @@ class Grapher(object):
             plt.ylabel('packets sent (pkts)')
         plt.draw()
         plt.show()
+
+def bin(data, time=1000):
+    data_time = []
+    data_n = []
+
+    previous_time = 0
+    sum = 0
+    count = 0
+
+    for i in range(0, data.shape[0]):
+        time_n = int(data[i][0] / time) * time
+        if (i == 0):
+            previous_time = time_n
+        if time_n == previous_time:
+            sum += data[i][1]
+            count += 1
+        else:
+            data_time.append(previous_time)
+            data_n.append(float(sum) / float(count))
+            previous_time = time_n
+            sum = data[i][1]
+            count = 1
+    data_time.append(previous_time)
+    data_n.append(float(sum) / float(count))
+    return np.array([data_time, data_n]).transpose()
