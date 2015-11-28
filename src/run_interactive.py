@@ -223,8 +223,7 @@ def check_args(args, n):
         return False
     return True
 
-
-if __name__ == '__main__':
+def main():
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
     b.do_create_network("")
@@ -234,3 +233,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
 
     b.cmdloop(intro="Welcome to BlackWidow")
+
+
+if __name__ == '__main__':
+    main()

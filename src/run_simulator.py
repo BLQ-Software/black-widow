@@ -6,12 +6,13 @@ module to run based on user arguments.
 import argparse
 import os.path
 from blackwidow import BlackWidow
+from run_interactive import main
 
 if __name__ == "__main__":
 
     # Configure argument parser
     parser = argparse.ArgumentParser(description='Run a TCP network simulation.')
-    parser.add_argument('files', metavar='config_file', type=str, nargs='+',
+    parser.add_argument('files', metavar='config_file', type=str, nargs='*',
                         help='name of file to process. e.g. case0.json')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='whether to print verbose statements')
@@ -21,7 +22,7 @@ if __name__ == "__main__":
                         help='uses static routing instead of dynamic routing.')
     parser.add_argument('-rp', '--routing-packet-size', type=int,
                         help='Sets the size of the routing packet')
-                        
+
     parser.add_argument('-t', '--tcp-alg', type=str,
                         help='Sets the TCP algorithm for the simulation.')
 
@@ -30,11 +31,15 @@ if __name__ == "__main__":
     settings = vars(parser.parse_args())
 
     # Iterate through config files specified.
-    for f in settings['files']:
-        # Make default log_file name the input name without ext.
-        if not settings['real_time']:
-            base = os.path.basename(f)
-            settings['log_file'] = os.path.splitext(base)[0]
 
-        bw = BlackWidow(settings)
-        bw.run(f)
+    if len(settings['files']) != 0:
+        for f in settings['files']:
+            # Make default log_file name the input name without ext.
+            if not settings['real_time']:
+                base = os.path.basename(f)
+                settings['log_file'] = os.path.splitext(base)[0]
+
+            bw = BlackWidow(settings)
+            bw.run(f)
+    else:
+        main()
