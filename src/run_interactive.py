@@ -17,14 +17,27 @@ plt.ion()
 
 class BlackWidowInteractive(cmd.Cmd):
 
-    def do_create_network(self, line):
-        """Create a new network"""
-        self.bw = BlackWidow()
-        self.network = Network(self.bw)
+    def create_network(self, settings, f):
+        if settings is None:
+            self.bw = BlackWidow()
+            self.network = Network(self.bw)
+        else:
+            self.bw = BlackWidow(settings)
+            self.network = parser.config_network(f, self.bw)
+        self.do_reset_v("")
+
+    def do_reset_v(self, line):
         self.dpi = "300"
         self.proj = "dot"
         self.show_network = True
         self.output = True
+
+
+    def do_reset(self, line):
+        """Reset"""
+        self.bw = BlackWidow()
+        self.network = Network(self.bw)
+        self.do_reset_v("")
 
     def do_add_router(self, line):
         """add_router [id]
@@ -224,9 +237,15 @@ def check_args(args, n):
     return True
 
 def main():
+    create_bw()
+
+def create_bw(settings=None, f=None):
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
-    b.do_create_network("")
+    if settings is not None:
+        b.create_network(settings, f)
+    else:
+        b.do_reset("")
     def signal_handler(signal, frame):
         b.do_stop("")
 

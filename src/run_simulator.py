@@ -6,7 +6,7 @@ module to run based on user arguments.
 import argparse
 import os.path
 from blackwidow import BlackWidow
-from run_interactive import main
+from run_interactive import create_bw
 
 if __name__ == "__main__":
 
@@ -39,7 +39,6 @@ if __name__ == "__main__":
                 base = os.path.basename(f)
                 settings['log_file'] = os.path.splitext(base)[0]
 
-            bw = BlackWidow(settings)
-            bw.run(f)
+            create_bw(settings, f)
     else:
-        main()
+        create_bw()
