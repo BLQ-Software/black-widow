@@ -41,7 +41,9 @@ if __name__ == '__main__':
     
         smooth_factor = 100
 
-        devices = [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1], ['L1', 'link', 2]]
+        devices = [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1], 
+                   ['L1', 'link', 2], ['L2', 'link', 2], ['L3', 'link', 2]]
+        
         data_types = ['sent', 'received']
      
         flow_path = '{}/{}.{}_{}.{}.csv'
@@ -69,17 +71,20 @@ if __name__ == '__main__':
                         sum_time += data[k + n][0]
 
                     delta_t = data[k + smooth_factor - 1][0] - data[k][0]
+                    new_rate = sum_data / delta_t / 1000.0
                     
-                    if delta_t != 0:
-                        rate.append(sum_data / delta_t / 1000.0)
+                    if delta_t != 0 and new_rate <= 12.5:
+                        rate.append(new_rate)
                         time.append(sum_time / float(smooth_factor))
 
-                plt.subplot(5, 1, devices[i][2])
-                plt.plot(time, rate)
+                plt.subplot(5, 1, device[2] * len(data_types) + j)
+                plt.plot(time, rate, label=device[0])
+                plt.legend()
                 plt.xlabel('time (ms)')
-                plt.ylabel('{} {} rate (Mbps)'.format(device[0], data_type))
+                plt.ylabel('{} {} rate (Mbps)'.format(device[1], data_type))
                 plt.draw()
         
+        fig.tight_layout()
         plt.show()
             
         
