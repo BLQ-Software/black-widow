@@ -98,13 +98,13 @@ class Grapher(object):
         if (os.path.isfile(link_rate_path)):
             # Load in link rate data
             link_rate = np.genfromtxt(link_rate_path, delimiter=',')
-            link_rate = link_rate.astype(int)
+            link_rate = link_rate.astype(float)
             link_rate_times = link_rate[:,0]
             link_rate = link_rate[:,1]
 
             # Plot the link rate
             plt.subplot(5, 1, 1)
-            plt.plot(link_rate_times[::2], link_rate[::2], markersize=5)
+            plt.scatter(link_rate_times, link_rate)
             plt.xlabel('time (ms)')
             plt.ylabel('link rate (Mbps)')
 
