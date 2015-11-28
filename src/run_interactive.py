@@ -31,8 +31,7 @@ class BlackWidowInteractive(cmd.Cmd):
         self.dpi = "300"
         self.proj = "dot"
         self.show_network = True
-        self.output = True
-
+        self.output = False
 
     def do_reset(self, line):
         """Reset"""
