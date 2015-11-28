@@ -7,6 +7,7 @@ Created on Fri Nov  6 23:11:24 2015
 import sys
 import numpy as np
 import seaborn as sns
+import matplotlib.pyplot as plt
 import os
 from multiprocessing import Process, Queue
 
