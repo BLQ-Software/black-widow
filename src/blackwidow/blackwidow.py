@@ -170,9 +170,9 @@ class BlackWidow(object):
         """
         data_num = [float(x) for x in data.split(", ")]
         if self.real_time:
-            print "Putting point in queue"
-            self.queue.put((data_num, data_type, "time (ms)", data_type))
             # self.grapher.plot(data_num, data_type, "time (ms)", data_type) # TODO: integrate with graph module.
+            if data_type == "link_L1.rate":
+                self.grapher.plot_link(data_num[0], data_num[1])
         elif self.log_file is not None:
             # Write data to file with extension based on data type.
             # appends to the end of the file.

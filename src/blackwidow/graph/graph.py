@@ -10,6 +10,19 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
+import pyqtgraph as pg
+import numpy as np
+pg.mkQApp()
+
+import pyqtgraph.multiprocess as mp
+proc = mp.QtProcess()
+rpg = proc._import('pyqtgraph')
+plotwin = rpg.plot()
+curve = plotwin.plot(pen='y')
+
+x_data = proc.transfer([])
+data = proc.transfer([])
+
 # plt.ion()
 
 class Grapher(object):
@@ -31,7 +44,10 @@ class Grapher(object):
 
         # Determine the x-axis
 
-
+    def plot_link(self, x, y):
+        x_data.extend([x], _callSync='off')
+        data.extend([y], _callSync='off')
+        curve.setData(x=x_data, y=data, _callSync='off')
 
     def init_plot(self, data_type, xlabel, ylabel):
         self.subplots[data_type] = plt.subplot(self.num_graphs, 1, self.subplot_id)
