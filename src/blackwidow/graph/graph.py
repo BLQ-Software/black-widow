@@ -4,9 +4,10 @@ Created on Fri Nov  6 23:11:24 2015
 
 @author: nancywen
 """
+import sys
 import numpy as np
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
 import os
 
 # plt.ion()
@@ -14,7 +15,7 @@ import os
 class Grapher(object):
     """Graphing class for blackwidow."""
 
-    def __init__(self, num_graphs, bw):
+    def __init__(self, num_graphs, bw, queue = None):
         """Constructor for graph object."""
         self.bw = bw
         self.data_dir = bw.data_dir
@@ -25,9 +26,12 @@ class Grapher(object):
         self.num_graphs = num_graphs
         self.subplots = {}
         self.num_points = 0
+        self.queue = queue
         sns.set()
 
         # Determine the x-axis
+
+
 
     def init_plot(self, data_type, xlabel, ylabel):
         self.subplots[data_type] = plt.subplot(self.num_graphs, 1, self.subplot_id)

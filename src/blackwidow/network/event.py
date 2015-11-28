@@ -1,6 +1,3 @@
-
-
-
 class Event:
     _last_id = 0
     def __init__(self, type, src_id, f, **kwargs):
