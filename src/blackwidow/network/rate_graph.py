@@ -24,7 +24,7 @@ class Data(object):
         raise AttributeError("Cannot change size")
 
     def __cmp__(self, other):
-        return cmp(self.time, other.time)
+        return cmp(self._time, other.time)
 
 class Rate_Graph(object):
     """Class to graph rates.
@@ -46,13 +46,13 @@ class Rate_Graph(object):
     def add_point(self, packet, time):
         """ Adds a point to the queue
         """
-        self.window.put(time, packet.size)
+        self.window.put(Data(time, packet.size))
         self.bits_in_window = self.bits_in_window + packet.size
 
     def remove_points(self, time):
         """ Removes data before time
         """
-        while ((not self.window.empty()) and self.peek_time < time):
+        while ((not self.window.empty()) and self.peek_time() < time):
             first = self.window.get()
             self.bits_in_window = self.bits_in_window - first.size
 
@@ -60,13 +60,14 @@ class Rate_Graph(object):
         """ Return the time of the first object in the queue
         """
         temp = self.window.get()
-        self.put(temp)
         self.window.put(temp)
         return temp.time
 
 
     def graph(self):
+        """ Graphs current rate
+        """
         self.remove_points(self.env.time-self.window_size)
         current_rate = float(self.bits_in_window)/float(self.window_size)
-        self.bw.record('{0}, {1}'.format(self.env.time, current_rate), '{0}.rate'.format(self.name))
+        self.bw.record('{0}, {1}'.format(self.env.time, current_rate), '{0}'.format(self.name))
         self.env.add_event(Event("Graph rate", self.object_id, self.graph), self.interval)
