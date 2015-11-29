@@ -9,6 +9,8 @@ from blackwidow import BlackWidow
 from blackwidow import parser
 from blackwidow.network import *
 
+import json
+
 from cStringIO import StringIO
 
 
@@ -273,8 +275,15 @@ class BlackWidowInteractive(cmd.Cmd):
         self.network.empty()
 
     def do_dump(self, line):
-        data = self.network.to_json()
-        print data
+        args = line.split()
+        if not check_args(args, 1):
+            return
+        try:
+            data = self.network.to_json()
+            with open(args[0], "w") as f:
+                json.dump(data, f)
+        except Exception as e:
+            print e
 
 
     def do_EOF(self, line):
