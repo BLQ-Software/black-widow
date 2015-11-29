@@ -9,6 +9,8 @@ from blackwidow import BlackWidow
 from blackwidow import parser
 from blackwidow.network import *
 
+import spider
+
 import json
 
 from cStringIO import StringIO
@@ -279,6 +281,8 @@ class BlackWidowInteractive(cmd.Cmd):
         self.network.empty()
 
     def do_dump(self, line):
+        """dump [filename]
+        Saves the network to a file"""
         args = line.split()
         if not check_args(args, 1):
             return
@@ -299,9 +303,10 @@ class BlackWidowInteractive(cmd.Cmd):
 
     def default(self, line):
         cmd, arg, line = self.parseline(line)
-        func = [getattr(self, n) for n in self.get_names() if n.startswith('do_' + cmd)]
-        if len(func) == 1:
-            return func[0](arg)
+        if cmd is not None:
+            func = [getattr(self, n) for n in self.get_names() if n.startswith('do_' + cmd)]
+            if len(func) == 1:
+                return func[0](arg)
         print "Command not found. Type 'help' for a list of possible commands"
 
 def check_args(args, n):
@@ -325,7 +330,9 @@ def create_bw(settings=None, f=None):
 
     signal.signal(signal.SIGINT, signal_handler)
 
-    b.cmdloop(intro="Welcome to BlackWidow")
+
+
+    b.cmdloop(intro=spider.spider + "\nWelcome to BlackWidow")
 
 
 if __name__ == '__main__':
