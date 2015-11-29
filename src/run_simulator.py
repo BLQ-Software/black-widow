@@ -26,6 +26,9 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--tcp-alg', type=str,
                         help='Sets the TCP algorithm for the simulation.')
 
+    parser.add_argument('-n', '--no-interactive', action='store_true',
+                        help='Sets interactive mode off')
+
     # Dictionary of alternative settings.
     # Default settings should be set in the BlackWidow class.
     settings = vars(parser.parse_args())
@@ -38,7 +41,10 @@ if __name__ == "__main__":
             if not settings['real_time']:
                 base = os.path.basename(f)
                 settings['log_file'] = os.path.splitext(base)[0]
-
-            create_bw(settings, f)
+            if settings["no_interactive"]:
+                bw = BlackWidow(settings)
+                bw.run(f)
+            else:
+                create_bw(settings, f)
     else:
         create_bw()

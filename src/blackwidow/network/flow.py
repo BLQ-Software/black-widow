@@ -80,6 +80,22 @@ class Flow(object):
     def dest(self, value):
         raise AttributeError("Cannot change flow destination: {0}".format(self._flow_id))
 
+    @property
+    def amount(self):
+        return self._amount
+
+    @amount.setter
+    def amount(self, value):
+        raise AttributeError("Cannot change flow amount: {0}".format(self._flow_id))
+
+    @property
+    def flow_start(self):
+        return self._flow_start
+
+    @flow_start.setter
+    def flow_start(self, value):
+        raise AttributeError("Cannot change flow start: {0}".format(self._flow_id))
+
 
 
     def __str__(self):
