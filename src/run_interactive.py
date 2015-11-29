@@ -256,6 +256,8 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         self.dpi = args[0]
+        if self.show_network:
+            self.do_show("")
 
     def do_set_proj(self, line):
         """set_proj [proj]
@@ -264,6 +266,8 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         self.proj = args[0]
+        if self.show_network:
+            self.do_show("")
 
     def do_exit(self, line):
         """End the program"""
