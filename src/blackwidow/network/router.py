@@ -19,8 +19,8 @@ class Router(Device):
         self.env = env
         self.bw = bw
         self._routing_table = {}
-        self._send_rate = Rate_Graph(self.router_id, "router {0} send rate".format(self.router_id), self.env, self.bw)
-        self._receive_rate = Rate_Graph(self.router_id, "router {0} receive rate".format(self.router_id), self.env, self.bw)
+        self._send_rate = Rate_Graph(router_id, "router {0} send rate".format(router_id), self.env, self.bw)
+        self._receive_rate = Rate_Graph(router_id, "router {0} receive rate".format(router_id), self.env, self.bw)
         self.env.add_event(Event('{} sent routing packet'.format(self._network_id),
                                  self._network_id, self.start_new_routing), 0)
 
