@@ -11,6 +11,7 @@ from blackwidow.network import *
 
 from cStringIO import StringIO
 
+
 f = plt.figure(2)
 plt.ion()
 
@@ -25,6 +26,8 @@ class BlackWidowInteractive(cmd.Cmd):
             self.bw = BlackWidow(settings)
             self.network = parser.config_network(f, self.bw)
         self.do_reset_v("")
+        self.do_clear("")
+        f = plt.figure(2)
         self.do_show("")
 
     def do_reset_v(self, line):
