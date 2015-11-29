@@ -278,6 +278,15 @@ class BlackWidowInteractive(cmd.Cmd):
         print
         return True
 
+    # Base methods
+
+    def default(self, line):
+        cmd, arg, line = self.parseline(line)
+        func = [getattr(self, n) for n in self.get_names() if n.startswith('do_' + cmd)]
+        if len(func) == 1:
+            return func[0](arg)
+        print "Command not found. Type 'help' for a list of possible commands"
+
 def check_args(args, n):
     if len(args) != n:
         print "*** invalid number of arguments"
