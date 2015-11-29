@@ -25,6 +25,8 @@ class BlackWidowInteractive(cmd.Cmd):
             self.bw = BlackWidow(settings)
             self.network = parser.config_network(f, self.bw)
         self.do_reset_v("")
+        self.do_clear("")
+        self.do_close("")
         self.do_show("")
 
     def do_reset_v(self, line):
