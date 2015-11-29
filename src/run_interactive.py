@@ -48,6 +48,15 @@ class BlackWidowInteractive(cmd.Cmd):
         else:
             self.bw.real_time = False
 
+    def do_set_static_routing(self, line):
+        args = line.split()
+        if not check_args(args, 1):
+            return
+        if line == "True":
+            self.bw.static_routing = True
+        else:
+            self.bw.static_routing = False
+
     def do_add_router(self, line):
         """add_router [id]
         Add a router"""
