@@ -1,4 +1,5 @@
 from blackwidow.network.packet import AckPacket, DataPacket
+from blackwidow.network.rate_graph import Rate_Graph
 from event import Event
 
 # Variables for timeout calculation from
@@ -51,6 +52,8 @@ class Flow(object):
         self.bw = bw
         self._flow_start = time*1000.0
         self._last_packet = 0
+        self._send_rate = Rate_Graph(self._flow_id, "flow {0} send rate".format(self.flow_id), self.env, self.bw)
+        self._receive_rate = Rate_Graph(self._flow_id, "flow {0} receive rate".format(self.flow_id), self.env, self.bw)
         self.env.add_event(Event("Start flow", self._flow_id, self.send_packet), self._flow_start)
 
     @property
@@ -104,6 +107,7 @@ class Flow(object):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
                     self.bw.record('{0}, {1}'.format(self.env.time,pack.size), 'flow_{0}.sent'.format(self.flow_id))
+                    self._send_rate.add_point(pack, self.env.time)
                     self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
                     # Shouldn't subtract pack.size if sent before.
                     if (self._pack_num not in self._packets_sent):
@@ -121,6 +125,7 @@ class Flow(object):
                 self._pack_num = self._packets_time_out[0]
                 pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
                 self._src.send(pack)
+                self._send_rate.add_point(pack, self.env.time)
                 self._packets_time_out.remove(self._pack_num)
                 self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
 
@@ -153,6 +158,7 @@ class Flow(object):
             self._acks_arrived.add(packet.pack_id)
             print "Flow {} received ack for packet {}".format(self._flow_id, packet.pack_id)
             self.bw.record('{0}, {1}'.format(self.env.time,packet.size), 'flow_{0}.received'.format(self.flow_id))
+            self._receive_rate.add_point(packet, self.env.time)
             # Check if done
             if len(self._packets_sent) == 0 and self._amount <= 0:
                 self.env.decrement_flows()
