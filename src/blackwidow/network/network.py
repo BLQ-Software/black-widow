@@ -210,4 +210,5 @@ class Network():
             current_event.run()
 
         # Return end time.
+        self.bw.write()
         return self._time
