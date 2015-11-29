@@ -318,6 +318,7 @@ def main():
     create_bw()
 
 def create_bw(settings=None, f=None):
+    plt.ion()
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
     if settings is not None:
@@ -328,8 +329,6 @@ def create_bw(settings=None, f=None):
         b.do_stop("")
 
     signal.signal(signal.SIGINT, signal_handler)
-
-    plt.ion()
 
     b.cmdloop(intro=spider.spider + "\nWelcome to BlackWidow")
 
