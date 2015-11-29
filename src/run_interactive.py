@@ -215,9 +215,11 @@ class BlackWidowInteractive(cmd.Cmd):
             print e
 
     def do_clear(self, line):
+        """Clear the graph"""
         plt.clf()
 
     def do_close(self, line):
+        """Close the graph"""
         plt.close()
 
     def do_set_show(self, line):
@@ -264,6 +266,7 @@ class BlackWidowInteractive(cmd.Cmd):
         return True
 
     def do_stop(self, line):
+        """Stop the network with Ctrl-C"""
         self.network.empty()
 
 
