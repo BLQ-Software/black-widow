@@ -9,84 +9,21 @@ from blackwidow import BlackWidow
 from blackwidow import parser
 from blackwidow.network import *
 
-import spider
-
-import json
-
 from cStringIO import StringIO
 
-
 f = plt.figure(2)
-plt.ion()
 
 
 class BlackWidowInteractive(cmd.Cmd):
 
-    def create_network(self, settings, f):
-        if settings is None:
-            self.bw = BlackWidow()
-            self.network = Network(self.bw)
-        else:
-            self.bw = BlackWidow(settings)
-            self.network = parser.config_network(f, self.bw)
-        self.do_reset_v("")
-        self.do_clear("")
-        f = plt.figure(2)
-        self.do_show("")
-
-    def do_reset_v(self, line):
-        """Reset parameters for interactive"""
+    def do_create_network(self, line):
+        """Create a new network"""
+        self.bw = BlackWidow()
+        self.network = Network(self.bw)
         self.dpi = "300"
         self.proj = "dot"
         self.show_network = True
-        self.output = False
-
-    def do_reset(self, line):
-        """Reset network"""
-        self.bw = BlackWidow()
-        self.network = Network(self.bw)
-        self.do_reset_v("")
-
-    def do_set_verbose(self, line):
-        """set_verbose [verbose]
-        Set verbose output"""
-        args = line.split()
-        if not check_args(args, 1):
-            return
-        if args[0] == "True":
-            self.bw.real_time = True
-        else:
-            self.bw.real_time = False
-
-    def do_set_static_routing(self, line):
-        """set_static_routing [static_routing]
-        Set static routing"""
-        args = line.split()
-        if not check_args(args, 1):
-            return
-        if args[0] == "True":
-            self.bw.static_routing = True
-        else:
-            self.bw.static_routing = False
-
-    def do_set_routing_packet_size(self, line):
-        """set_routing_packet_size [size]
-        Set routing packet size"""
-        args = line.split()
-        if not check_args(args, 1):
-            return
-        try:
-            self.bw.routing_packet_size = float(args[0])
-        except Exception as e:
-            print e
-
-    def do_set_tcp_alg(self, line):
-        """set_tcp_alg [alg]
-        Set TCP algorithm"""
-        args = line.split()
-        if not check_args(args, 1):
-            return
-        self.bw.tcp_alg = args[0]
+        self.output = True
 
     def do_add_router(self, line):
         """add_router [id]
@@ -222,11 +159,9 @@ class BlackWidowInteractive(cmd.Cmd):
             print e
 
     def do_clear(self, line):
-        """Clear the graph"""
         plt.clf()
 
     def do_close(self, line):
-        """Close the graph"""
         plt.close()
 
     def do_set_show(self, line):
@@ -258,8 +193,6 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         self.dpi = args[0]
-        if self.show_network:
-            self.do_show("")
 
     def do_set_proj(self, line):
         """set_proj [proj]
@@ -268,8 +201,6 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         self.proj = args[0]
-        if self.show_network:
-            self.do_show("")
 
     def do_exit(self, line):
         """End the program"""
@@ -277,37 +208,13 @@ class BlackWidowInteractive(cmd.Cmd):
         return True
 
     def do_stop(self, line):
-        """Stop the network with Ctrl-C"""
         self.network.empty()
-
-    def do_dump(self, line):
-        """dump [filename]
-        Saves the network to a file"""
-        args = line.split()
-        if not check_args(args, 1):
-            return
-        try:
-            data = self.network.to_json()
-            with open(args[0], "w") as f:
-                json.dump(data, f)
-        except Exception as e:
-            print e
 
 
     def do_EOF(self, line):
         """End the program"""
         print
         return True
-
-    # Base methods
-
-    def default(self, line):
-        cmd, arg, line = self.parseline(line)
-        if cmd is not None:
-            func = [getattr(self, n) for n in self.get_names() if n.startswith('do_' + cmd)]
-            if len(func) == 1:
-                return func[0](arg)
-        print "Command not found. Type 'help' for a list of possible commands"
 
 def check_args(args, n):
     if len(args) != n:
@@ -316,23 +223,17 @@ def check_args(args, n):
     return True
 
 def main():
-    create_bw()
-
-def create_bw(settings=None, f=None):
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
-    if settings is not None:
-        b.create_network(settings, f)
-    else:
-        b.do_reset("")
+    b.do_create_network("")
     def signal_handler(signal, frame):
         b.do_stop("")
 
     signal.signal(signal.SIGINT, signal_handler)
 
+    plt.ion()
 
-
-    b.cmdloop(intro=spider.spider + "\nWelcome to BlackWidow")
+    b.cmdloop(intro="Welcome to BlackWidow")
 
 
 if __name__ == '__main__':
