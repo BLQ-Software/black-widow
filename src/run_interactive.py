@@ -39,6 +39,15 @@ class BlackWidowInteractive(cmd.Cmd):
         self.network = Network(self.bw)
         self.do_reset_v("")
 
+    def do_set_verbose(self, line):
+        args = line.split()
+        if not check_args(args, 1):
+            return
+        if line == "True":
+            self.bw.real_time = True
+        else:
+            self.bw.real_time = False
+
     def do_add_router(self, line):
         """add_router [id]
         Add a router"""
