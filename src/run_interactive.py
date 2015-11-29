@@ -28,34 +28,58 @@ class BlackWidowInteractive(cmd.Cmd):
         self.do_show("")
 
     def do_reset_v(self, line):
+        """Reset parameters for interactive"""
         self.dpi = "300"
         self.proj = "dot"
         self.show_network = True
         self.output = False
 
     def do_reset(self, line):
-        """Reset"""
+        """Reset network"""
         self.bw = BlackWidow()
         self.network = Network(self.bw)
         self.do_reset_v("")
 
     def do_set_verbose(self, line):
+        """set_verbose [verbose]
+        Set verbose output"""
         args = line.split()
         if not check_args(args, 1):
             return
-        if line == "True":
+        if args[0] == "True":
             self.bw.real_time = True
         else:
             self.bw.real_time = False
 
     def do_set_static_routing(self, line):
+        """set_static_routing [static_routing]
+        Set static routing"""
         args = line.split()
         if not check_args(args, 1):
             return
-        if line == "True":
+        if args[0] == "True":
             self.bw.static_routing = True
         else:
             self.bw.static_routing = False
+
+    def do_set_routing_packet_size(self, line):
+        """set_routing_packet_size [size]
+        Set routing packet size"""
+        args = line.split()
+        if not check_args(args, 1):
+            return
+        try:
+            self.bw.routing_packet_size = float(args[0])
+        except Exception as e:
+            print e
+
+    def do_set_tcp_alg(self, line):
+        """set_tcp_alg [alg]
+        Set TCP algorithm"""
+        args = line.split()
+        if not check_args(args, 1):
+            return
+        self.bw.tcp_alg = args[0]
 
     def do_add_router(self, line):
         """add_router [id]
