@@ -41,6 +41,7 @@ class FastFlow(Flow):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
                     self.bw.record('{0}, {1}'.format(self.env.time,pack.size), 'flow_{0}.sent'.format(self.flow_id))
+                    self._send_rate.add_point(pack, self.env.time)
                     self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
                     # Shouldn't subtract pack.size if sent before.
                     if (self._pack_num not in self._packets_sent):
