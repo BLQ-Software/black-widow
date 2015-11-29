@@ -9,7 +9,12 @@ from blackwidow import BlackWidow
 from blackwidow import parser
 from blackwidow.network import *
 
+import spider
+
+import json
+
 from cStringIO import StringIO
+
 
 f = plt.figure(2)
 plt.ion()
@@ -26,7 +31,7 @@ class BlackWidowInteractive(cmd.Cmd):
             self.network = parser.config_network(f, self.bw)
         self.do_reset_v("")
         self.do_clear("")
-        self.do_close("")
+        f = plt.figure(2)
         self.do_show("")
 
     def do_reset_v(self, line):
@@ -253,6 +258,8 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         self.dpi = args[0]
+        if self.show_network:
+            self.do_show("")
 
     def do_set_proj(self, line):
         """set_proj [proj]
@@ -261,6 +268,8 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         self.proj = args[0]
+        if self.show_network:
+            self.do_show("")
 
     def do_exit(self, line):
         """End the program"""
@@ -271,11 +280,34 @@ class BlackWidowInteractive(cmd.Cmd):
         """Stop the network with Ctrl-C"""
         self.network.empty()
 
+    def do_dump(self, line):
+        """dump [filename]
+        Saves the network to a file"""
+        args = line.split()
+        if not check_args(args, 1):
+            return
+        try:
+            data = self.network.to_json()
+            with open(args[0], "w") as f:
+                json.dump(data, f)
+        except Exception as e:
+            print e
+
 
     def do_EOF(self, line):
         """End the program"""
         print
         return True
+
+    # Base methods
+
+    def default(self, line):
+        cmd, arg, line = self.parseline(line)
+        if cmd is not None:
+            func = [getattr(self, n) for n in self.get_names() if n.startswith('do_' + cmd)]
+            if len(func) == 1:
+                return func[0](arg)
+        print "Command not found. Type 'help' for a list of possible commands"
 
 def check_args(args, n):
     if len(args) != n:
@@ -298,7 +330,9 @@ def create_bw(settings=None, f=None):
 
     signal.signal(signal.SIGINT, signal_handler)
 
-    b.cmdloop(intro="Welcome to BlackWidow")
+
+
+    b.cmdloop(intro=spider.spider + "\nWelcome to BlackWidow")
 
 
 if __name__ == '__main__':
