@@ -272,6 +272,10 @@ class BlackWidowInteractive(cmd.Cmd):
         """Stop the network with Ctrl-C"""
         self.network.empty()
 
+    def do_dump(self, line):
+        data = self.network.to_json()
+        print data
+
 
     def do_EOF(self, line):
         """End the program"""
