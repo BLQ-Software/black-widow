@@ -204,6 +204,7 @@ class Flow(object):
         print "RTO is {}".format(self._RTO)
         if self._last_RTT < self._min_RTT:
             self._min_RTT = self._last_RTT
+        self.bw.record('{0}, {1}'.format(self.env.time, self._last_RTT - self._min_RTT), 'flow_{0}.packet_delay'.format(self.flow_id))
 
     def _timeout(self, pack_num):
         """ Generate an ack or respond to bad packet.
