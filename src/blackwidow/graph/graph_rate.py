@@ -36,21 +36,28 @@ class CsvGrapher(object):
 if __name__ == '__main__':
     data_dir = '../../data'
     log_files = ['case0', 'case1', 'case2']
+    device_list = [[['F1', 'flow', 1], ['L1', 'link', 2]],
+                   [['F1', 'flow', 1], ['L1', 'link', 2],
+                    ['L2', 'link', 2]],
+                   [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1],
+                    ['L1', 'link', 2], ['L2', 'link', 2], ['L3', 'link', 2]]]
     
     smooth_factor = 100
     max_capacity = 12.5  # Used to remove outliers in calculations. 
     
-    for log_file in log_files:
+    for x, log_file in enumerate(log_files):
     
-        devices = [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1], 
-                   ['L1', 'link', 2], ['L2', 'link', 2], ['L3', 'link', 2]]
+        devices = device_list[x]
+        links = [x for x in devices if x[0][0] == 'L']
+        flows = [x for x in devices if x[0][0] == 'F']
+        print 'Links: {}'.format(links)
+        print 'Flows: {}'.format(flows)
         
-        data_types = ['sent', 'received']
+        data_types = ['sent']
      
         flow_path = '{}/{}.{}_{}.{}.csv'
         
         fig = plt.figure(1, figsize=(15,8))
-        fig.suptitle(log_file, fontsize=32, fontweight='bold')
 
         # Keep track of maximum subplot number seen so far.
         max_subplot_no = 1 
@@ -84,57 +91,62 @@ if __name__ == '__main__':
 
                 subplot_no = device[2] * len(data_types) + j
                 max_subplot_no = max(subplot_no, max_subplot_no)
-                plt.subplot(5, 1, subplot_no)
+                plt.subplot(2, 1, subplot_no)
                 plt.plot(time, rate, label=device[0])
                 plt.legend()
-                plt.xlabel('time (ms)')
-                plt.ylabel('{} {} rate (Mbps)'.format(device[1], data_type))
+                plt.xlabel('time (ms)', fontsize=18)
+                plt.ylabel('{} {} rate (Mbps)'.format(device[1], data_type), fontsize=18)
                 plt.draw()
         
-        fig.tight_layout()
+        fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
 
         
         # Create the paths to the data files
         link_rate_path = '{}/{}.link_L1.rate.csv'.format(data_dir, log_file)
-        buffer_occupancy_path = '{}/{}.link_L1.buffer.csv'.format(data_dir, log_file)
         packet_loss_path = '{}/{}.link_L1.drop.csv'.format(data_dir, log_file)
-        window_size_path = '{}/{}.flow_F1.window.csv'.format(data_dir, log_file)
+        window_size_path = '{}/{}.flow_{}.window.csv'
         packet_sent_path = '{}/{}.link_L1.sent.csv'.format(data_dir, log_file)
 
 
         # PLOTTING GRAPHS
 
 
-        # LOADING DATA
-        if (os.path.isfile(buffer_occupancy_path)):
-            # Load in buffer occupancy data
-            buffer_occupancy = np.genfromtxt(buffer_occupancy_path, delimiter=',')
-            buffer_occupancy = buffer_occupancy.astype(int)
-            buffer_occupancy_times = buffer_occupancy[:,0]
-            buffer_occupancy = buffer_occupancy[:,1]
+        for link in links:
+            buffer_occupancy_path = '{}/{}.link_{}.buffer.csv'.format(data_dir, log_file, link[0])
 
-            # Plot the buffer occupancy
-            plt.subplot(2, 1, 1)
-            plt.plot(buffer_occupancy_times, buffer_occupancy)
-            plt.xlabel('time (ms)')
-            plt.ylabel('buffer occupancy (pkts)')
+            if (os.path.isfile(buffer_occupancy_path)):
+                # Load in buffer occupancy data
+                buffer_occupancy = np.genfromtxt(buffer_occupancy_path, delimiter=',')
+                buffer_occupancy = buffer_occupancy.astype(int)
+                buffer_occupancy_times = buffer_occupancy[:,0]
+                buffer_occupancy = buffer_occupancy[:,1]
 
-        if (os.path.isfile(window_size_path)):
-            # Load in window size data
-            window_size = np.genfromtxt(window_size_path, delimiter=',')
-            window_size = window_size.astype(int)
-            window_size_times = window_size[:,0]
-            window_size = window_size[:,1]
+                # Plot the buffer occupancy
+                plt.subplot(2, 1, 1)
+                plt.plot(buffer_occupancy_times, buffer_occupancy, label=link[0])
+                plt.legend()
+                plt.xlabel('time (ms)', fontsize=18)
+                plt.ylabel('buffer occupancy (pkts)', fontsize=18)
+                plt.draw()
 
-            # Plot the window size
-            plt.subplot(2, 1, 2)
-            plt.plot(window_size_times, window_size, markersize=5)
-            plt.xlabel('time (ms)')
-            plt.ylabel('window size (pkts)')
+        for flow in flows:
+            window_size_path = '{}/{}.flow_{}.window.csv'.format(data_dir, log_file, flow[0])
 
-        
-        fig.tight_layout()
+            if (os.path.isfile(window_size_path)):
+                # Load in window size data
+                window_size = np.genfromtxt(window_size_path, delimiter=',')
+                window_size = window_size.astype(int)
+                window_size_times = window_size[:,0]
+                window_size = window_size[:,1]
+
+                # Plot the window size
+                plt.subplot(2, 1, 2)
+                plt.plot(window_size_times, window_size, markersize=5, label=flow[0])
+                plt.xlabel('time (ms)', fontsize=18)
+                plt.ylabel('window size (pkts)', fontsize=18)
+
+        fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
             
         
