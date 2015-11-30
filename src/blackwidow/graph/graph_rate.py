@@ -179,6 +179,43 @@ class CsvGrapher(object):
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
 
+        fig = plt.figure(1, figsize=(15,8))
+
+        for flow in flows:
+            window_size_path = '{}/{}.flow {} receive rate.csv'.format(data_dir, log_file, flow[0])
+            packet_delay_path = '{}/{}.flow {} send rate.csv'.format(data_dir, log_file, flow[0])
+
+            if (os.path.isfile(window_size_path)):
+                # Load in send rate data
+                window_size = np.genfromtxt(window_size_path, delimiter=',')
+                window_size = window_size.astype(int)
+                window_size_times = window_size[:,0]
+                window_size = window_size[:,1]
+
+                # Plot the send rate
+                plt.subplot(2, 1, 1)
+                plt.plot(window_size_times, window_size, markersize=5, label=flow[0])
+                plt.legend()
+                plt.xlabel('time (ms)', fontsize=18)
+                plt.ylabel('receive rate (bits/ms)', fontsize=18)
+
+            if (os.path.isfile(packet_delay_path)):
+                # Load in receive rate data
+                packet_delay = np.genfromtxt(packet_delay_path, delimiter=',')
+                packet_delay = packet_delay.astype(int)
+                packet_delay_times = packet_delay[:,0]
+                packet_delay = packet_delay[:,1]
+
+                # Plot the receive rate 
+                plt.subplot(2, 1, 2)
+                plt.plot(packet_delay_times, packet_delay, markersize=5, label=flow[0])
+                plt.legend()
+                plt.xlabel('time (ms)', fontsize=18)
+                plt.ylabel('send rate (bits/ms)', fontsize=18)
+
+        fig.suptitle(log_file, fontsize=32, fontweight='bold')
+        plt.show()
+
         plt.ion()
 
 
