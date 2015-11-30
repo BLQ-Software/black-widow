@@ -1,5 +1,5 @@
 import parser
-from graph import Grapher
+from graph import CsvGrapher
 import re
 import os
 
@@ -91,7 +91,8 @@ class BlackWidow(object):
 
         self.num_graphs = 10
 
-        self.grapher = Grapher(self.num_graphs, self)
+        self.grapher = CsvGrapher(self)
+
 
 
 
@@ -123,9 +124,9 @@ class BlackWidow(object):
 
     def run_network(self, network):
 
-        sim_time = network.run()
+        self.sim_time = network.run()
         if not self.real_time:
-            self.grapher.graph(int(sim_time))
+            self.grapher.graph(int(self.sim_time))
         return sim_time
 
 

@@ -5,54 +5,49 @@ import os
 
 class GraphSettings(object):
     """Emulates bw object if run from script."""
-    def __init__(self, data_dir, log_file):
+    def __init__(self, data_dir, log_file, sim_time):
         self.data_dir = data_dir
         self.log_file = log_file
+        self.sim_time = sim_time
 
 class CsvGrapher(object):
     """Graphs the .csv files."""
     
-    def __init__(self, num_graphs, bw):
+    def __init__(self, bw):
         """Constructor for graph object."""
         self.bw = bw
         self.data_dir = bw.data_dir
         self.log_file = bw.log_file
-        self.subplot_id = 1
-        self.data_type_ids = {}
-        self.data_type_data = {}
-        self.num_graphs = num_graphs
-        self.subplots = {}
-        self.num_points = 0
+        self.smooth_factor = 100
+        self.max_capacity = 12.5
         sns.set()
-        case_num = self.bw.log_file
+        self.case_num = self.bw.log_file
         cc_type = 'Fixed Window'
 
+        self.drop_list = ['L{}'.format(i) for i in range(10)]
+        self.devices = [['F1', 'flow', 1], ['L1', 'link', 1]]
+        if self.case_num == 'case0':
+            self.devices = [['F1', 'flow', 1], ['L1', 'link', 2]]
+        elif self.case_num == 'case1': 
+            self.devices = [['F1', 'flow', 1], ['L1', 'link', 2], 
+                            ['L2', 'link', 2]]
+        elif self.case_num == 'case2':
+            self.devices = [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1],
+                            ['L1', 'link', 2], ['L2', 'link', 2], ['L3', 'link', 2]]
+
         self.fig = plt.figure(1, figsize=(15,8))
+        self.fig.suptitle(self.case_num, fontsize=32, fontweight='bold')
 
-        self.fig.suptitle(case_num, fontsize=32, fontweight='bold')
 
-    
+    def graph(self, sim_time):
+        devices = self.devices
+        smooth_factor = self.smooth_factor
+        max_capacity = self.max_capacity
+        case_num = self.case_num
+        data_dir = self.data_dir
+        log_file = self.log_file
 
-if __name__ == '__main__':
-    data_dir = '../../data'
-    log_files = ['case0', 'case1', 'case2']
-    device_list = [[['F1', 'flow', 1], ['L1', 'link', 2]],
-                   [['F1', 'flow', 1], ['L1', 'link', 2],
-                    ['L2', 'link', 2]],
-                   [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1],
-                    ['L1', 'link', 2], ['L2', 'link', 2], ['L3', 'link', 2]]]
-    expected_times = [70000, 120000, 1000000]
 
-    drop_list = [['L1'], ['L0'], ['L4', 'L5', 'L7']]
-    
-    smooth_factor = 100
-    max_capacity = 12.5  # Used to remove outliers in calculations. 
-    
-    for x, log_file in enumerate(log_files):
-    
-        sim_time = expected_times[x]
-
-        devices = device_list[x]
         links = [y for y in devices if y[0][0] == 'L']
         flows = [y for y in devices if y[0][0] == 'F']
         print 'Links: {}'.format(links)
@@ -64,16 +59,13 @@ if __name__ == '__main__':
         
         fig = plt.figure(1, figsize=(15,8))
 
-        # Keep track of maximum subplot number seen so far.
-        max_subplot_no = 1 
-
         # Rate calculations.
         for i, device in enumerate(devices):
             for j, data_type in enumerate(data_types):
                 file_name = flow_path.format(data_dir, log_file, device[1], device[0], data_type)
 
                 if (os.path.isfile(file_name)):
-                    print 'Computing {} {} {}'.format(log_file, device[0], data_type)
+                    print 'Computing {} {} {} rate'.format(log_file, device[0], data_type)
                 else:    
                     continue
 
@@ -95,7 +87,6 @@ if __name__ == '__main__':
                         time.append(sum_time / float(smooth_factor))
 
                 subplot_no = device[2] * len(data_types) + j
-                max_subplot_no = max(subplot_no, max_subplot_no)
                 plt.subplot(2, 1, subplot_no)
                 plt.plot(time, rate, label=device[0])
                 plt.legend()
@@ -127,7 +118,7 @@ if __name__ == '__main__':
                 plt.ylabel('buffer occupancy (pkts)', fontsize=18)
                 plt.draw()
         
-        for link in drop_list[x]:
+        for link in self.drop_list:
             packet_loss_path = '{}/{}.link_{}.drop.csv'.format(data_dir, log_file, link)
             if (os.path.isfile(packet_loss_path)):
                 # Load in packet loss data
@@ -186,6 +177,22 @@ if __name__ == '__main__':
 
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
+            
+        
+
+
+
+
+if __name__ == '__main__':
+    data_dir = '../../data'
+    log_files = ['case0', 'case1', 'case2']
+    expected_times = [70000, 120000, 1000000]
+
+    for x, log_file in enumerate(log_files):
+        bw = GraphSettings(data_dir, log_file, expected_times[x])
+        grapher = CsvGrapher(bw)
+        grapher.graph(expected_times[x])
+    
             
         
 
