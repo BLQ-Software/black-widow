@@ -41,15 +41,20 @@ if __name__ == '__main__':
                     ['L2', 'link', 2]],
                    [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1],
                     ['L1', 'link', 2], ['L2', 'link', 2], ['L3', 'link', 2]]]
+    expected_times = [70000, 120000, 1000000]
+
+    drop_list = [['L1'], ['L0'], ['L4', 'L5', 'L7']]
     
     smooth_factor = 100
     max_capacity = 12.5  # Used to remove outliers in calculations. 
     
     for x, log_file in enumerate(log_files):
     
+        sim_time = expected_times[x]
+
         devices = device_list[x]
-        links = [x for x in devices if x[0][0] == 'L']
-        flows = [x for x in devices if x[0][0] == 'F']
+        links = [y for y in devices if y[0][0] == 'L']
+        flows = [y for y in devices if y[0][0] == 'F']
         print 'Links: {}'.format(links)
         print 'Flows: {}'.format(flows)
         
@@ -102,15 +107,7 @@ if __name__ == '__main__':
         plt.show()
 
         
-        # Create the paths to the data files
-        link_rate_path = '{}/{}.link_L1.rate.csv'.format(data_dir, log_file)
-        packet_loss_path = '{}/{}.link_L1.drop.csv'.format(data_dir, log_file)
-        window_size_path = '{}/{}.flow_{}.window.csv'
-        packet_sent_path = '{}/{}.link_L1.sent.csv'.format(data_dir, log_file)
-
-
-        # PLOTTING GRAPHS
-
+        fig = plt.figure(1, figsize=(15,8))
 
         for link in links:
             buffer_occupancy_path = '{}/{}.link_{}.buffer.csv'.format(data_dir, log_file, link[0])
@@ -129,9 +126,35 @@ if __name__ == '__main__':
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('buffer occupancy (pkts)', fontsize=18)
                 plt.draw()
+        
+        for link in drop_list[x]:
+            packet_loss_path = '{}/{}.link_{}.drop.csv'.format(data_dir, log_file, link)
+            if (os.path.isfile(packet_loss_path)):
+                # Load in packet loss data
+                packet_loss_times = np.genfromtxt(packet_loss_path)
+                packet_loss_times = packet_loss_times.astype(int)
+                packet_loss = np.zeros(sim_time)
+
+                for x in np.nditer(packet_loss_times):
+                    packet_loss[x] = packet_loss[x] + 1
+
+                # Plot the packet loss
+                plt.subplot(2, 1, 2)
+                plt.plot(np.arange(sim_time), packet_loss, markersize=5, label=link)
+                plt.legend()
+                plt.xlabel('time (ms)', fontsize=18)
+                plt.ylabel('packet loss (pkts)', fontsize=18)
+                plt.draw()
+        
+        fig.suptitle(log_file, fontsize=32, fontweight='bold')
+        plt.show()
+
+        
+        fig = plt.figure(1, figsize=(15,8))
 
         for flow in flows:
             window_size_path = '{}/{}.flow_{}.window.csv'.format(data_dir, log_file, flow[0])
+            packet_delay_path = '{}/{}.flow_{}.packet_delay.csv'.format(data_dir, log_file, flow[0])
 
             if (os.path.isfile(window_size_path)):
                 # Load in window size data
@@ -141,10 +164,25 @@ if __name__ == '__main__':
                 window_size = window_size[:,1]
 
                 # Plot the window size
-                plt.subplot(2, 1, 2)
+                plt.subplot(2, 1, 1)
                 plt.plot(window_size_times, window_size, markersize=5, label=flow[0])
+                plt.legend()
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('window size (pkts)', fontsize=18)
+            
+            if (os.path.isfile(packet_delay_path)):
+                # Load in window size data
+                packet_delay = np.genfromtxt(packet_delay_path, delimiter=',')
+                packet_delay = packet_delay.astype(int)
+                packet_delay_times = packet_delay[:,0]
+                packet_delay = packet_delay[:,1]
+
+                # Plot the window size
+                plt.subplot(2, 1, 2)
+                plt.plot(packet_delay_times, packet_delay, markersize=5, label=flow[0])
+                plt.legend()
+                plt.xlabel('time (ms)', fontsize=18)
+                plt.ylabel('packet_delay (pkts)', fontsize=18)
 
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
