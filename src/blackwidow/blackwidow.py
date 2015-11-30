@@ -126,9 +126,9 @@ class BlackWidow(object):
 
     def run_network(self, network):
 
-        self.sim_time = network.run()
+        sim_time = network.run()
         if not self.real_time:
-            self.grapher.graph(int(self.sim_time))
+            self.grapher.graph(int(sim_time))
         return sim_time
 
 

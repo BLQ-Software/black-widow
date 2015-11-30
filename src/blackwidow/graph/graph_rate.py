@@ -12,7 +12,7 @@ class GraphSettings(object):
 
 class CsvGrapher(object):
     """Graphs the .csv files."""
-    
+
     def __init__(self, bw):
         """Constructor for graph object."""
         self.bw = bw
@@ -28,8 +28,8 @@ class CsvGrapher(object):
         self.devices = [['F1', 'flow', 1], ['L1', 'link', 1]]
         if self.case_num == 'case0':
             self.devices = [['F1', 'flow', 1], ['L1', 'link', 2]]
-        elif self.case_num == 'case1': 
-            self.devices = [['F1', 'flow', 1], ['L1', 'link', 2], 
+        elif self.case_num == 'case1':
+            self.devices = [['F1', 'flow', 1], ['L1', 'link', 2],
                             ['L2', 'link', 2]]
         elif self.case_num == 'case2':
             self.devices = [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1],
@@ -40,6 +40,7 @@ class CsvGrapher(object):
 
 
     def graph(self, sim_time):
+        plt.ioff()
         devices = self.devices
         smooth_factor = self.smooth_factor
         max_capacity = self.max_capacity
@@ -52,11 +53,11 @@ class CsvGrapher(object):
         flows = [y for y in devices if y[0][0] == 'F']
         print 'Links: {}'.format(links)
         print 'Flows: {}'.format(flows)
-        
+
         data_types = ['sent']
-     
+
         flow_path = '{}/{}.{}_{}.{}.csv'
-        
+
         fig = plt.figure(1, figsize=(15,8))
 
         # Rate calculations.
@@ -66,7 +67,7 @@ class CsvGrapher(object):
 
                 if (os.path.isfile(file_name)):
                     print 'Computing {} {} {} rate'.format(log_file, device[0], data_type)
-                else:    
+                else:
                     continue
 
                 data = np.genfromtxt(file_name, delimiter=',')
@@ -81,7 +82,7 @@ class CsvGrapher(object):
 
                     delta_t = data[k + smooth_factor - 1][0] - data[k][0]
                     new_rate = sum_data / delta_t / 1000.0
-                    
+
                     if delta_t != 0 and new_rate <= 12.5:
                         rate.append(new_rate)
                         time.append(sum_time / float(smooth_factor))
@@ -93,11 +94,11 @@ class CsvGrapher(object):
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('{} {} rate (Mbps)'.format(device[1], data_type), fontsize=18)
                 plt.draw()
-        
+
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
 
-        
+
         fig = plt.figure(1, figsize=(15,8))
 
         for link in links:
@@ -117,7 +118,7 @@ class CsvGrapher(object):
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('buffer occupancy (pkts)', fontsize=18)
                 plt.draw()
-        
+
         for link in self.drop_list:
             packet_loss_path = '{}/{}.link_{}.drop.csv'.format(data_dir, log_file, link)
             if (os.path.isfile(packet_loss_path)):
@@ -136,11 +137,11 @@ class CsvGrapher(object):
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('packet loss (pkts)', fontsize=18)
                 plt.draw()
-        
+
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
 
-        
+
         fig = plt.figure(1, figsize=(15,8))
 
         for flow in flows:
@@ -160,7 +161,7 @@ class CsvGrapher(object):
                 plt.legend()
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('window size (pkts)', fontsize=18)
-            
+
             if (os.path.isfile(packet_delay_path)):
                 # Load in window size data
                 packet_delay = np.genfromtxt(packet_delay_path, delimiter=',')
@@ -177,8 +178,10 @@ class CsvGrapher(object):
 
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
-            
-        
+
+        plt.ion()
+
+
 
 
 
@@ -192,8 +195,3 @@ if __name__ == '__main__':
         bw = GraphSettings(data_dir, log_file, expected_times[x])
         grapher = CsvGrapher(bw)
         grapher.graph(expected_times[x])
-    
-            
-        
-
-
