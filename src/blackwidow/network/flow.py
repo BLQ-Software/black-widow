@@ -139,7 +139,7 @@ class Flow(object):
             # Just keep resending last few packets until done
             while len(self._packets_time_out) > 0:
                 self._pack_num = self._packets_time_out[0]
-                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id)
+                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id, timestamp=self.env.time)
                 self._src.send(pack)
                 self._send_rate.add_point(pack, self.env.time)
                 self._packets_time_out.remove(self._pack_num)
@@ -200,7 +200,7 @@ class Flow(object):
         else:
             self._RTTVAR = (1 - beta)*self._RTTVAR + beta*abs(self._SRTT - self._last_RTT)
             self._SRTT = (1 - alpha)*self._SRTT + alpha*self._last_RTT
-        self._RTO = max(self._SRTT + max(G, K*self._RTTVAR), 1000)
+        self._RTO = min(max(self._SRTT + max(G, K*self._RTTVAR), 1000), 5000)
         print "RTO is {}".format(self._RTO)
         if self._last_RTT < self._min_RTT:
             self._min_RTT = self._last_RTT
