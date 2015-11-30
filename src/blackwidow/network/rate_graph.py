@@ -36,7 +36,7 @@ class Rate_Graph(object):
         self.env = env
         self.bw = bw
         self.object_id = object_id
-        self.window_size = 100
+        self.window_size = 1000
         self.window = PriorityQueue()
         self.bits_in_window = 0
         # Interval between points

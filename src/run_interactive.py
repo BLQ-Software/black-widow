@@ -16,9 +16,6 @@ import json
 from cStringIO import StringIO
 
 
-f = plt.figure(2)
-
-
 class BlackWidowInteractive(cmd.Cmd):
 
     def create_network(self, settings, f):

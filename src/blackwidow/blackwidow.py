@@ -1,5 +1,5 @@
 import parser
-from graph import Grapher
+from graph import CsvGrapher
 import re
 import os
 
@@ -91,7 +91,8 @@ class BlackWidow(object):
 
         self.num_graphs = 10
 
-        self.grapher = Grapher(self.num_graphs, self)
+        self.grapher = CsvGrapher(self)
+
 
         self.data = {}
 
