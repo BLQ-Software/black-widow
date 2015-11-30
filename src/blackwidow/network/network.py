@@ -25,6 +25,7 @@ class Network():
     """
     def __init__(self, bw):
         self.devices = {}
+        self.hosts = {}
         self.routers = {}
         self.links = {}
         self.flows = {}
@@ -67,6 +68,7 @@ class Network():
         """Construct host and add to dictionary of hosts."""
         self.check_id(host_id)
         self.devices[host_id] = Host(host_id)
+        self.hosts[host_id] = self.devices[host_id]
         self.ids.append(host_id)
         self.g.add_node(host_id, shape="square")
         self.host_labels.append(host_id)
@@ -92,6 +94,10 @@ class Network():
 
         self.g.remove_node(device_id)
         self.ids.remove(device_id)
+        if device_id in self.hosts:
+            del self.hosts[device_id]
+        if device_id in self.routers:
+            del self.routers[device_id]
         del self.devices[device_id]
 
     def add_link(self, link_id, device_id1, device_id2,
@@ -197,6 +203,45 @@ class Network():
         else:
             self._events.put((self._time + delay, event))
 
+    def to_json(self):
+
+        data = {}
+        hosts = []
+        for host_id in self.hosts:
+            hosts.append(host_id)
+        data["Hosts"] = hosts
+
+        routers = []
+        for router_id in self.routers:
+            routers.append(router_id)
+        data["Routers"] = routers
+
+        links = []
+        for link_id in self.links:
+            link_data = {}
+            link_data["network_id"] = link_id
+            link_data["devices"] = [self.links[link_id].device_a.network_id, self.links[link_id].device_b.network_id]
+            link_data["rate"] = self.links[link_id].rate / (10 ** 3)
+            link_data["delay"] = self.links[link_id].delay
+            link_data["buffer"] = self.links[link_id].capacity / 1000 / 8
+            links.append(link_data)
+        data["Links"] = links
+
+        flows = []
+        for flow_id in self.flows:
+            flow_data = {}
+            flow_data["network_id"] = flow_id
+            flow_data["src"] = self.flows[flow_id].src.network_id
+            flow_data["dest"] = self.flows[flow_id].dest.network_id
+            flow_data["amount"] = self.flows[flow_id].amount / 8 / (10 ** 6)
+            flow_data["start"] = self.flows[flow_id].flow_start / 1000
+            flows.append(flow_data)
+        data["Flows"] = flows
+
+        return data
+
+
+
     def run(self):
 
         for i in self.initial_events:
@@ -210,4 +255,5 @@ class Network():
             current_event.run()
 
         # Return end time.
+        self.bw.write()
         return self._time

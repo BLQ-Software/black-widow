@@ -94,6 +94,8 @@ class BlackWidow(object):
         self.grapher = CsvGrapher(self)
 
 
+        self.data = {}
+
 
 
 
@@ -166,11 +168,17 @@ class BlackWidow(object):
         data_num = [float(x) for x in data.split(", ")]
         if self.real_time:
             self.grapher.plot(data_num, data_type, "time (ms)", data_type) # TODO: integrate with graph module.
-        elif self.log_file is not None:
-            # Write data to file with extension based on data type.
-            # appends to the end of the file.
-            with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file,
-                                            data_type), 'a') as f:
-                f.write(data + '\n')
-        elif self.show_verbose:
+        if data_type in self.data:
+            self.data[data_type].append(data)
+        else:
+            self.data[data_type] = [data]
+        if self.show_verbose:
             print data
+
+    def write(self):
+        if self.log_file is not None:
+            for data_type in self.data:
+                with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file,
+                                                data_type), 'a') as f:
+                    for data in self.data[data_type]:
+                        f.write(data + '\n')

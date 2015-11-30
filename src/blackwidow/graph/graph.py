@@ -26,14 +26,8 @@ class Grapher(object):
         self.subplots = {}
         self.num_points = 0
         sns.set()
-        case_num = self.bw.log_file
-        cc_type = 'Fixed Window'
 
         # Determine the x-axis
-
-        fig = plt.figure(1, figsize=(15,8))
-
-        fig.suptitle(case_num, fontsize=14, fontweight='bold')
 
     def init_plot(self, data_type, xlabel, ylabel):
         self.subplots[data_type] = plt.subplot(self.num_graphs, 1, self.subplot_id)
@@ -65,6 +59,13 @@ class Grapher(object):
 
     def graph(self, sim_time):
         """Graphs the simulation."""
+
+        case_num = self.bw.log_file
+        cc_type = 'Fixed Window'
+
+        fig = plt.figure(1, figsize=(15,8))
+
+        fig.suptitle(case_num, fontsize=14, fontweight='bold')
 
         t = np.arange(sim_time)
 

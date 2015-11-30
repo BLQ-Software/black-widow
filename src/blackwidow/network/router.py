@@ -1,6 +1,7 @@
 from device import Device
 from packet import RoutingPacket
 from event import Event
+from blackwidow.network.rate_graph import Rate_Graph
 
 ROUTING_PKT_ID = 'Routing Packet'
 
@@ -18,8 +19,11 @@ class Router(Device):
         self.env = env
         self.bw = bw
         self._routing_table = {}
+        self._send_rate = Rate_Graph(router_id, "router {0} send rate".format(router_id), self.env, self.bw)
+        self._receive_rate = Rate_Graph(router_id, "router {0} receive rate".format(router_id), self.env, self.bw)
         self.env.add_event(Event('{} sent routing packet'.format(self._network_id),
                                  self._network_id, self.start_new_routing), 0)
+
 
     def add_link(self, link):
         """Overrides Device.add_link() ."""
@@ -35,6 +39,7 @@ class Router(Device):
     def send(self, packet):
         """Send packet to appropriate link."""
         route = None
+        self._send_rate.add_point(packet, self.env.time)
         if packet.dest.network_id in self._routing_table:
             route = self._routing_table[packet.dest.network_id]
 
@@ -43,6 +48,7 @@ class Router(Device):
 
     def receive(self, packet):
         """Process packet."""
+        self._receive_rate.add_point(packet, self.env.time)
         if packet.is_routing:
             self.update_route(packet)
             print "{} received routing packet from {}".format(self._network_id, packet.src)

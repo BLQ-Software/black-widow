@@ -101,6 +101,14 @@ class Link(object):
         raise AttributeError("Cannot modify link rate: {0}".format(self._id))
 
     @property
+    def capacity(self):
+        return self._capacity
+
+    @capacity.setter
+    def capacity(self, value):
+        raise AttributeError("Cannot modify link capacity: {0}".format(self._id))
+
+    @property
     def distance(self):
         return self._distance
 
@@ -198,6 +206,3 @@ class Link(object):
             self._distance = self.delay
         else:
             self._distance = self.delay + self.get_buffer_size() / float(self.rate)
-
-        
-
