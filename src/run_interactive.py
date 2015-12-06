@@ -102,10 +102,11 @@ class BlackWidowInteractive(cmd.Cmd):
         """add_host [id]
         Add a host"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.add_host(args[0])
+            for id in args:
+                self.network.add_host(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -155,7 +156,7 @@ class BlackWidowInteractive(cmd.Cmd):
                     self.network.delete_link(id)
             else:
                 for id in args:
-                    self.network.delete_link(args)
+                    self.network.delete_link(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -186,7 +187,7 @@ class BlackWidowInteractive(cmd.Cmd):
                     self.network.delete_flow(id)
             else:
                 for id in args:
-                    self.network.delete_flow(args)
+                    self.network.delete_flow(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
