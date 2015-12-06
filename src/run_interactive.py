@@ -318,10 +318,8 @@ def create_bw(settings=None, f=None):
     plt.ion()
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
-    if settings is not None:
-        b.create_network(settings, f)
-    else:
-        b.do_reset("")
+    b.create_network(settings, f)
+
     def signal_handler(signal, frame):
         b.do_stop("")
 
