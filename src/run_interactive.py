@@ -147,10 +147,15 @@ class BlackWidowInteractive(cmd.Cmd):
         """delete_link [id]
         Delete a link"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.delete_link(args[0])
+            if len(args) == 1 and args[0] == "*":
+                for id in self.network.links.keys()[:]:
+                    self.network.delete_link(id)
+            else:
+                for id in args:
+                    self.network.delete_link(args)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
