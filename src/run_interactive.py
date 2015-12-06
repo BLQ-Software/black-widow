@@ -178,10 +178,15 @@ class BlackWidowInteractive(cmd.Cmd):
         """delete_flow [id]
         Delete a flow"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.delete_flow(args[0])
+            if len(args) == 1 and args[0] == "*":
+                for id in self.network.flows.keys()[:]:
+                    self.network.delete_flow(id)
+            else:
+                for id in args:
+                    self.network.delete_flow(args)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
