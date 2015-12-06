@@ -73,10 +73,10 @@ class Network():
         self.g.add_node(host_id, shape="square")
         self.host_labels.append(host_id)
 
-    def add_router(self, router_id, bw):
+    def add_router(self, router_id):
         """Construct router and add to dictionary of routers"""
         self.check_id(router_id)
-        self.devices[router_id] = Router(router_id, self, bw)
+        self.devices[router_id] = Router(router_id, self, self.bw)
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
         self.g.add_node(router_id)

@@ -88,10 +88,11 @@ class BlackWidowInteractive(cmd.Cmd):
         """add_router [id]
         Add a router"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.add_router(args[0], self.bw)
+            for id in args:
+                self.network.add_router(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
