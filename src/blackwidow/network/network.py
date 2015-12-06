@@ -86,7 +86,6 @@ class Network():
         device = self.devices[device_id]
         for link in device.links[:]:
             self.delete_link(link.id)
-
         try:
             for flow in device.flows[:]:
 

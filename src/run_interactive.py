@@ -115,10 +115,15 @@ class BlackWidowInteractive(cmd.Cmd):
         """delete_device [id]
         Delete a device"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.delete_device(args[0])
+            if len(args) == 1 and args[0] == "*":
+                for id in self.network.devices.keys()[:]:
+                    self.network.delete_device(id)
+            else:
+                for id in args:
+                    self.network.delete_device(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
