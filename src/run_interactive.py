@@ -41,7 +41,10 @@ class BlackWidowInteractive(cmd.Cmd):
         """Reset network"""
         self.bw = BlackWidow()
         self.network = Network(self.bw)
+
+        f = plt.figure(2)
         self.do_reset_v("")
+        self.do_show("")
 
     def do_set_verbose(self, line):
         """set_verbose [verbose]
@@ -204,6 +207,7 @@ class BlackWidowInteractive(cmd.Cmd):
             base = os.path.basename(args[0])
             self.bw = BlackWidow({'log_file': os.path.splitext(base)[0]})
             self.network = parser.config_network(args[0], self.bw)
+            f = plt.figure(2)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
