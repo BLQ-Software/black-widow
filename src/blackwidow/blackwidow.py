@@ -113,10 +113,10 @@ class BlackWidow(object):
         self.grapher = CsvGrapher(self)
 
         print "Parsed network: \n"
-        network.dump()
+        self.network.dump()
 
         print "\nRunning network: \n"
-        sim_time = network.run()
+        sim_time = self.network.run()
 
         if not self.real_time:
             self.grapher.graph(int(sim_time))
