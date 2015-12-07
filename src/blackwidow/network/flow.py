@@ -52,6 +52,7 @@ class Flow(object):
         self.bw = bw
         self._flow_start = time*1000.0
         self._last_packet = 0
+        self._done = 0
         self._send_rate = Rate_Graph(self._flow_id, "flow {0} send rate".format(self.flow_id), self.env, self.bw)
         self._receive_rate = Rate_Graph(self._flow_id, "flow {0} receive rate".format(self.flow_id), self.env, self.bw)
         self.env.add_event(Event("Start flow", self._flow_id, self.send_packet), self._flow_start)
@@ -176,8 +177,9 @@ class Flow(object):
             self.bw.record('{0}, {1}'.format(self.env.time,packet.size), 'flow_{0}.received'.format(self.flow_id))
             self._receive_rate.add_point(packet, self.env.time)
             # Check if done
-            if len(self._packets_sent) == 0 and self._amount <= 0:
+            if len(self._packets_sent) == 0 and self._amount <= 0 and self._done == 0:
                 self.env.decrement_flows()
+                self._done = 1
 
     def _respond_to_ack(self):
         """ Update window size.
