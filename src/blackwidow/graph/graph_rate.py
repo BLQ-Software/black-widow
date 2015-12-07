@@ -25,7 +25,6 @@ class CsvGrapher(object):
         cc_type = 'Fixed Window'
 
         self.drop_list = ['L{}'.format(i) for i in range(10)]
-        self.devices = [['F1', 'flow', 1], ['L1', 'link', 1]]
         if self.case_num == 'case0':
             self.devices = [['F1', 'flow', 1], ['L1', 'link', 2]]
         elif self.case_num == 'case1':
@@ -34,12 +33,19 @@ class CsvGrapher(object):
         elif self.case_num == 'case2':
             self.devices = [['F1', 'flow', 1], ['F2', 'flow', 1], ['F3', 'flow', 1],
                             ['L1', 'link', 2], ['L2', 'link', 2], ['L3', 'link', 2]]
+        else:
 
+            self.devices = []
+            for flow in self.bw.network.flows:
+                self.devices.append([flow, 'flow', 1])
+            for link in self.bw.network.links:
+                self.devices.append([link, 'flow', 2])
         self.fig = plt.figure(1, figsize=(15,8))
         self.fig.suptitle(self.case_num, fontsize=32, fontweight='bold')
 
 
     def graph(self, sim_time):
+
         plt.ioff()
         devices = self.devices
         smooth_factor = self.smooth_factor

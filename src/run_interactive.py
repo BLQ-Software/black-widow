@@ -142,7 +142,7 @@ class BlackWidowInteractive(cmd.Cmd):
             return
 
         try:
-            self.network.add_link(args[0], args[1], args[2], float(args[3]), float(args[4]), float(args[5]), self.bw)
+            self.network.add_link(args[0], args[1], args[2], float(args[3]), float(args[4]), float(args[5]))
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -173,7 +173,7 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 5):
             return
         try:
-            self.network.add_flow(args[0], args[1], args[2], float(args[3]), float(args[4]), self.bw)
+            self.network.add_flow(args[0], args[1], args[2], float(args[3]), float(args[4]))
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -234,6 +234,8 @@ class BlackWidowInteractive(cmd.Cmd):
     def do_run(self, line):
         """Run the network"""
         try:
+            if self.bw.log_file is None:
+                self.bw.log_file = raw_input("Log file name: ")
             self.bw.run_network(self.network)
         except Exception as e:
             print e
