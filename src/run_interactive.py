@@ -41,7 +41,10 @@ class BlackWidowInteractive(cmd.Cmd):
         """Reset network"""
         self.bw = BlackWidow()
         self.network = Network(self.bw)
+
+        f = plt.figure(2)
         self.do_reset_v("")
+        self.do_show("")
 
     def do_set_verbose(self, line):
         """set_verbose [verbose]
@@ -88,10 +91,11 @@ class BlackWidowInteractive(cmd.Cmd):
         """add_router [id]
         Add a router"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.add_router(args[0], self.bw)
+            for id in args:
+                self.network.add_router(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -102,10 +106,11 @@ class BlackWidowInteractive(cmd.Cmd):
         """add_host [id]
         Add a host"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.add_host(args[0])
+            for id in args:
+                self.network.add_host(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -115,10 +120,15 @@ class BlackWidowInteractive(cmd.Cmd):
         """delete_device [id]
         Delete a device"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.delete_device(args[0])
+            if len(args) == 1 and args[0] == "*":
+                for id in self.network.devices.keys()[:]:
+                    self.network.delete_device(id)
+            else:
+                for id in args:
+                    self.network.delete_device(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -132,7 +142,7 @@ class BlackWidowInteractive(cmd.Cmd):
             return
 
         try:
-            self.network.add_link(args[0], args[1], args[2], float(args[3]), float(args[4]), float(args[5]), self.bw)
+            self.network.add_link(args[0], args[1], args[2], float(args[3]), float(args[4]), float(args[5]))
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -142,10 +152,15 @@ class BlackWidowInteractive(cmd.Cmd):
         """delete_link [id]
         Delete a link"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.delete_link(args[0])
+            if len(args) == 1 and args[0] == "*":
+                for id in self.network.links.keys()[:]:
+                    self.network.delete_link(id)
+            else:
+                for id in args:
+                    self.network.delete_link(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -158,7 +173,7 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 5):
             return
         try:
-            self.network.add_flow(args[0], args[1], args[2], float(args[3]), float(args[4]), self.bw)
+            self.network.add_flow(args[0], args[1], args[2], float(args[3]), float(args[4]))
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -168,10 +183,15 @@ class BlackWidowInteractive(cmd.Cmd):
         """delete_flow [id]
         Delete a flow"""
         args = line.split()
-        if not check_args(args, 1):
+        if len(args) < 1:
             return
         try:
-            self.network.delete_flow(args[0])
+            if len(args) == 1 and args[0] == "*":
+                for id in self.network.flows.keys()[:]:
+                    self.network.delete_flow(id)
+            else:
+                for id in args:
+                    self.network.delete_flow(id)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -187,6 +207,7 @@ class BlackWidowInteractive(cmd.Cmd):
             base = os.path.basename(args[0])
             self.bw = BlackWidow({'log_file': os.path.splitext(base)[0]})
             self.network = parser.config_network(args[0], self.bw)
+            f = plt.figure(2)
             if self.show_network:
                 self.do_show("")
         except Exception as e:
@@ -213,6 +234,8 @@ class BlackWidowInteractive(cmd.Cmd):
     def do_run(self, line):
         """Run the network"""
         try:
+            if self.bw.log_file is None:
+                self.bw.log_file = raw_input("Log file name: ")
             self.bw.run_network(self.network)
         except Exception as e:
             print e
@@ -318,10 +341,8 @@ def create_bw(settings=None, f=None):
     plt.ion()
     b = BlackWidowInteractive()
     b.prompt = "(blackwidow) "
-    if settings is not None:
-        b.create_network(settings, f)
-    else:
-        b.do_reset("")
+    b.create_network(settings, f)
+
     def signal_handler(signal, frame):
         b.do_stop("")
 

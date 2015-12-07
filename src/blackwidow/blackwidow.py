@@ -91,8 +91,6 @@ class BlackWidow(object):
 
         self.num_graphs = 10
 
-        self.grapher = CsvGrapher(self)
-
 
         self.data = {}
 
@@ -111,13 +109,14 @@ class BlackWidow(object):
         """
 
         print "Parsing {0} ...".format(file_name), "\n"
-        network = parser.config_network(file_name, self)
+        self.network = parser.config_network(file_name, self)
+        self.grapher = CsvGrapher(self)
 
         print "Parsed network: \n"
-        network.dump()
+        self.network.dump()
 
         print "\nRunning network: \n"
-        sim_time = network.run()
+        sim_time = self.network.run()
 
         if not self.real_time:
             self.grapher.graph(int(sim_time))
@@ -125,7 +124,8 @@ class BlackWidow(object):
         return sim_time
 
     def run_network(self, network):
-
+        self.network = network
+        self.grapher = CsvGrapher(self)
         sim_time = network.run()
         if not self.real_time:
             self.grapher.graph(int(sim_time))

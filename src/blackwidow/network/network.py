@@ -38,7 +38,7 @@ class Network():
         self.edge_labels = {}
         self.router_labels = []
         self.host_labels = []
-        self.initial_events = {}
+        self.deleted = []
 
     @property
     def time(self):
@@ -73,10 +73,10 @@ class Network():
         self.g.add_node(host_id, shape="square")
         self.host_labels.append(host_id)
 
-    def add_router(self, router_id, bw):
+    def add_router(self, router_id):
         """Construct router and add to dictionary of routers"""
         self.check_id(router_id)
-        self.devices[router_id] = Router(router_id, self, bw)
+        self.devices[router_id] = Router(router_id, self, self.bw)
         self.routers[router_id] = self.devices[router_id]
         self.ids.append(router_id)
         self.g.add_node(router_id)
@@ -87,7 +87,8 @@ class Network():
         for link in device.links[:]:
             self.delete_link(link.id)
         try:
-            for flow in devices.flows[:]:
+            for flow in device.flows[:]:
+
                 self.delete_flow(flow.flow_id)
         except:
             pass
@@ -98,10 +99,11 @@ class Network():
             del self.hosts[device_id]
         if device_id in self.routers:
             del self.routers[device_id]
+        self.deleted.append(device_id)
         del self.devices[device_id]
 
     def add_link(self, link_id, device_id1, device_id2,
-                 delay, rate, capacity, bw):
+                 delay, rate, capacity):
         self.check_id(link_id)
         if device_id1 not in self.ids:
             raise KeyError('id {0} does not exist.'.format(device_id1))
@@ -114,7 +116,7 @@ class Network():
 
         # Create link
         self.links[link_id] = Link(link_id, device_1, device_2, delay, rate, capacity,
-                                  self, bw)
+                                  self, self.bw)
         device_1.add_link(self.links[link_id])
         device_2.add_link(self.links[link_id])
         self.ids.append(link_id)
@@ -133,10 +135,11 @@ class Network():
             self.g.remove_edge(link.device_b.network_id, link.device_a.network_id)
 
         self.ids.remove(link_id)
+        self.deleted.append(link_id)
         del self.links[link_id]
 
 
-    def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start, bw):
+    def add_flow(self, flow_id, flow_src, flow_dest, data_amt, flow_start):
 
         self.check_id(flow_id)
         device_1 = self.devices[flow_src]
@@ -147,13 +150,13 @@ class Network():
         # Determine TCP alg from bw.tcp_alg
         if self.bw.tcp_alg == 'Reno':
             flow = RenoFlow(flow_id, device_1, device_2, data_amt,
-                        self, flow_start, bw)
+                        self, flow_start, self.bw)
         elif self.bw.tcp_alg == 'Tahoe':
             flow = TahoeFlow(flow_id, device_1, device_2, data_amt,
-                        self, flow_start, bw)
+                        self, flow_start, self.bw)
         elif self.bw.tcp_alg == 'Fast':
             flow = FastFlow(flow_id, device_1, device_2, data_amt,
-                        self, flow_start, bw)
+                        self, flow_start, self.bw)
         else:
             raise Exception("Unknown TCP algorithm.")
 
@@ -172,9 +175,9 @@ class Network():
         flow.dest.delete_flow(flow)
 
         self.g.remove_edge(flow.src.network_id, flow.dest.network_id)
-        self.ids.remove(flow_id)
-        del self.initial_events[flow_id]
         del self.flows[flow_id]
+        self.ids.remove(flow_id)
+        self.deleted.append(flow_id)
         self.num_flows_active -= 1
 
     def decrement_flows(self):
@@ -182,7 +185,6 @@ class Network():
 
     def empty(self):
         self._events = PriorityQueue()
-        self.initial_events = []
 
     def add_event(self, event, delay, initial=False):
         """
@@ -198,10 +200,7 @@ class Network():
             The amount of time in ms to wait before running the event.
 
         """
-        if initial:
-            self.initial_events[event.src_id] = (self._time + delay, event)
-        else:
-            self._events.put((self._time + delay, event))
+        self._events.put((self._time + delay, event))
 
     def to_json(self):
 
@@ -243,13 +242,13 @@ class Network():
 
 
     def run(self):
-
-        for i in self.initial_events:
-            self._events.put((self.initial_events[i][0], self.initial_events[i][1]))
         # Keep running while we have events to run. The first events will be
         # enqueued by the flows when they are initialized.
         while not self._events.empty() and self.num_flows_active != 0:
             (time, current_event) = self._events.get()
+            if current_event.src_id in self.deleted:
+                continue
+
             print "{0} at time {1} with {2} flows active".format(str(current_event), time, self.num_flows_active)
             self._time = time
             current_event.run()
