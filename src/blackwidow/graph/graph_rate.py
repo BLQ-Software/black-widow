@@ -188,7 +188,6 @@ class CsvGrapher(object):
         fig = plt.figure(1, figsize=(15,8))
 
         for flow in flows:
-            link_send_rate_path = '{}/{}.link {} send rate.csv'.format(data_dir, log_file, link[0])
             flow_send_rate_path = '{}/{}.flow {} send rate.csv'.format(data_dir, log_file, flow[0])
 
             if (os.path.isfile(flow_send_rate_path)):
@@ -204,7 +203,8 @@ class CsvGrapher(object):
                 plt.legend()
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('flow rate (kilobits/s)', fontsize=18)
-
+        for link in links:
+            link_send_rate_path = '{}/{}.link {} send rate.csv'.format(data_dir, log_file, link[0])
             if (os.path.isfile(link_send_rate_path)):
                 # Load in link send rate data
                 link_send_rate = np.genfromtxt(link_send_rate_path, delimiter=',')
