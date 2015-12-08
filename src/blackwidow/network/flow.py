@@ -39,7 +39,7 @@ class Flow(object):
         self._pack_num = 0
         self._cwnd = 1.0
         self._ssthresh = 1000
-        self._resend_time = 100
+        self._resend_time = 1
         self._min_RTT = 1000.0
         self._last_RTT = 3000.0
         self._SRTT = -1

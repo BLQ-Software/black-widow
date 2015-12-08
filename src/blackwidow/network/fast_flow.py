@@ -29,6 +29,7 @@ class FastFlow(Flow):
         self._alpha = 20.0
         self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), self._flow_start-1)
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
+        self._cwnd = self._alpha
 
     def send_packet(self):
         """ Send a packet.

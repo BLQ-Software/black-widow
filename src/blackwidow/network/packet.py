@@ -3,7 +3,7 @@
 
 #Constant sizes of packets in bits
 DATA_PACKET_SIZE = 1024 * 8
-ACK_PACKET_SIZE = 64 * 8
+ACK_PACKET_SIZE = 64 * 8 * 0
 
 class Packet(object):
     """Super class for DataPackets and AckPackets"""
