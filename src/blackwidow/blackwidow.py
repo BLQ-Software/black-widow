@@ -99,8 +99,8 @@ class BlackWidow(object):
 
 
     def run(self, file_name):
-        """Runs the overall simulation based on settings specified when
-        the BlackWidow object is constructed.
+        """Runs the overall simulation based on settings specified when the
+        BlackWidow object is constructed.
 
         Parameters
         ----------
@@ -124,6 +124,20 @@ class BlackWidow(object):
         return sim_time
 
     def run_network(self, network):
+        """Runs the overall simulation based on settings specified when the
+        BlackWidow object is constructed.
+
+        Parameters
+        ----------
+        network : `Network`
+            The network to run.
+
+        Returns
+        -------
+        sim_time : float
+            The amount of time taken for the network to finish running.
+        """
+
         self.network = network
         self.grapher = CsvGrapher(self)
         sim_time = network.run()
@@ -176,6 +190,15 @@ class BlackWidow(object):
             print data
 
     def write(self):
+        """ Writes data to files.
+
+        This function writes each type of data to a file. The files are
+        dependent on the extensions used to save data and the log_file file.
+        Files are created as:
+            [log_file].[data_type].csv
+        Files are created in the data_dir directory in CSV format.
+
+        """
         if self.log_file is not None:
             for data_type in self.data:
                 with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file,
