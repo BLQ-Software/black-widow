@@ -94,7 +94,7 @@ class Router(Device):
     def update_route(self, packet):
         """Update routing table."""
         link = None
-        if packet.src in self._routing_table:
+        if packet.src in self._new_routing_table:
             route = self._new_routing_table[packet.src]
             if 'link' in route:
                 link = route['link']
@@ -105,10 +105,10 @@ class Router(Device):
         route_changed = False
         for dest, route in packet.routing_table.items():
             distance = route['distance'] + link.distance
-            if dest not in self._routing_table:
+            if dest not in self._new_routing_table:
                 self._new_routing_table[dest] = {'link': link, 'distance': distance}
                 route_changed = True
-            elif distance < self._routing_table[dest]['distance']:
+            elif distance < self._new_routing_table[dest]['distance']:
                 self._new_routing_table[dest] = {'link': link, 'distance': distance}
                 route_changed = True
 
