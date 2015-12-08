@@ -53,9 +53,9 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         if args[0] == "True":
-            self.bw.real_time = True
+            self.bw.show_verbose = True
         else:
-            self.bw.real_time = False
+            self.bw.show_verbose = False
 
     def do_set_static_routing(self, line):
         """set_static_routing [static_routing]
