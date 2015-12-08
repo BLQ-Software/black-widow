@@ -188,36 +188,36 @@ class CsvGrapher(object):
         fig = plt.figure(1, figsize=(15,8))
 
         for flow in flows:
-            receive_rate_path = '{}/{}.flow {} receive rate.csv'.format(data_dir, log_file, flow[0])
-            send_rate_path = '{}/{}.flow {} send rate.csv'.format(data_dir, log_file, flow[0])
+            link_send_rate_path = '{}/{}.link {} send rate.csv'.format(data_dir, log_file, link[0])
+            flow_send_rate_path = '{}/{}.flow {} send rate.csv'.format(data_dir, log_file, flow[0])
 
-            if (os.path.isfile(receive_rate_path)):
+            if (os.path.isfile(flow_send_rate_path)):
                 # Load in send rate data
-                receive_rate = np.genfromtxt(receive_rate_path, delimiter=',')
-                receive_rate = receive_rate.astype(int)
-                receive_rate_times = receive_rate[:,0]
-                receive_rate = receive_rate[:,1]
+                flow_send_rate = np.genfromtxt(flow_send_rate_path, delimiter=',')
+                flow_send_rate = flow_send_rate.astype(int)
+                flow_send_rate_times = flow_send_rate[:,0]
+                flow_send_rate = flow_send_rate[:,1]
 
-                # Plot the send rate
+                # Plot the flow send rate
                 plt.subplot(2, 1, 1)
-                plt.plot(receive_rate_times, receive_rate, markersize=5, label=flow[0])
+                plt.plot(flow_send_rate_times, flow_send_rate, markersize=5, label=flow[0])
                 plt.legend()
                 plt.xlabel('time (ms)', fontsize=18)
-                plt.ylabel('receive rate (bits/ms)', fontsize=18)
+                plt.ylabel('flow rate (kilobits/s)', fontsize=18)
 
-            if (os.path.isfile(send_rate_path)):
-                # Load in receive rate data
-                send_rate = np.genfromtxt(send_rate_path, delimiter=',')
-                send_rate = send_rate.astype(int)
-                send_rate_times = send_rate[:,0]
-                send_rate = send_rate[:,1]
+            if (os.path.isfile(link_send_rate_path)):
+                # Load in link send rate data
+                link_send_rate = np.genfromtxt(link_send_rate_path, delimiter=',')
+                link_send_rate = link_send_rate.astype(int)
+                link_send_rate_times = link_send_rate[:,0]
+                link_send_rate = link_send_rate[:,1]
 
-                # Plot the receive rate 
+                # Plot the link send rate 
                 plt.subplot(2, 1, 2)
-                plt.plot(send_rate_times, send_rate, markersize=5, label=flow[0])
+                plt.plot(link_send_rate_times, link_send_rate, markersize=5, label=flow[0])
                 plt.legend()
                 plt.xlabel('time (ms)', fontsize=18)
-                plt.ylabel('send rate (bits/ms)', fontsize=18)
+                plt.ylabel('link rate (kilobits/s)', fontsize=18)
 
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()

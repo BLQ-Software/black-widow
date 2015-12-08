@@ -1,3 +1,4 @@
+from blackwidow.network.rate_graph import Rate_Graph
 from collections import deque
 from event import Event
 
@@ -52,6 +53,7 @@ class Link(object):
         self.bw = bw
         self._size = 0
         self._distance = delay
+        self._send_rate = Rate_Graph(self._id, "link {0} send rate".format(self._id), self.env, self.bw)
 
     def __str__(self):
         msg = "Link {0} connected to {1} and {2}\n"
@@ -159,6 +161,7 @@ class Link(object):
 
     def _release(self):
         packet, source_id, time = self._release_into_link_buffer.pop()
+        self._send_rate.add_point(packet, self.env.time)
         self._size -= packet.size
         self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'link_{0}.buffer'.format(self._id))
 
