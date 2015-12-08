@@ -354,8 +354,8 @@ flow.delay   -  &#8220;Time in ms&#8221;, &#8220;Delay in ms&#8221;</dd>
 <dl class="method">
 <dt id="blackwidow.blackwidow.BlackWidow.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/blackwidow.html#BlackWidow.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.blackwidow.BlackWidow.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs the overall simulation based on settings specified when
-the BlackWidow object is constructed.</p>
+<dd><p>Runs the overall simulation based on settings specified when the
+BlackWidow object is constructed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -373,12 +373,39 @@ the BlackWidow object is constructed.</p>
 <dl class="method">
 <dt id="blackwidow.blackwidow.BlackWidow.run_network">
 <code class="descname">run_network</code><span class="sig-paren">(</span><em>network</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/blackwidow.html#BlackWidow.run_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.blackwidow.BlackWidow.run_network" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Runs the overall simulation based on settings specified when the
+BlackWidow object is constructed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>network</strong> : <cite>Network</cite></p>
+<blockquote>
+<div><p>The network to run.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sim_time</strong> : float</p>
+<blockquote class="last">
+<div><p>The amount of time taken for the network to finish running.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="blackwidow.blackwidow.BlackWidow.write">
 <code class="descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/blackwidow.html#BlackWidow.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.blackwidow.BlackWidow.write" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Writes data to files.</p>
+<p>This function writes each type of data to a file. The files are
+dependent on the extensions used to save data and the log_file file.
+Files are created as:</p>
+<blockquote>
+<div>[log_file].[data_type].csv</div></blockquote>
+<p>Files are created in the data_dir directory in CSV format.</p>
+</dd></dl>
 
 </dd></dl>
 

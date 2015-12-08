@@ -249,8 +249,8 @@
 
 
 <div class="viewcode-block" id="BlackWidow.run"><a class="viewcode-back" href="../../blackwidow.html#blackwidow.blackwidow.BlackWidow.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Runs the overall simulation based on settings specified when</span>
-<span class="sd">        the BlackWidow object is constructed.</span>
+        <span class="sd">&quot;&quot;&quot;Runs the overall simulation based on settings specified when the</span>
+<span class="sd">        BlackWidow object is constructed.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -274,6 +274,20 @@
         <span class="k">return</span> <span class="n">sim_time</span>
 </div>
 <div class="viewcode-block" id="BlackWidow.run_network"><a class="viewcode-back" href="../../blackwidow.html#blackwidow.blackwidow.BlackWidow.run_network">[docs]</a>    <span class="k">def</span> <span class="nf">run_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Runs the overall simulation based on settings specified when the</span>
+<span class="sd">        BlackWidow object is constructed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        network : `Network`</span>
+<span class="sd">            The network to run.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sim_time : float</span>
+<span class="sd">            The amount of time taken for the network to finish running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grapher</span> <span class="o">=</span> <span class="n">CsvGrapher</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">sim_time</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -326,6 +340,15 @@
             <span class="k">print</span> <span class="n">data</span>
 </div>
 <div class="viewcode-block" id="BlackWidow.write"><a class="viewcode-back" href="../../blackwidow.html#blackwidow.blackwidow.BlackWidow.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Writes data to files.</span>
+
+<span class="sd">        This function writes each type of data to a file. The files are</span>
+<span class="sd">        dependent on the extensions used to save data and the log_file file.</span>
+<span class="sd">        Files are created as:</span>
+<span class="sd">            [log_file].[data_type].csv</span>
+<span class="sd">        Files are created in the data_dir directory in CSV format.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;{}/{}.{}.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span>
