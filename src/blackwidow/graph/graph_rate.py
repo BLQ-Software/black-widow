@@ -214,7 +214,7 @@ class CsvGrapher(object):
 
                 # Plot the link send rate 
                 plt.subplot(2, 1, 2)
-                plt.plot(link_send_rate_times, link_send_rate, markersize=5, label=flow[0])
+                plt.plot(link_send_rate_times, link_send_rate, markersize=5, label=link[0])
                 plt.legend()
                 plt.xlabel('time (ms)', fontsize=18)
                 plt.ylabel('link rate (kilobits/s)', fontsize=18)
