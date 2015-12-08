@@ -1,0 +1,1464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>blackwidow.network package &mdash; blackwidow  documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="blackwidow  documentation" href="index.html" />
+    <link rel="up" title="blackwidow package" href="blackwidow.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">blackwidow  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="blackwidow.html" accesskey="U">blackwidow package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="blackwidow-network-package">
+<h1>blackwidow.network package<a class="headerlink" href="#blackwidow-network-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-blackwidow.network.device">
+<span id="blackwidow-network-device-module"></span><h2>blackwidow.network.device module<a class="headerlink" href="#module-blackwidow.network.device" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.device.Device">
+<em class="property">class </em><code class="descclassname">blackwidow.network.device.</code><code class="descname">Device</code><span class="sig-paren">(</span><em>net_addr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/device.html#Device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.device.Device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Super class for hosts and routers.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.device.Device.links" title="blackwidow.network.device.Device.links"><code class="xref py py-obj docutils literal"><span class="pre">links</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.device.Device.network_id" title="blackwidow.network.device.Device.network_id"><code class="xref py py-obj docutils literal"><span class="pre">network_id</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.device.Device.add_link" title="blackwidow.network.device.Device.add_link"><code class="xref py py-obj docutils literal"><span class="pre">add_link</span></code></a>(link)</td>
+<td>Add link to list of links.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.device.Device.delete_link" title="blackwidow.network.device.Device.delete_link"><code class="xref py py-obj docutils literal"><span class="pre">delete_link</span></code></a>(link)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.device.Device.send" title="blackwidow.network.device.Device.send"><code class="xref py py-obj docutils literal"><span class="pre">send</span></code></a>(packet)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.device.Device.set_env" title="blackwidow.network.device.Device.set_env"><code class="xref py py-obj docutils literal"><span class="pre">set_env</span></code></a>(env)</td>
+<td>Set simpy environment</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="blackwidow.network.device.Device.add_link">
+<code class="descname">add_link</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/device.html#Device.add_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.device.Device.add_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add link to list of links.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.device.Device.delete_link">
+<code class="descname">delete_link</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/device.html#Device.delete_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.device.Device.delete_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.device.Device.links">
+<code class="descname">links</code><a class="headerlink" href="#blackwidow.network.device.Device.links" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.device.Device.network_id">
+<code class="descname">network_id</code><a class="headerlink" href="#blackwidow.network.device.Device.network_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.device.Device.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/device.html#Device.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.device.Device.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.device.Device.set_env">
+<code class="descname">set_env</code><span class="sig-paren">(</span><em>env</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/device.html#Device.set_env"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.device.Device.set_env" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set simpy environment</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.event">
+<span id="blackwidow-network-event-module"></span><h2>blackwidow.network.event module<a class="headerlink" href="#module-blackwidow.network.event" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.event.Event">
+<em class="property">class </em><code class="descclassname">blackwidow.network.event.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>type</em>, <em>src_id</em>, <em>f</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/event.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.event.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.event.Event.id" title="blackwidow.network.event.Event.id"><code class="xref py py-obj docutils literal"><span class="pre">id</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.event.Event.src_id" title="blackwidow.network.event.Event.src_id"><code class="xref py py-obj docutils literal"><span class="pre">src_id</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.event.Event.type" title="blackwidow.network.event.Event.type"><code class="xref py py-obj docutils literal"><span class="pre">type</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.event.Event.run" title="blackwidow.network.event.Event.run"><code class="xref py py-obj docutils literal"><span class="pre">run</span></code></a>()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="blackwidow.network.event.Event.id">
+<code class="descname">id</code><a class="headerlink" href="#blackwidow.network.event.Event.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.event.Event.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/event.html#Event.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.event.Event.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.event.Event.src_id">
+<code class="descname">src_id</code><a class="headerlink" href="#blackwidow.network.event.Event.src_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.event.Event.type">
+<code class="descname">type</code><a class="headerlink" href="#blackwidow.network.event.Event.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.fast_flow">
+<span id="blackwidow-network-fast-flow-module"></span><h2>blackwidow.network.fast_flow module<a class="headerlink" href="#module-blackwidow.network.fast_flow" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.fast_flow.FastFlow">
+<em class="property">class </em><code class="descclassname">blackwidow.network.fast_flow.</code><code class="descname">FastFlow</code><span class="sig-paren">(</span><em>flow_id</em>, <em>source</em>, <em>destination</em>, <em>amount</em>, <em>env</em>, <em>time</em>, <em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/fast_flow.html#FastFlow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.fast_flow.FastFlow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.flow.Flow" title="blackwidow.network.flow.Flow"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.flow.Flow</span></code></a></p>
+<p>Implements FAST TCP.
+Flows will trigger host behavior.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>flow_id</strong> : string</p>
+<blockquote>
+<div><p>A unique id for the flow.</p>
+</div></blockquote>
+<p><strong>source</strong> : <cite>Device</cite></p>
+<blockquote>
+<div><p>The source for the flow.</p>
+</div></blockquote>
+<p><strong>destination</strong> : <cite>Device</cite></p>
+<blockquote>
+<div><p>The destination for the flow.</p>
+</div></blockquote>
+<p><strong>amount</strong> : int</p>
+<blockquote>
+<div><p>The amount of data to send in MB.</p>
+</div></blockquote>
+<p><strong>env</strong> : <cite>Network</cite></p>
+<blockquote>
+<div><p>The network that the flow belongs to.</p>
+</div></blockquote>
+<p><strong>time</strong> : float</p>
+<blockquote class="last">
+<div><p>The amount of time to wait before starting to send in ms.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">amount</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_start</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.fast_flow.FastFlow.send_packet" title="blackwidow.network.fast_flow.FastFlow.send_packet"><code class="xref py py-obj docutils literal"><span class="pre">send_packet</span></code></a>()</td>
+<td>Send a packet.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="blackwidow.network.fast_flow.FastFlow.send_packet">
+<code class="descname">send_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/fast_flow.html#FastFlow.send_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.fast_flow.FastFlow.send_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a packet.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.flow">
+<span id="blackwidow-network-flow-module"></span><h2>blackwidow.network.flow module<a class="headerlink" href="#module-blackwidow.network.flow" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.flow.Flow">
+<em class="property">class </em><code class="descclassname">blackwidow.network.flow.</code><code class="descname">Flow</code><span class="sig-paren">(</span><em>flow_id</em>, <em>source</em>, <em>destination</em>, <em>amount</em>, <em>env</em>, <em>time</em>, <em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/flow.html#Flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.flow.Flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Simple class for flows.
+Flows will trigger host behavior.
+Has slow start and congestion avoidance.
+Parameters
+&#8212;&#8212;&#8212;-
+flow_id : string</p>
+<blockquote>
+<div>A unique id for the flow.</div></blockquote>
+<dl class="docutils">
+<dt>source <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Device</cite></span></dt>
+<dd>The source for the flow.</dd>
+<dt>destination <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Device</cite></span></dt>
+<dd>The destination for the flow.</dd>
+<dt>amount <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The amount of data to send in MB.</dd>
+<dt>env <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Network</cite></span></dt>
+<dd>The network that the flow belongs to.</dd>
+<dt>time <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The amount of time to wait before starting to send in ms.</dd>
+</dl>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.flow.Flow.amount" title="blackwidow.network.flow.Flow.amount"><code class="xref py py-obj docutils literal"><span class="pre">amount</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.flow.Flow.dest" title="blackwidow.network.flow.Flow.dest"><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.flow.Flow.flow_id" title="blackwidow.network.flow.Flow.flow_id"><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.flow.Flow.flow_start" title="blackwidow.network.flow.Flow.flow_start"><code class="xref py py-obj docutils literal"><span class="pre">flow_start</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.flow.Flow.src" title="blackwidow.network.flow.Flow.src"><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.flow.Flow.receive" title="blackwidow.network.flow.Flow.receive"><code class="xref py py-obj docutils literal"><span class="pre">receive</span></code></a>(packet)</td>
+<td>Generate an ack or respond to bad packet.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.flow.Flow.send_packet" title="blackwidow.network.flow.Flow.send_packet"><code class="xref py py-obj docutils literal"><span class="pre">send_packet</span></code></a>()</td>
+<td>Send a packet.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="blackwidow.network.flow.Flow.amount">
+<code class="descname">amount</code><a class="headerlink" href="#blackwidow.network.flow.Flow.amount" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.flow.Flow.dest">
+<code class="descname">dest</code><a class="headerlink" href="#blackwidow.network.flow.Flow.dest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.flow.Flow.flow_id">
+<code class="descname">flow_id</code><a class="headerlink" href="#blackwidow.network.flow.Flow.flow_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.flow.Flow.flow_start">
+<code class="descname">flow_start</code><a class="headerlink" href="#blackwidow.network.flow.Flow.flow_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.flow.Flow.receive">
+<code class="descname">receive</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/flow.html#Flow.receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.flow.Flow.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an ack or respond to bad packet.
+Parameters
+&#8212;&#8212;&#8212;-
+packet : <cite>Packet</cite></p>
+<blockquote>
+<div>The packet to be received.</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.flow.Flow.send_packet">
+<code class="descname">send_packet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/flow.html#Flow.send_packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.flow.Flow.send_packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a packet.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.flow.Flow.src">
+<code class="descname">src</code><a class="headerlink" href="#blackwidow.network.flow.Flow.src" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.host">
+<span id="blackwidow-network-host-module"></span><h2>blackwidow.network.host module<a class="headerlink" href="#module-blackwidow.network.host" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.host.Host">
+<em class="property">class </em><code class="descclassname">blackwidow.network.host.</code><code class="descname">Host</code><span class="sig-paren">(</span><em>host_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/host.html#Host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.host.Host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.device.Device" title="blackwidow.network.device.Device"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.device.Device</span></code></a></p>
+<p>Simple class for hosts.</p>
+<p>Hosts are mainly responsible for recording their time data.
+They don&#8217;t trigger events in the simulation, but it will be
+useful to separate host data (end to end data). Flows
+will trigger host behavior.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>host_id</strong> : string</p>
+<blockquote class="last">
+<div><p>A unique id for the host.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.host.Host.flows" title="blackwidow.network.host.Host.flows"><code class="xref py py-obj docutils literal"><span class="pre">flows</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">links</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">network_id</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.host.Host.add_flow" title="blackwidow.network.host.Host.add_flow"><code class="xref py py-obj docutils literal"><span class="pre">add_flow</span></code></a>(flow)</td>
+<td>Add receiving flow to host.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.host.Host.delete_flow" title="blackwidow.network.host.Host.delete_flow"><code class="xref py py-obj docutils literal"><span class="pre">delete_flow</span></code></a>(flow)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.host.Host.receive" title="blackwidow.network.host.Host.receive"><code class="xref py py-obj docutils literal"><span class="pre">receive</span></code></a>(packet)</td>
+<td>Send packet to flow to process.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.host.Host.send" title="blackwidow.network.host.Host.send"><code class="xref py py-obj docutils literal"><span class="pre">send</span></code></a>(packet)</td>
+<td>Connects to a link.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="blackwidow.network.host.Host.add_flow">
+<code class="descname">add_flow</code><span class="sig-paren">(</span><em>flow</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/host.html#Host.add_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.host.Host.add_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add receiving flow to host.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>flow</strong> : <cite>Flow</cite></p>
+<blockquote class="last">
+<div><p>The flow to add to the host.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.host.Host.delete_flow">
+<code class="descname">delete_flow</code><span class="sig-paren">(</span><em>flow</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/host.html#Host.delete_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.host.Host.delete_flow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.host.Host.flows">
+<code class="descname">flows</code><a class="headerlink" href="#blackwidow.network.host.Host.flows" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.host.Host.receive">
+<code class="descname">receive</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/host.html#Host.receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.host.Host.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send packet to flow to process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>packet</strong> : <cite>Packet</cite></p>
+<blockquote class="last">
+<div><p>The packet to be received.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.host.Host.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/host.html#Host.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.host.Host.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to a link.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>packet</strong> : <cite>Packet</cite></p>
+<blockquote class="last">
+<div><p>The packet to send.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.link">
+<span id="blackwidow-network-link-module"></span><h2>blackwidow.network.link module<a class="headerlink" href="#module-blackwidow.network.link" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.link.Link">
+<em class="property">class </em><code class="descclassname">blackwidow.network.link.</code><code class="descname">Link</code><span class="sig-paren">(</span><em>id</em>, <em>device_a</em>, <em>device_b</em>, <em>delay</em>, <em>rate</em>, <em>capacity</em>, <em>env</em>, <em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/link.html#Link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.link.Link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Simulates a link connected to two Devices in the network.</p>
+<p>Represents a physical link in the network. In addition to simple send and
+receive, this class also handles the packet buffer for sending packets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>id</strong> : string</p>
+<blockquote>
+<div><p>A unique id for the link.</p>
+</div></blockquote>
+<p><strong>device_a</strong> : <cite>Device</cite></p>
+<blockquote>
+<div><p>A <cite>Device</cite> to which the link is connected.</p>
+</div></blockquote>
+<p><strong>device_b</strong> : <cite>Device</cite></p>
+<blockquote>
+<div><p>A <cite>Device</cite> to which the link is connected.</p>
+</div></blockquote>
+<p><strong>delay</strong> : float</p>
+<blockquote>
+<div><p>The propagation delay to send packets across the link. Specified in ms.</p>
+</div></blockquote>
+<p><strong>rate</strong> : float</p>
+<blockquote>
+<div><p>The rate at which the link can send a packet. Specified in Mbps.</p>
+</div></blockquote>
+<p><strong>capacity</strong> : int</p>
+<blockquote>
+<div><p>The capacity of the link buffer. Specified in KB.</p>
+</div></blockquote>
+<p><strong>env</strong> : <cite>Network</cite></p>
+<blockquote>
+<div><p>The network that the link belongs to.</p>
+</div></blockquote>
+<p><strong>bw</strong> : <cite>Blackwidow</cite></p>
+<blockquote class="last">
+<div><p>The printer to print data to.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.capacity" title="blackwidow.network.link.Link.capacity"><code class="xref py py-obj docutils literal"><span class="pre">capacity</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.link.Link.delay" title="blackwidow.network.link.Link.delay"><code class="xref py py-obj docutils literal"><span class="pre">delay</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.device_a" title="blackwidow.network.link.Link.device_a"><code class="xref py py-obj docutils literal"><span class="pre">device_a</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.link.Link.device_b" title="blackwidow.network.link.Link.device_b"><code class="xref py py-obj docutils literal"><span class="pre">device_b</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.distance" title="blackwidow.network.link.Link.distance"><code class="xref py py-obj docutils literal"><span class="pre">distance</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.link.Link.id" title="blackwidow.network.link.Link.id"><code class="xref py py-obj docutils literal"><span class="pre">id</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.rate" title="blackwidow.network.link.Link.rate"><code class="xref py py-obj docutils literal"><span class="pre">rate</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>receive(packet, source_id)</td>
+<td>Receives a packet from a <cite>Device</cite>.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="blackwidow.network.link.Link.capacity">
+<code class="descname">capacity</code><a class="headerlink" href="#blackwidow.network.link.Link.capacity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.link.Link.delay">
+<code class="descname">delay</code><a class="headerlink" href="#blackwidow.network.link.Link.delay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.link.Link.device_a">
+<code class="descname">device_a</code><a class="headerlink" href="#blackwidow.network.link.Link.device_a" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.link.Link.device_b">
+<code class="descname">device_b</code><a class="headerlink" href="#blackwidow.network.link.Link.device_b" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.link.Link.distance">
+<code class="descname">distance</code><a class="headerlink" href="#blackwidow.network.link.Link.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.link.Link.get_buffer_size">
+<code class="descname">get_buffer_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/link.html#Link.get_buffer_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.link.Link.get_buffer_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the buffer size in bits.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.link.Link.id">
+<code class="descname">id</code><a class="headerlink" href="#blackwidow.network.link.Link.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.link.Link.measure_distance">
+<code class="descname">measure_distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/link.html#Link.measure_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.link.Link.measure_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measure the link distance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.link.Link.rate">
+<code class="descname">rate</code><a class="headerlink" href="#blackwidow.network.link.Link.rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.link.Link.receive">
+<code class="descname">receive</code><span class="sig-paren">(</span><em>packet</em>, <em>source_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/link.html#Link.receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.link.Link.receive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.network">
+<span id="blackwidow-network-network-module"></span><h2>blackwidow.network.network module<a class="headerlink" href="#module-blackwidow.network.network" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.network.Network">
+<em class="property">class </em><code class="descclassname">blackwidow.network.network.</code><code class="descname">Network</code><span class="sig-paren">(</span><em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python representation of the network.</p>
+<p>Each host, router, link, and flow object is denoted by a
+unique character id, and placed in a distinct dictionary.
+The check_id function checks the unique id constraint before
+construction any new objects. This is a global id constraint
+across all objects.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.time" title="blackwidow.network.network.Network.time"><code class="xref py py-obj docutils literal"><span class="pre">time</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.add_event" title="blackwidow.network.network.Network.add_event"><code class="xref py py-obj docutils literal"><span class="pre">add_event</span></code></a>(event,&nbsp;delay[,&nbsp;initial])</td>
+<td>Function to add an event to the queue</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.network.Network.add_flow" title="blackwidow.network.network.Network.add_flow"><code class="xref py py-obj docutils literal"><span class="pre">add_flow</span></code></a>(flow_id,&nbsp;flow_src,&nbsp;flow_dest,&nbsp;...)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.add_host" title="blackwidow.network.network.Network.add_host"><code class="xref py py-obj docutils literal"><span class="pre">add_host</span></code></a>(host_id)</td>
+<td>Construct host and add to dictionary of hosts.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.network.Network.add_link" title="blackwidow.network.network.Network.add_link"><code class="xref py py-obj docutils literal"><span class="pre">add_link</span></code></a>(link_id,&nbsp;device_id1,&nbsp;device_id2,&nbsp;...)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.add_router" title="blackwidow.network.network.Network.add_router"><code class="xref py py-obj docutils literal"><span class="pre">add_router</span></code></a>(router_id)</td>
+<td>Construct router and add to dictionary of routers</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.network.Network.check_id" title="blackwidow.network.network.Network.check_id"><code class="xref py py-obj docutils literal"><span class="pre">check_id</span></code></a>(obj_id)</td>
+<td>Raise an exception if object id is not unique.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.decrement_flows" title="blackwidow.network.network.Network.decrement_flows"><code class="xref py py-obj docutils literal"><span class="pre">decrement_flows</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.network.Network.delete_device" title="blackwidow.network.network.Network.delete_device"><code class="xref py py-obj docutils literal"><span class="pre">delete_device</span></code></a>(device_id)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.delete_flow" title="blackwidow.network.network.Network.delete_flow"><code class="xref py py-obj docutils literal"><span class="pre">delete_flow</span></code></a>(flow_id)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.network.Network.delete_link" title="blackwidow.network.network.Network.delete_link"><code class="xref py py-obj docutils literal"><span class="pre">delete_link</span></code></a>(link_id)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.dump" title="blackwidow.network.network.Network.dump"><code class="xref py py-obj docutils literal"><span class="pre">dump</span></code></a>([output])</td>
+<td>Prints out network</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.network.Network.empty" title="blackwidow.network.network.Network.empty"><code class="xref py py-obj docutils literal"><span class="pre">empty</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.network.Network.run" title="blackwidow.network.network.Network.run"><code class="xref py py-obj docutils literal"><span class="pre">run</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.network.Network.to_json" title="blackwidow.network.network.Network.to_json"><code class="xref py py-obj docutils literal"><span class="pre">to_json</span></code></a>()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="blackwidow.network.network.Network.add_event">
+<code class="descname">add_event</code><span class="sig-paren">(</span><em>event</em>, <em>delay</em>, <em>initial=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.add_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.add_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to add an event to the queue</p>
+<p>This function adds an event to the queue to be run after delay time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>event</strong> : <cite>Event</cite></p>
+<blockquote>
+<div><p>The event to be run.</p>
+</div></blockquote>
+<p><strong>delay</strong> : float</p>
+<blockquote class="last">
+<div><p>The amount of time in ms to wait before running the event.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.add_flow">
+<code class="descname">add_flow</code><span class="sig-paren">(</span><em>flow_id</em>, <em>flow_src</em>, <em>flow_dest</em>, <em>data_amt</em>, <em>flow_start</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.add_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.add_flow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.add_host">
+<code class="descname">add_host</code><span class="sig-paren">(</span><em>host_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.add_host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.add_host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct host and add to dictionary of hosts.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.add_link">
+<code class="descname">add_link</code><span class="sig-paren">(</span><em>link_id</em>, <em>device_id1</em>, <em>device_id2</em>, <em>delay</em>, <em>rate</em>, <em>capacity</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.add_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.add_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.add_router">
+<code class="descname">add_router</code><span class="sig-paren">(</span><em>router_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.add_router"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.add_router" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct router and add to dictionary of routers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.check_id">
+<code class="descname">check_id</code><span class="sig-paren">(</span><em>obj_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.check_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.check_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise an exception if object id is not unique.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.decrement_flows">
+<code class="descname">decrement_flows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.decrement_flows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.decrement_flows" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.delete_device">
+<code class="descname">delete_device</code><span class="sig-paren">(</span><em>device_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.delete_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.delete_device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.delete_flow">
+<code class="descname">delete_flow</code><span class="sig-paren">(</span><em>flow_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.delete_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.delete_flow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.delete_link">
+<code class="descname">delete_link</code><span class="sig-paren">(</span><em>link_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.delete_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.delete_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.dump">
+<code class="descname">dump</code><span class="sig-paren">(</span><em>output=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints out network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.empty">
+<code class="descname">empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.network.Network.time">
+<code class="descname">time</code><a class="headerlink" href="#blackwidow.network.network.Network.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.network.Network.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/network.html#Network.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.network.Network.to_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.packet">
+<span id="blackwidow-network-packet-module"></span><h2>blackwidow.network.packet module<a class="headerlink" href="#module-blackwidow.network.packet" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.packet.AckPacket">
+<em class="property">class </em><code class="descclassname">blackwidow.network.packet.</code><code class="descname">AckPacket</code><span class="sig-paren">(</span><em>packet_id</em>, <em>src</em>, <em>dest</em>, <em>flow_id</em>, <em>next_expected_id=0</em>, <em>timestamp=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/packet.html#AckPacket"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.packet.AckPacket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.packet.Packet" title="blackwidow.network.packet.Packet"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.packet.Packet</span></code></a></p>
+<p>Class for acknowledgement packets</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">is_ack</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">is_routing</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.packet.AckPacket.next_expected" title="blackwidow.network.packet.AckPacket.next_expected"><code class="xref py py-obj docutils literal"><span class="pre">next_expected</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">pack_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">size</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">timestamp</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="blackwidow.network.packet.AckPacket.next_expected">
+<code class="descname">next_expected</code><a class="headerlink" href="#blackwidow.network.packet.AckPacket.next_expected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="blackwidow.network.packet.DataPacket">
+<em class="property">class </em><code class="descclassname">blackwidow.network.packet.</code><code class="descname">DataPacket</code><span class="sig-paren">(</span><em>packet_id</em>, <em>src</em>, <em>dest</em>, <em>flow_id</em>, <em>timestamp=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/packet.html#DataPacket"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.packet.DataPacket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.packet.Packet" title="blackwidow.network.packet.Packet"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.packet.Packet</span></code></a></p>
+<p>Class for data packets</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">is_ack</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">is_routing</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">pack_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">size</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">timestamp</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="blackwidow.network.packet.Packet">
+<em class="property">class </em><code class="descclassname">blackwidow.network.packet.</code><code class="descname">Packet</code><span class="sig-paren">(</span><em>packet_id</em>, <em>src</em>, <em>dest</em>, <em>flow_id</em>, <em>timestamp=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/packet.html#Packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.packet.Packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Super class for DataPackets and AckPackets</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.dest" title="blackwidow.network.packet.Packet.dest"><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.flow_id" title="blackwidow.network.packet.Packet.flow_id"><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.is_ack" title="blackwidow.network.packet.Packet.is_ack"><code class="xref py py-obj docutils literal"><span class="pre">is_ack</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.is_routing" title="blackwidow.network.packet.Packet.is_routing"><code class="xref py py-obj docutils literal"><span class="pre">is_routing</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.pack_id" title="blackwidow.network.packet.Packet.pack_id"><code class="xref py py-obj docutils literal"><span class="pre">pack_id</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.size" title="blackwidow.network.packet.Packet.size"><code class="xref py py-obj docutils literal"><span class="pre">size</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.src" title="blackwidow.network.packet.Packet.src"><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.packet.Packet.timestamp" title="blackwidow.network.packet.Packet.timestamp"><code class="xref py py-obj docutils literal"><span class="pre">timestamp</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.dest">
+<code class="descname">dest</code><a class="headerlink" href="#blackwidow.network.packet.Packet.dest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.flow_id">
+<code class="descname">flow_id</code><a class="headerlink" href="#blackwidow.network.packet.Packet.flow_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.is_ack">
+<code class="descname">is_ack</code><a class="headerlink" href="#blackwidow.network.packet.Packet.is_ack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.is_routing">
+<code class="descname">is_routing</code><a class="headerlink" href="#blackwidow.network.packet.Packet.is_routing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.pack_id">
+<code class="descname">pack_id</code><a class="headerlink" href="#blackwidow.network.packet.Packet.pack_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.size">
+<code class="descname">size</code><a class="headerlink" href="#blackwidow.network.packet.Packet.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.src">
+<code class="descname">src</code><a class="headerlink" href="#blackwidow.network.packet.Packet.src" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.packet.Packet.timestamp">
+<code class="descname">timestamp</code><a class="headerlink" href="#blackwidow.network.packet.Packet.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="blackwidow.network.packet.RoutingPacket">
+<em class="property">class </em><code class="descclassname">blackwidow.network.packet.</code><code class="descname">RoutingPacket</code><span class="sig-paren">(</span><em>packet_id</em>, <em>src</em>, <em>dest</em>, <em>flow_id</em>, <em>routing_table</em>, <em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/packet.html#RoutingPacket"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.packet.RoutingPacket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.packet.Packet" title="blackwidow.network.packet.Packet"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.packet.Packet</span></code></a></p>
+<p>Class for routing packets</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">is_ack</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">is_routing</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">pack_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.packet.RoutingPacket.routing_table" title="blackwidow.network.packet.RoutingPacket.routing_table"><code class="xref py py-obj docutils literal"><span class="pre">routing_table</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">size</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">timestamp</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="blackwidow.network.packet.RoutingPacket.routing_table">
+<code class="descname">routing_table</code><a class="headerlink" href="#blackwidow.network.packet.RoutingPacket.routing_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.rate_graph">
+<span id="blackwidow-network-rate-graph-module"></span><h2>blackwidow.network.rate_graph module<a class="headerlink" href="#module-blackwidow.network.rate_graph" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.rate_graph.Data">
+<em class="property">class </em><code class="descclassname">blackwidow.network.rate_graph.</code><code class="descname">Data</code><span class="sig-paren">(</span><em>time</em>, <em>size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/rate_graph.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.rate_graph.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.rate_graph.Data.size" title="blackwidow.network.rate_graph.Data.size"><code class="xref py py-obj docutils literal"><span class="pre">size</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.rate_graph.Data.time" title="blackwidow.network.rate_graph.Data.time"><code class="xref py py-obj docutils literal"><span class="pre">time</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="blackwidow.network.rate_graph.Data.size">
+<code class="descname">size</code><a class="headerlink" href="#blackwidow.network.rate_graph.Data.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="blackwidow.network.rate_graph.Data.time">
+<code class="descname">time</code><a class="headerlink" href="#blackwidow.network.rate_graph.Data.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="blackwidow.network.rate_graph.Rate_Graph">
+<em class="property">class </em><code class="descclassname">blackwidow.network.rate_graph.</code><code class="descname">Rate_Graph</code><span class="sig-paren">(</span><em>object_id</em>, <em>name</em>, <em>env</em>, <em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/rate_graph.html#Rate_Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.rate_graph.Rate_Graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class to graph rates.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.rate_graph.Rate_Graph.add_point" title="blackwidow.network.rate_graph.Rate_Graph.add_point"><code class="xref py py-obj docutils literal"><span class="pre">add_point</span></code></a>(packet,&nbsp;time)</td>
+<td>Adds a point to the queue</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.rate_graph.Rate_Graph.graph" title="blackwidow.network.rate_graph.Rate_Graph.graph"><code class="xref py py-obj docutils literal"><span class="pre">graph</span></code></a>()</td>
+<td>Graphs current rate</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.rate_graph.Rate_Graph.peek_time" title="blackwidow.network.rate_graph.Rate_Graph.peek_time"><code class="xref py py-obj docutils literal"><span class="pre">peek_time</span></code></a>()</td>
+<td>Return the time of the first object in the queue</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.rate_graph.Rate_Graph.remove_points" title="blackwidow.network.rate_graph.Rate_Graph.remove_points"><code class="xref py py-obj docutils literal"><span class="pre">remove_points</span></code></a>(time)</td>
+<td>Removes data before time</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="blackwidow.network.rate_graph.Rate_Graph.add_point">
+<code class="descname">add_point</code><span class="sig-paren">(</span><em>packet</em>, <em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/rate_graph.html#Rate_Graph.add_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.rate_graph.Rate_Graph.add_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a point to the queue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.rate_graph.Rate_Graph.graph">
+<code class="descname">graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/rate_graph.html#Rate_Graph.graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.rate_graph.Rate_Graph.graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphs current rate</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.rate_graph.Rate_Graph.peek_time">
+<code class="descname">peek_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/rate_graph.html#Rate_Graph.peek_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.rate_graph.Rate_Graph.peek_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the time of the first object in the queue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.rate_graph.Rate_Graph.remove_points">
+<code class="descname">remove_points</code><span class="sig-paren">(</span><em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/rate_graph.html#Rate_Graph.remove_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.rate_graph.Rate_Graph.remove_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes data before time</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.reno_flow">
+<span id="blackwidow-network-reno-flow-module"></span><h2>blackwidow.network.reno_flow module<a class="headerlink" href="#module-blackwidow.network.reno_flow" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.reno_flow.RenoFlow">
+<em class="property">class </em><code class="descclassname">blackwidow.network.reno_flow.</code><code class="descname">RenoFlow</code><span class="sig-paren">(</span><em>flow_id</em>, <em>source</em>, <em>destination</em>, <em>amount</em>, <em>env</em>, <em>time</em>, <em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/reno_flow.html#RenoFlow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.reno_flow.RenoFlow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.tahoe_flow.TahoeFlow" title="blackwidow.network.tahoe_flow.TahoeFlow"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.tahoe_flow.TahoeFlow</span></code></a></p>
+<p>Implements TCP Reno.
+Adds Fast Retransmit and Fast Recovery
+Flows will trigger host behavior.
+Has slow start and congestion avoidance.
+Parameters
+&#8212;&#8212;&#8212;-
+flow_id : string</p>
+<blockquote>
+<div>A unique id for the flow.</div></blockquote>
+<dl class="docutils">
+<dt>source <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Device</cite></span></dt>
+<dd>The source for the flow.</dd>
+<dt>destination <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Device</cite></span></dt>
+<dd>The destination for the flow.</dd>
+<dt>amount <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The amount of data to send in MB.</dd>
+<dt>env <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Network</cite></span></dt>
+<dd>The network that the flow belongs to.</dd>
+<dt>time <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The amount of time to wait before starting to send in ms.</dd>
+</dl>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">amount</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_start</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.reno_flow.RenoFlow.receive" title="blackwidow.network.reno_flow.RenoFlow.receive"><code class="xref py py-obj docutils literal"><span class="pre">receive</span></code></a>(packet)</td>
+<td>Generate an ack or respond to bad packet.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="blackwidow.network.reno_flow.RenoFlow.receive">
+<code class="descname">receive</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/reno_flow.html#RenoFlow.receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.reno_flow.RenoFlow.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an ack or respond to bad packet.
+Parameters
+&#8212;&#8212;&#8212;-
+packet : <cite>Packet</cite></p>
+<blockquote>
+<div>The packet to be received.</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.router">
+<span id="blackwidow-network-router-module"></span><h2>blackwidow.network.router module<a class="headerlink" href="#module-blackwidow.network.router" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.router.Router">
+<em class="property">class </em><code class="descclassname">blackwidow.network.router.</code><code class="descname">Router</code><span class="sig-paren">(</span><em>router_id</em>, <em>env</em>, <em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/router.html#Router"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.router.Router" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.device.Device" title="blackwidow.network.device.Device"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.device.Device</span></code></a></p>
+<p>Class for routers.</p>
+<p>Routers are responsible for initializing and updating their
+routing table, and sending packets based on their routing table.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">links</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">network_id</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.router.Router.add_link" title="blackwidow.network.router.Router.add_link"><code class="xref py py-obj docutils literal"><span class="pre">add_link</span></code></a>(link)</td>
+<td>Overrides Device.add_link() .</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.router.Router.receive" title="blackwidow.network.router.Router.receive"><code class="xref py py-obj docutils literal"><span class="pre">receive</span></code></a>(packet)</td>
+<td>Process packet.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.router.Router.send" title="blackwidow.network.router.Router.send"><code class="xref py py-obj docutils literal"><span class="pre">send</span></code></a>(packet)</td>
+<td>Send packet to appropriate link.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.router.Router.send_routing" title="blackwidow.network.router.Router.send_routing"><code class="xref py py-obj docutils literal"><span class="pre">send_routing</span></code></a>()</td>
+<td>Send routing packets to all neighbors.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.router.Router.start_new_routing" title="blackwidow.network.router.Router.start_new_routing"><code class="xref py py-obj docutils literal"><span class="pre">start_new_routing</span></code></a>()</td>
+<td>Start a new routing round.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.router.Router.update_route" title="blackwidow.network.router.Router.update_route"><code class="xref py py-obj docutils literal"><span class="pre">update_route</span></code></a>(packet)</td>
+<td>Update routing table.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="blackwidow.network.router.Router.add_link">
+<code class="descname">add_link</code><span class="sig-paren">(</span><em>link</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/router.html#Router.add_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.router.Router.add_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides Device.add_link() .</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.router.Router.receive">
+<code class="descname">receive</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/router.html#Router.receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.router.Router.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process packet.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.router.Router.send">
+<code class="descname">send</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/router.html#Router.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.router.Router.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send packet to appropriate link.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.router.Router.send_routing">
+<code class="descname">send_routing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/router.html#Router.send_routing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.router.Router.send_routing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send routing packets to all neighbors.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.router.Router.start_new_routing">
+<code class="descname">start_new_routing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/router.html#Router.start_new_routing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.router.Router.start_new_routing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a new routing round.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="blackwidow.network.router.Router.update_route">
+<code class="descname">update_route</code><span class="sig-paren">(</span><em>packet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/router.html#Router.update_route"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.router.Router.update_route" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update routing table.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network.tahoe_flow">
+<span id="blackwidow-network-tahoe-flow-module"></span><h2>blackwidow.network.tahoe_flow module<a class="headerlink" href="#module-blackwidow.network.tahoe_flow" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="blackwidow.network.tahoe_flow.TahoeFlow">
+<em class="property">class </em><code class="descclassname">blackwidow.network.tahoe_flow.</code><code class="descname">TahoeFlow</code><span class="sig-paren">(</span><em>flow_id</em>, <em>source</em>, <em>destination</em>, <em>amount</em>, <em>env</em>, <em>time</em>, <em>bw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/tahoe_flow.html#TahoeFlow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.tahoe_flow.TahoeFlow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blackwidow.network.flow.Flow" title="blackwidow.network.flow.Flow"><code class="xref py py-class docutils literal"><span class="pre">blackwidow.network.flow.Flow</span></code></a></p>
+<p>Implements TCP Tahoe.
+Flows will trigger host behavior.
+Has slow start and congestion avoidance.
+Parameters
+&#8212;&#8212;&#8212;-
+flow_id : string</p>
+<blockquote>
+<div>A unique id for the flow.</div></blockquote>
+<dl class="docutils">
+<dt>source <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Device</cite></span></dt>
+<dd>The source for the flow.</dd>
+<dt>destination <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Device</cite></span></dt>
+<dd>The destination for the flow.</dd>
+<dt>amount <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>The amount of data to send in MB.</dd>
+<dt>env <span class="classifier-delimiter">:</span> <span class="classifier"><cite>Network</cite></span></dt>
+<dd>The network that the flow belongs to.</dd>
+<dt>time <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>The amount of time to wait before starting to send in ms.</dd>
+</dl>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">amount</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">dest</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_id</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">flow_start</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">src</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-blackwidow.network">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-blackwidow.network" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">blackwidow.network package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-blackwidow.network.device">blackwidow.network.device module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.event">blackwidow.network.event module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.fast_flow">blackwidow.network.fast_flow module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.flow">blackwidow.network.flow module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.host">blackwidow.network.host module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.link">blackwidow.network.link module</a></li>
+<li><a class="reference internal" href="#module-blackwidow.network.network">blackwidow.network.network module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.packet">blackwidow.network.packet module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.rate_graph">blackwidow.network.rate_graph module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.reno_flow">blackwidow.network.reno_flow module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.router">blackwidow.network.router module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network.tahoe_flow">blackwidow.network.tahoe_flow module</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-blackwidow.network">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/blackwidow.network.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">blackwidow  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="blackwidow.html" >blackwidow package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

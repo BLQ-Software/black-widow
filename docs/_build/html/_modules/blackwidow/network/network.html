@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>blackwidow.network.network &mdash; blackwidow  documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="blackwidow  documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">blackwidow  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for blackwidow.network.network</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">host</span> <span class="kn">import</span> <span class="n">Host</span>
+<span class="kn">from</span> <span class="nn">router</span> <span class="kn">import</span> <span class="n">Router</span>
+<span class="kn">from</span> <span class="nn">link</span> <span class="kn">import</span> <span class="n">Link</span>
+<span class="kn">from</span> <span class="nn">flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="kn">from</span> <span class="nn">tahoe_flow</span> <span class="kn">import</span> <span class="n">TahoeFlow</span>
+<span class="kn">from</span> <span class="nn">reno_flow</span> <span class="kn">import</span> <span class="n">RenoFlow</span>
+<span class="kn">from</span> <span class="nn">fast_flow</span> <span class="kn">import</span> <span class="n">FastFlow</span>
+<span class="kn">from</span> <span class="nn">Queue</span> <span class="kn">import</span> <span class="n">PriorityQueue</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c"># Constants</span>
+<span class="c"># Time to update router info, in ms.</span>
+<span class="n">ROUTER_UPDATE_PERIOD</span> <span class="o">=</span> <span class="mi">100</span>
+
+
+<div class="viewcode-block" id="Network"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network">[docs]</a><span class="k">class</span> <span class="nc">Network</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Python representation of the network.</span>
+
+<span class="sd">    Each host, router, link, and flow object is denoted by a</span>
+<span class="sd">    unique character id, and placed in a distinct dictionary.</span>
+<span class="sd">    The check_id function checks the unique id constraint before</span>
+<span class="sd">    construction any new objects. This is a global id constraint</span>
+<span class="sd">    across all objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bw</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">links</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flows</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bw</span> <span class="o">=</span> <span class="n">bw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_events</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_labels</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">router_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span>
+
+    <span class="nd">@time.setter</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify network time&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Network.check_id"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.check_id">[docs]</a>    <span class="k">def</span> <span class="nf">check_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Raise an exception if object id is not unique.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;id {0} already exists.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj_id</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Network.dump"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints out network&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Devices:</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="k">for</span> <span class="n">device_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">:</span>
+                <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
+            <span class="k">print</span> <span class="s">&quot;Flows:</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="k">for</span> <span class="n">flow_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">:</span>
+                <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_pydot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Network.add_host"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_host">[docs]</a>    <span class="k">def</span> <span class="nf">add_host</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct host and add to dictionary of hosts.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">(</span><span class="n">host_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">host_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Host</span><span class="p">(</span><span class="n">host_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="p">[</span><span class="n">host_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">host_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">host_id</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="s">&quot;square&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Network.add_router"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_router">[docs]</a>    <span class="k">def</span> <span class="nf">add_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">router_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct router and add to dictionary of routers&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">(</span><span class="n">router_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">router_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Router</span><span class="p">(</span><span class="n">router_id</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routers</span><span class="p">[</span><span class="n">router_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">router_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">router_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">router_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">router_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">router_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Network.delete_device"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.delete_device">[docs]</a>    <span class="k">def</span> <span class="nf">delete_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_id</span><span class="p">):</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">device</span><span class="o">.</span><span class="n">links</span><span class="p">[:]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_link</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="n">device</span><span class="o">.</span><span class="n">flows</span><span class="p">[:]:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">delete_flow</span><span class="p">(</span><span class="n">flow</span><span class="o">.</span><span class="n">flow_id</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">device_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">device_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">device_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">device_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routers</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">routers</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device_id</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Network.add_link"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_link">[docs]</a>    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_id</span><span class="p">,</span> <span class="n">device_id1</span><span class="p">,</span> <span class="n">device_id2</span><span class="p">,</span>
+                 <span class="n">delay</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">(</span><span class="n">link_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">device_id1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;id {0} does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_id1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">device_id2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;id {0} does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_id2</span><span class="p">))</span>
+
+        <span class="c"># Get devices</span>
+        <span class="n">device_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">device_id1</span><span class="p">]</span>
+        <span class="n">device_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">device_id2</span><span class="p">]</span>
+
+        <span class="c"># Create link</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Link</span><span class="p">(</span><span class="n">link_id</span><span class="p">,</span> <span class="n">device_1</span><span class="p">,</span> <span class="n">device_2</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="p">)</span>
+        <span class="n">device_1</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">])</span>
+        <span class="n">device_2</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">device_id1</span><span class="p">,</span> <span class="n">device_id2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">link_id</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&quot;none&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">delay</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_labels</span><span class="p">[(</span><span class="n">device_id1</span><span class="p">,</span> <span class="n">device_id2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">link_id</span>
+</div>
+<div class="viewcode-block" id="Network.delete_link"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.delete_link">[docs]</a>    <span class="k">def</span> <span class="nf">delete_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_id</span><span class="p">):</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span>
+        <span class="n">link</span><span class="o">.</span><span class="n">device_a</span><span class="o">.</span><span class="n">delete_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+        <span class="n">link</span><span class="o">.</span><span class="n">device_b</span><span class="o">.</span><span class="n">delete_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">remove_edge</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">device_a</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">device_b</span><span class="o">.</span><span class="n">network_id</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">remove_edge</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">device_b</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span> <span class="n">link</span><span class="o">.</span><span class="n">device_a</span><span class="o">.</span><span class="n">network_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">link_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link_id</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="Network.add_flow"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_flow">[docs]</a>    <span class="k">def</span> <span class="nf">add_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">,</span> <span class="n">flow_src</span><span class="p">,</span> <span class="n">flow_dest</span><span class="p">,</span> <span class="n">data_amt</span><span class="p">,</span> <span class="n">flow_start</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
+        <span class="n">device_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">flow_src</span><span class="p">]</span>
+        <span class="n">device_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">flow_dest</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c"># Determine TCP alg from bw.tcp_alg</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">tcp_alg</span> <span class="o">==</span> <span class="s">&#39;Reno&#39;</span><span class="p">:</span>
+            <span class="n">flow</span> <span class="o">=</span> <span class="n">RenoFlow</span><span class="p">(</span><span class="n">flow_id</span><span class="p">,</span> <span class="n">device_1</span><span class="p">,</span> <span class="n">device_2</span><span class="p">,</span> <span class="n">data_amt</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="p">,</span> <span class="n">flow_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">tcp_alg</span> <span class="o">==</span> <span class="s">&#39;Tahoe&#39;</span><span class="p">:</span>
+            <span class="n">flow</span> <span class="o">=</span> <span class="n">TahoeFlow</span><span class="p">(</span><span class="n">flow_id</span><span class="p">,</span> <span class="n">device_1</span><span class="p">,</span> <span class="n">device_2</span><span class="p">,</span> <span class="n">data_amt</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="p">,</span> <span class="n">flow_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">tcp_alg</span> <span class="o">==</span> <span class="s">&#39;Fast&#39;</span><span class="p">:</span>
+            <span class="n">flow</span> <span class="o">=</span> <span class="n">FastFlow</span><span class="p">(</span><span class="n">flow_id</span><span class="p">,</span> <span class="n">device_1</span><span class="p">,</span> <span class="n">device_2</span><span class="p">,</span> <span class="n">data_amt</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="p">,</span> <span class="n">flow_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Unknown TCP algorithm.&quot;</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span>
+
+        <span class="n">device_1</span><span class="o">.</span><span class="n">add_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
+        <span class="n">device_2</span><span class="o">.</span><span class="n">add_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">flow_src</span><span class="p">,</span> <span class="n">flow_dest</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">flow_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Network.delete_flow"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.delete_flow">[docs]</a>    <span class="k">def</span> <span class="nf">delete_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">):</span>
+        <span class="n">flow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span>
+        <span class="n">flow</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">delete_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
+        <span class="n">flow</span><span class="o">.</span><span class="n">dest</span><span class="o">.</span><span class="n">delete_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">remove_edge</span><span class="p">(</span><span class="n">flow</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span> <span class="n">flow</span><span class="o">.</span><span class="n">dest</span><span class="o">.</span><span class="n">network_id</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">-=</span> <span class="mi">1</span>
+</div>
+<div class="viewcode-block" id="Network.decrement_flows"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.decrement_flows">[docs]</a>    <span class="k">def</span> <span class="nf">decrement_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">-=</span> <span class="mi">1</span>
+</div>
+<div class="viewcode-block" id="Network.empty"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_events</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Network.add_event"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_event">[docs]</a>    <span class="k">def</span> <span class="nf">add_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to add an event to the queue</span>
+
+<span class="sd">        This function adds an event to the queue to be run after delay time.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event : `Event`</span>
+<span class="sd">            The event to be run.</span>
+<span class="sd">        delay : float</span>
+<span class="sd">            The amount of time in ms to wait before running the event.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">+</span> <span class="n">delay</span><span class="p">,</span> <span class="n">event</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Network.to_json"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">hosts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">host_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="p">:</span>
+            <span class="n">hosts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">host_id</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&quot;Hosts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hosts</span>
+
+        <span class="n">routers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">router_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routers</span><span class="p">:</span>
+            <span class="n">routers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">router_id</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&quot;Routers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">routers</span>
+
+        <span class="n">links</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">link_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="n">link_data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">link_data</span><span class="p">[</span><span class="s">&quot;network_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_id</span>
+            <span class="n">link_data</span><span class="p">[</span><span class="s">&quot;devices&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span><span class="o">.</span><span class="n">device_a</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span><span class="o">.</span><span class="n">device_b</span><span class="o">.</span><span class="n">network_id</span><span class="p">]</span>
+            <span class="n">link_data</span><span class="p">[</span><span class="s">&quot;rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span><span class="o">.</span><span class="n">rate</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">link_data</span><span class="p">[</span><span class="s">&quot;delay&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span><span class="o">.</span><span class="n">delay</span>
+            <span class="n">link_data</span><span class="p">[</span><span class="s">&quot;buffer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span><span class="o">.</span><span class="n">capacity</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">/</span> <span class="mi">8</span>
+            <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link_data</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&quot;Links&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">links</span>
+
+        <span class="n">flows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">flow_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">:</span>
+            <span class="n">flow_data</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">flow_data</span><span class="p">[</span><span class="s">&quot;network_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow_id</span>
+            <span class="n">flow_data</span><span class="p">[</span><span class="s">&quot;src&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">network_id</span>
+            <span class="n">flow_data</span><span class="p">[</span><span class="s">&quot;dest&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span><span class="o">.</span><span class="n">dest</span><span class="o">.</span><span class="n">network_id</span>
+            <span class="n">flow_data</span><span class="p">[</span><span class="s">&quot;amount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span><span class="o">.</span><span class="n">amount</span> <span class="o">/</span> <span class="mi">8</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mi">6</span><span class="p">)</span>
+            <span class="n">flow_data</span><span class="p">[</span><span class="s">&quot;start&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span><span class="o">.</span><span class="n">flow_start</span> <span class="o">/</span> <span class="mi">1000</span>
+            <span class="n">flows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flow_data</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s">&quot;Flows&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flows</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+
+
+</div>
+<div class="viewcode-block" id="Network.run"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Keep running while we have events to run. The first events will be</span>
+        <span class="c"># enqueued by the flows when they are initialized.</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">current_event</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">current_event</span><span class="o">.</span><span class="n">src_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">print</span> <span class="s">&quot;{0} at time {1} with {2} flows active&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">current_event</span><span class="p">),</span> <span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="n">current_event</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+        <span class="c"># Return end time.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">blackwidow  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

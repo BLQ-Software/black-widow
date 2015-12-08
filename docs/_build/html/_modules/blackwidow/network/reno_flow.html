@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>blackwidow.network.reno_flow &mdash; blackwidow  documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="blackwidow  documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">blackwidow  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for blackwidow.network.reno_flow</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">blackwidow.network.packet</span> <span class="kn">import</span> <span class="n">AckPacket</span><span class="p">,</span> <span class="n">DataPacket</span>
+<span class="kn">from</span> <span class="nn">event</span> <span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span> <span class="nn">tahoe_flow</span> <span class="kn">import</span> <span class="n">TahoeFlow</span>
+
+<div class="viewcode-block" id="RenoFlow"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.reno_flow.RenoFlow">[docs]</a><span class="k">class</span> <span class="nc">RenoFlow</span><span class="p">(</span><span class="n">TahoeFlow</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Implements TCP Reno.</span>
+<span class="sd">    Adds Fast Retransmit and Fast Recovery</span>
+<span class="sd">    Flows will trigger host behavior.</span>
+<span class="sd">    Has slow start and congestion avoidance.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flow_id : string</span>
+<span class="sd">        A unique id for the flow.</span>
+<span class="sd">    source : `Device`</span>
+<span class="sd">        The source for the flow.</span>
+<span class="sd">    destination : `Device`</span>
+<span class="sd">        The destination for the flow.</span>
+<span class="sd">    amount : int</span>
+<span class="sd">        The amount of data to send in MB.</span>
+<span class="sd">    env : `Network`</span>
+<span class="sd">        The network that the flow belongs to.</span>
+<span class="sd">    time : float</span>
+<span class="sd">        The amount of time to wait before starting to send in ms.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">bw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor for Flow class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">TahoeFlow</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">time</span> <span class="p">,</span><span class="n">bw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssthresh</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_packets_arrived</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_packets_arrived</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,(</span><span class="nb">int</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_amount</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">8</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_num_pack</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_amount</span><span class="o">/</span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">8</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_pack_rec</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+    <span class="k">def</span> <span class="nf">_send_ack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Creates ack for packet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_src</span> <span class="o">==</span> <span class="n">packet</span><span class="o">.</span><span class="n">src</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest</span> <span class="o">==</span> <span class="n">packet</span><span class="o">.</span><span class="n">dest</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_packets_arrived</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">next_ack_expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_packets_arrived</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">next_ack_expected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_num_pack</span>
+            <span class="n">ack_packet</span> <span class="o">=</span> <span class="n">AckPacket</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">dest</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">src</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flow_id</span><span class="p">,</span> <span class="n">next_ack_expected</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">packet</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dest</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">ack_packet</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s">&quot;Flow sent ack packet {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Received wrong packet.&quot;</span>
+
+<div class="viewcode-block" id="RenoFlow.receive"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.reno_flow.RenoFlow.receive">[docs]</a>    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generate an ack or respond to bad packet.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        packet : `Packet`</span>
+<span class="sd">            The packet to be received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">dest</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dest</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Flow received packet {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_packets_arrived</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_packets_arrived</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_ack</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Check for duplicate acknowledgements</span>
+            <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">next_expected</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_pack_rec</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="c"># window deflation on non-dup ACK</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssthresh</span>
+                    <span class="k">print</span> <span class="s">&quot;Flow {} window size is {} - fast retransmit&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flow_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span><span class="p">),</span> <span class="s">&#39;flow_{0}.window&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_id</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_last_pack_rec</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">next_expected</span>
+            <span class="c"># Fast retransmit/Fast recovery</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssthresh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssthresh</span> <span class="o">=</span> <span class="mf">2.0</span>
+                <span class="c"># Go back n</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pack_num</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">next_expected</span>
+                <span class="c"># window inflation where ndup = 3</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssthresh</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span>
+                <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">next_expected</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_packets_time_out</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_packets_time_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">next_expected</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="s">&quot;Resend&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flow_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_packet</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+                <span class="k">print</span> <span class="s">&quot;Flow {} window size is {} - fast retransmit&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flow_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cwnd</span><span class="p">),</span> <span class="s">&#39;flow_{0}.window&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_receive_ack</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_reset_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RenoFlow</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_reset_window</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">blackwidow  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
