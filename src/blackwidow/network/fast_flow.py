@@ -27,6 +27,7 @@ class FastFlow(Flow):
         """
         Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
         self._alpha = 20.0
+        self._gamma = 0.9 
         self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), self._flow_start-1)
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._cwnd = self._alpha
@@ -59,7 +60,7 @@ class FastFlow(Flow):
                     return
 
     def _update_window(self):
-        self._cwnd = (self._min_RTT/self._last_RTT)*self._cwnd + self._alpha
+        self._cwnd = (((self._min_RTT/self._last_RTT)*self._cwnd + self._alpha)*self._gamma + (1.0-self._gamma)*self._cwnd)
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
         self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), 20)
