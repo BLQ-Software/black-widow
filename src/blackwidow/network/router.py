@@ -42,7 +42,10 @@ class Router(Device):
         """Send packet to appropriate link."""
         route = None
         self._send_rate.add_point(packet, self.env.time)
-        if packet.dest.network_id in self._routing_table:
+
+        if packet.dest.network_id in self._new_routing_table:
+            route = self._new_routing_table[packet.dest.network_id]
+        elif packet.dest.network_id in self._routing_table:
             route = self._routing_table[packet.dest.network_id]
 
         if route is not None and 'link' in route:
@@ -86,7 +89,7 @@ class Router(Device):
                 other_device = link.device_b
             packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
                                    other_device.network_id, None,
-                                   self._routing_table, self.bw.routing_packet_size)
+                                   self._new_routing_table, self.bw.routing_packet_size)
             link.receive(packet, self._network_id)
             print "Sent routing packet from {}".format(self._network_id)
 
