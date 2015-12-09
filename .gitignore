@@ -6,7 +6,7 @@
 *.pyc
 
 # Sphinx
-docs/build
+docs/_build
 
 # Data
 *.csv
