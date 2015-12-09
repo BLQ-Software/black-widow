@@ -58,6 +58,8 @@ class FastFlow(Flow):
                 if self._pack_num == self._total_num_pack:
                     self._pack_num = self._packets_sent[0]
                     self._cwnd = self._alpha
+
+                    print "Flow {} already finished. Received timeout at {}.".format(self.flow_id, self.env.time)
                     return
 
     def _update_window(self):
