@@ -1,3 +1,4 @@
+from blackwidow.network.rate_graph import Rate_Graph
 from collections import deque
 from event import Event
 
@@ -76,6 +77,7 @@ class Link(object):
         # Buffer size. Initialize to 0 since there are no packets.
         self._size = 0
         self._distance = delay
+        self._send_rate = Rate_Graph(self._id, "link {0} send rate".format(self._id), self.env, self.bw)
 
     def __str__(self):
         """Returns a string representation of the link."""
@@ -242,6 +244,8 @@ class Link(object):
         # Dequeue the first packet in the buffer
         packet, source_id, time = self._release_into_link_buffer.pop()
 
+        self._send_rate.add_point(packet, self.env.time)
+
         # Update the buffer size
         self._size -= packet.size
 
@@ -260,12 +264,19 @@ class Link(object):
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
+
+        # Ignore routing packet propagation so updates happen instantly.
+        if packet.is_routing or packet.is_ack:
+            delay = 0
+        else:
+            delay = self._delay
+
         # Release to device after self._delay time
         self.env.add_event(Event(msg.format(self._id, packet.pack_id),
                                  self._id,
                                  f,
                                  packet=packet),
-                           self._delay)
+                           delay)
 
         # Record link sent
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size),
@@ -273,6 +284,7 @@ class Link(object):
 
         # Record the link rate for packets that are not acknowledgements or
         # routing packets
+
         if not packet.is_ack and not packet.is_routing:
 
             self.bw.record('{0}, {1}'.format(self.env.time,
