@@ -10,6 +10,39 @@ class Router(Device):
 
     Routers are responsible for initializing and updating their
     routing table, and sending packets based on their routing table.
+
+    Parameters
+    ----------
+    router_id : string
+        A unique id for the router.
+
+
+    Attributes
+    ----------
+    network_id : string
+        A unique id of the device in the network.
+    links : list
+        A list of links that the router is connected to.
+    routing_table : dict
+        A dictionary representing the router's routing table. 
+    new_routing_table : dict
+        A dictionary representing the router's new routing table.
+    env : `Network`
+        The network that the link belongs to.
+    bw : `Blackwidow`
+        BlackWidow simulation object containing simulation settings.
+
+
+    Methods
+    -------
+    add_flow(flow)
+        Adds receiving flow to host.
+    delete_flow(flow)
+        Delete flow from the host.
+    send(packet) 
+        Sends a packet to a link.
+    receive(packet)
+        Receives a packet from a link.
     """
 
 
