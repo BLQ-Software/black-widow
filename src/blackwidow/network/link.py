@@ -177,7 +177,7 @@ class Link(object):
         msg += "packet {1}"
         
         # Ignore routing packet propagation so updates happen instantly.
-        if packet.is_routing:
+        if packet.is_routing or packet.is_ack:
             delay = 0
         else:
             delay = self._delay
