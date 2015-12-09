@@ -1,3 +1,4 @@
+from blackwidow.network.rate_graph import Rate_Graph
 from collections import deque
 from event import Event
 
@@ -52,6 +53,7 @@ class Link(object):
         self.bw = bw
         self._size = 0
         self._distance = delay
+        self._send_rate = Rate_Graph(self._id, "link {0} send rate".format(self._id), self.env, self.bw)
 
     def __str__(self):
         msg = "Link {0} connected to {1} and {2}\n"
@@ -159,6 +161,7 @@ class Link(object):
 
     def _release(self):
         packet, source_id, time = self._release_into_link_buffer.pop()
+        self._send_rate.add_point(packet, self.env.time)
         self._size -= packet.size
         self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'link_{0}.buffer'.format(self._id))
 
@@ -172,7 +175,14 @@ class Link(object):
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, f, packet=packet), self._delay)
+        
+        # Ignore routing packet propagation so updates happen instantly.
+        if packet.is_routing or packet.is_ack:
+            delay = 0
+        else:
+            delay = self._delay
+
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, f, packet=packet), delay)
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link_{0}.sent'.format(self._id))
         if not packet.is_ack and not packet.is_routing:
 

@@ -32,6 +32,7 @@ class RenoFlow(TahoeFlow):
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._last_pack_rec = -1
         self._counter = 0
+        self._resend_time = 10
 
 
     def _send_ack(self, packet):

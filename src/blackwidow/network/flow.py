@@ -39,7 +39,7 @@ class Flow(object):
         self._pack_num = 0
         self._cwnd = 1.0
         self._ssthresh = 1000
-        self._resend_time = 100
+        self._resend_time = 10
         self._min_RTT = 1000.0
         self._last_RTT = 3000.0
         self._SRTT = -1
@@ -200,8 +200,8 @@ class Flow(object):
             self._SRTT = self._last_RTT
             self._RTTVAR  = self._last_RTT/2.0
         else:
-            self._RTTVAR = (1 - beta)*self._RTTVAR + beta*abs(self._SRTT - self._last_RTT)
-            self._SRTT = (1 - alpha)*self._SRTT + alpha*self._last_RTT
+            self._RTTVAR = (1.0 - beta)*self._RTTVAR + beta*abs(self._SRTT - self._last_RTT)
+            self._SRTT = (1.0 - alpha)*self._SRTT + alpha*self._last_RTT
         self._RTO = min(max(self._SRTT + max(G, K*self._RTTVAR), 1000), 5000)
         print "RTO is {}".format(self._RTO)
         if self._last_RTT < self._min_RTT:
