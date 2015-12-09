@@ -86,7 +86,10 @@ class FastFlow(Flow):
         self._resend_time = 1
 
     def send_packet(self):
-        """ Send a packet.
+        """ Send a packet. The difference between FastFlow's send_packet and Flow's
+            send_packet is the ending behavior. FastFlow just keeps resending packets
+            it hasn't received yet until it is done after it has sent all the packets
+            once.
         """
         if self._amount > 0 or (len(self._packets_sent) > 0):
            # Send packets up to the window size.
@@ -115,6 +118,8 @@ class FastFlow(Flow):
                     return
 
     def _update_window(self):
+        """ Send a packet.
+        """
         self._cwnd = min((((self._min_RTT/self._last_RTT)*self._cwnd + self._alpha)*self._gamma + (1.0-self._gamma)*self._cwnd), 2*self._cwnd)
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
@@ -124,4 +129,7 @@ class FastFlow(Flow):
         self.env.add_event(Event("Send", self._flow_id, self.send_packet),self._resend_time)
 
     def _reset_window(self):
+        """ This is called when a packet timeout occurs by the parent Flow class.
+            Does nothing since FAST TCP automatically updates every 20 ms.
+        """
         pass

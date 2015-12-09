@@ -276,6 +276,9 @@ class Flow(object):
             self._reset_window()
 
     def _reset_window(self):
+        """ Called when a packet timeout occurs.
+            Sets ssthresh to max(2, cwnd/2) and cwnd to 1.
+        """
         if self._cwnd > 4:
             self._ssthresh = self._cwnd / float(2)
         else:
