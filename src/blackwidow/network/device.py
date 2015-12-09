@@ -1,8 +1,25 @@
 class Device(object):
-    """Super class for hosts and routers.
+    """Super class for the `Host` and `Router` classes.
 
     Parameters
     ----------
+    net_addr : string
+        A unique id for the device in the network.
+
+    Attributes
+    ----------
+    network_id : string
+        A unique id of the device in the network.
+
+    links : list
+        A list of links that the device is connected.
+
+    Methods
+    -------
+    add_link(link)
+        Adds the specified `Link` object to `links`.
+    delete_link(link)
+        Remotes the specified `Link` object from `links`.
     
     """
     def __init__(self, net_addr):
@@ -23,18 +40,16 @@ class Device(object):
     def links(self):
         return self._links
 
-    def set_env(self, env):
-        """Set simpy environment"""
-        self.env = env
-
     def add_link(self, link):
         """Add link to list of links."""
         self._links.append(link)
 
     def delete_link(self, link):
+        """Remove link from list of links."""
         self._links.remove(link)
 
     def send(self, packet):
+        """Virtual method for sending device packets."""
         pass
 
     def __str__(self):
