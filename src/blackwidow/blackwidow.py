@@ -20,7 +20,9 @@ class BlackWidow(object):
             show_verbose : bool
                 Whether to print statements labelled verbose.
             log_file : str
-                Name of file to write to.
+                Name of file to write to. This is the prefix for all data types
+                written to files. See documentation for write for more
+                information.
 
     Methods
     -------
