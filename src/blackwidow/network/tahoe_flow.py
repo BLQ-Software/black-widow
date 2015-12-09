@@ -68,8 +68,6 @@ class TahoeFlow(Flow):
         Keeps track of the rate the flow is sending at and outputs to CSV file in real time
     receive_rate : Rate_Graph
         Keeps track of the rate the flow is receiving at and outputs to CSV file in real time 
-    total_num_pack : int
-        total number of packets that need to be sent
     """
     def __init__(self, flow_id, source, destination, amount, env, time, bw):
         """ Constructor for Flow class
