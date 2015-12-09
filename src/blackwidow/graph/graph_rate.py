@@ -169,18 +169,18 @@ class CsvGrapher(object):
                 plt.ylabel('window size (pkts)', fontsize=18)
 
             if (os.path.isfile(packet_delay_path)):
-                # Load in window size data
+                # Load in packet delay 
                 packet_delay = np.genfromtxt(packet_delay_path, delimiter=',')
                 packet_delay = packet_delay.astype(int)
                 packet_delay_times = packet_delay[:,0]
                 packet_delay = packet_delay[:,1]
 
-                # Plot the window size
+                # Plot the packet delay
                 plt.subplot(2, 1, 2)
                 plt.plot(packet_delay_times, packet_delay, markersize=5, label=flow[0])
                 plt.legend()
                 plt.xlabel('time (ms)', fontsize=18)
-                plt.ylabel('packet_delay (pkts)', fontsize=18)
+                plt.ylabel('packet delay (ms)', fontsize=18)
 
         fig.suptitle(log_file, fontsize=32, fontweight='bold')
         plt.show()
