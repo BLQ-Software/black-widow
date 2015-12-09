@@ -85,13 +85,14 @@ class Router(Device):
         for link in self._links:
             other_device = link._device_a
             if (other_device.network_id == self._network_id):
-
                 other_device = link.device_b
-            packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
-                                   other_device.network_id, None,
-                                   self._new_routing_table, self.bw.routing_packet_size)
-            link.receive(packet, self._network_id)
-            print "Sent routing packet from {}".format(self._network_id)
+
+            if type(other_device) is Router: 
+                packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
+                                       other_device.network_id, None,
+                                       self._new_routing_table, self.bw.routing_packet_size)
+                link.receive(packet, self._network_id)
+                print "Sent routing packet from {}".format(self._network_id)
 
 
     def update_route(self, packet):
