@@ -3,7 +3,7 @@ class Device(object):
 
     Parameters
     ----------
-    
+
     """
     def __init__(self, net_addr):
         """Constructor for device."""
