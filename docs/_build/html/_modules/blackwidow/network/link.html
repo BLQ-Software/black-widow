@@ -355,7 +355,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">),</span>
                            <span class="s">&#39;link_{0}.drop&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 </div>
-    <span class="k">def</span> <span class="nf">_send</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Link._send"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.link.Link._send">[docs]</a>    <span class="k">def</span> <span class="nf">_send</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sends the first packet in the buffer across the link.</span>
 
 <span class="sd">        Notes</span>
@@ -384,8 +384,8 @@
                                  <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">_release</span><span class="p">),</span>
                            <span class="n">delay</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Link._release"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.link.Link._release">[docs]</a>    <span class="k">def</span> <span class="nf">_release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Releases the packet being sent to the receiving `Device` after the</span>
 <span class="sd">        packet has traversed the link.</span>
 
@@ -476,7 +476,7 @@
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
                                      <span class="bp">self</span><span class="o">.</span><span class="n">_send</span><span class="p">),</span>
                                <span class="n">delay</span><span class="p">)</span>
-
+</div>
 <div class="viewcode-block" id="Link.get_buffer_size"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.link.Link.get_buffer_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_buffer_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the buffer size in bits.&quot;&quot;&quot;</span>
         <span class="n">total_size</span> <span class="o">=</span> <span class="mi">0</span>

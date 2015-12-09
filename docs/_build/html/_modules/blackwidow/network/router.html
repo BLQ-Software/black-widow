@@ -275,14 +275,14 @@
         <span class="k">if</span> <span class="n">route_changed</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_routing</span><span class="p">()</span>
 </div>
-    <span class="k">def</span> <span class="nf">_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+<div class="viewcode-block" id="Router._distance"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.router.Router._distance">[docs]</a>    <span class="k">def</span> <span class="nf">_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the distance from the link.&quot;&quot;&quot;</span>
         <span class="n">distance</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">delay</span> <span class="o">+</span> <span class="n">link</span><span class="o">.</span><span class="n">get_buffer_size</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">rate</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">static_routing</span><span class="p">:</span>
             <span class="n">distance</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">delay</span>
 
-        <span class="k">return</span> <span class="n">distance</span></div>
+        <span class="k">return</span> <span class="n">distance</span></div></div>
 </pre></div>
 
           </div>

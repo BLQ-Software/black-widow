@@ -9,16 +9,16 @@ blackwidow.graph.graph module
 
 .. automodule:: blackwidow.graph.graph
     :members:
-    :undoc-members:
     :show-inheritance:
+    :private-members:
 
 blackwidow.graph.graph_rate module
 ----------------------------------
 
 .. automodule:: blackwidow.graph.graph_rate
     :members:
-    :undoc-members:
     :show-inheritance:
+    :private-members:
 
 
 Module contents
@@ -26,5 +26,6 @@ Module contents
 
 .. automodule:: blackwidow.graph
     :members:
-    :undoc-members:
     :show-inheritance:
+    :private-members:
+

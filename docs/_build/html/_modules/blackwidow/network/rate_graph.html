@@ -156,7 +156,7 @@
 <span class="kn">from</span> <span class="nn">event</span> <span class="kn">import</span> <span class="n">Event</span>
 <span class="kn">from</span> <span class="nn">Queue</span> <span class="kn">import</span> <span class="n">PriorityQueue</span>
 
-<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.rate_graph.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="n">time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
@@ -179,7 +179,7 @@
 
     <span class="k">def</span> <span class="nf">__cmp__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">cmp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="Rate_Graph"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.rate_graph.Rate_Graph">[docs]</a><span class="k">class</span> <span class="nc">Rate_Graph</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class to graph rates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

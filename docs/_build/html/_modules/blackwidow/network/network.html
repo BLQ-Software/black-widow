@@ -236,7 +236,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">router_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">router_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">router_id</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Network.delete_device"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.delete_device">[docs]</a>    <span class="k">def</span> <span class="nf">delete_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">delete_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_id</span><span class="p">):</span>
         <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">device</span><span class="o">.</span><span class="n">links</span><span class="p">[:]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">delete_link</span><span class="p">(</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -255,8 +255,8 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">routers</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device_id</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">device_id</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="Network.add_link"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_link">[docs]</a>    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_id</span><span class="p">,</span> <span class="n">device_id1</span><span class="p">,</span> <span class="n">device_id2</span><span class="p">,</span>
+
+    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_id</span><span class="p">,</span> <span class="n">device_id1</span><span class="p">,</span> <span class="n">device_id2</span><span class="p">,</span>
                  <span class="n">delay</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">capacity</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">(</span><span class="n">link_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">device_id1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
@@ -277,8 +277,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">device_id1</span><span class="p">,</span> <span class="n">device_id2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">link_id</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&quot;none&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">delay</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edge_labels</span><span class="p">[(</span><span class="n">device_id1</span><span class="p">,</span> <span class="n">device_id2</span><span class="p">)]</span> <span class="o">=</span> <span class="n">link_id</span>
-</div>
-<div class="viewcode-block" id="Network.delete_link"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.delete_link">[docs]</a>    <span class="k">def</span> <span class="nf">delete_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_id</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">delete_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link_id</span><span class="p">):</span>
         <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span>
         <span class="n">link</span><span class="o">.</span><span class="n">device_a</span><span class="o">.</span><span class="n">delete_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
         <span class="n">link</span><span class="o">.</span><span class="n">device_b</span><span class="o">.</span><span class="n">delete_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
@@ -292,8 +292,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link_id</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="n">link_id</span><span class="p">]</span>
 
-</div>
-<div class="viewcode-block" id="Network.add_flow"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_flow">[docs]</a>    <span class="k">def</span> <span class="nf">add_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">,</span> <span class="n">flow_src</span><span class="p">,</span> <span class="n">flow_dest</span><span class="p">,</span> <span class="n">data_amt</span><span class="p">,</span> <span class="n">flow_start</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">add_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">,</span> <span class="n">flow_src</span><span class="p">,</span> <span class="n">flow_dest</span><span class="p">,</span> <span class="n">data_amt</span><span class="p">,</span> <span class="n">flow_start</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">check_id</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
         <span class="n">device_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">[</span><span class="n">flow_src</span><span class="p">]</span>
@@ -322,8 +322,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">flow_src</span><span class="p">,</span> <span class="n">flow_dest</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">flow_id</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Network.delete_flow"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.delete_flow">[docs]</a>    <span class="k">def</span> <span class="nf">delete_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">delete_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_id</span><span class="p">):</span>
         <span class="n">flow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">flow_id</span><span class="p">]</span>
         <span class="n">flow</span><span class="o">.</span><span class="n">src</span><span class="o">.</span><span class="n">delete_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
         <span class="n">flow</span><span class="o">.</span><span class="n">dest</span><span class="o">.</span><span class="n">delete_flow</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
@@ -333,13 +333,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flow_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">-=</span> <span class="mi">1</span>
-</div>
-<div class="viewcode-block" id="Network.decrement_flows"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.decrement_flows">[docs]</a>    <span class="k">def</span> <span class="nf">decrement_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">decrement_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">-=</span> <span class="mi">1</span>
-</div>
-<div class="viewcode-block" id="Network.empty"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_events</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span>
-</div>
+
 <div class="viewcode-block" id="Network.add_event"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.add_event">[docs]</a>    <span class="k">def</span> <span class="nf">add_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to add an event to the queue</span>
@@ -356,7 +356,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">+</span> <span class="n">delay</span><span class="p">,</span> <span class="n">event</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="Network.to_json"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">hosts</span> <span class="o">=</span> <span class="p">[]</span>
@@ -394,8 +394,8 @@
         <span class="k">return</span> <span class="n">data</span>
 
 
-</div>
-<div class="viewcode-block" id="Network.run"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.network.Network.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c"># Keep running while we have events to run. The first events will be</span>
         <span class="c"># enqueued by the flows when they are initialized.</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_events</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_flows_active</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -409,7 +409,7 @@
 
         <span class="c"># Return end time.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span></div>
 </pre></div>
 
           </div>

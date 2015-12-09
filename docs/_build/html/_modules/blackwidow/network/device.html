@@ -185,12 +185,12 @@
         <span class="sd">&quot;&quot;&quot;Add link to list of links.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Device.delete_link"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.device.Device.delete_link">[docs]</a>    <span class="k">def</span> <span class="nf">delete_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">delete_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Device.send"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.device.Device.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
         <span class="k">pass</span>
-</div>
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Device {0}, connected to links:</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_links</span><span class="p">:</span>

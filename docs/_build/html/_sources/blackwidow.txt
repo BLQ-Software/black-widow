@@ -18,8 +18,8 @@ blackwidow.blackwidow module
 
 .. automodule:: blackwidow.blackwidow
     :members:
-    :undoc-members:
     :show-inheritance:
+    :private-members:
 
 
 Module contents
@@ -27,5 +27,6 @@ Module contents
 
 .. automodule:: blackwidow
     :members:
-    :undoc-members:
     :show-inheritance:
+    :private-members:
+
