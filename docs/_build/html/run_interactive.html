@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>run_interactive module &mdash; BlackWidow TCP Network Simulator  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BlackWidow TCP Network Simulator  documentation" href="index.html"/>
+        <link rel="prev" title="blackwidow.parser package" href="blackwidow.parser.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> BlackWidow TCP Network Simulator
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="blackwidow.html">blackwidow package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="blackwidow.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blackwidow.graph.html">blackwidow.graph package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.graph.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.graph.html#module-blackwidow.graph.graph">blackwidow.graph.graph module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.graph.html#module-blackwidow.graph.graph_rate">blackwidow.graph.graph_rate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.graph.html#module-blackwidow.graph">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blackwidow.network.html">blackwidow.network package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.device">blackwidow.network.device module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.event">blackwidow.network.event module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.fast_flow">blackwidow.network.fast_flow module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.flow">blackwidow.network.flow module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.host">blackwidow.network.host module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.link">blackwidow.network.link module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.network">blackwidow.network.network module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.packet">blackwidow.network.packet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.rate_graph">blackwidow.network.rate_graph module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.reno_flow">blackwidow.network.reno_flow module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.router">blackwidow.network.router module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.tahoe_flow">blackwidow.network.tahoe_flow module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blackwidow.parser.html">blackwidow.parser package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.parser.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.parser.html#module-blackwidow.parser.parser">blackwidow.parser.parser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blackwidow.parser.html#module-blackwidow.parser">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blackwidow.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blackwidow.html#module-blackwidow.blackwidow">blackwidow.blackwidow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blackwidow.html#module-blackwidow">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">run_interactive module</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run_simulator.html">run_simulator module</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">BlackWidow TCP Network Simulator</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>run_interactive module</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/run_interactive.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-run_interactive">
+<span id="run-interactive-module"></span><h1>run_interactive module<a class="headerlink" href="#module-run_interactive" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="run_interactive.BlackWidowInteractive">
+<em class="property">class </em><code class="descclassname">run_interactive.</code><code class="descname">BlackWidowInteractive</code><span class="sig-paren">(</span><em>completekey='tab'</em>, <em>stdin=None</em>, <em>stdout=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cmd.Cmd</span></code></p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>intro</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.create_network" title="run_interactive.BlackWidowInteractive.create_network"><code class="xref py py-obj docutils literal"><span class="pre">create_network</span></code></a>(settings,&nbsp;f)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.default" title="run_interactive.BlackWidowInteractive.default"><code class="xref py py-obj docutils literal"><span class="pre">default</span></code></a>(line)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_EOF" title="run_interactive.BlackWidowInteractive.do_EOF"><code class="xref py py-obj docutils literal"><span class="pre">do_EOF</span></code></a>(line)</td>
+<td>End the program</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_add_flow" title="run_interactive.BlackWidowInteractive.do_add_flow"><code class="xref py py-obj docutils literal"><span class="pre">do_add_flow</span></code></a>(line)</td>
+<td>add_flow [id] [src] [dest] [amount] [start]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_add_host" title="run_interactive.BlackWidowInteractive.do_add_host"><code class="xref py py-obj docutils literal"><span class="pre">do_add_host</span></code></a>(line)</td>
+<td>add_host [id] [id] ... [id]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_add_link" title="run_interactive.BlackWidowInteractive.do_add_link"><code class="xref py py-obj docutils literal"><span class="pre">do_add_link</span></code></a>(line)</td>
+<td>add_link [id] [device_id] [device_id] [delay] [rate] [buffer]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_add_router" title="run_interactive.BlackWidowInteractive.do_add_router"><code class="xref py py-obj docutils literal"><span class="pre">do_add_router</span></code></a>(line)</td>
+<td>add_router [id] [id] ... [id]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_clear" title="run_interactive.BlackWidowInteractive.do_clear"><code class="xref py py-obj docutils literal"><span class="pre">do_clear</span></code></a>(line)</td>
+<td>Clear the graph</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_close" title="run_interactive.BlackWidowInteractive.do_close"><code class="xref py py-obj docutils literal"><span class="pre">do_close</span></code></a>(line)</td>
+<td>Close the graph</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_delete_device" title="run_interactive.BlackWidowInteractive.do_delete_device"><code class="xref py py-obj docutils literal"><span class="pre">do_delete_device</span></code></a>(line)</td>
+<td>delete_device [id] [id] ... [id]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_delete_flow" title="run_interactive.BlackWidowInteractive.do_delete_flow"><code class="xref py py-obj docutils literal"><span class="pre">do_delete_flow</span></code></a>(line)</td>
+<td>delete_flow [id] [id] ... [id]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_delete_link" title="run_interactive.BlackWidowInteractive.do_delete_link"><code class="xref py py-obj docutils literal"><span class="pre">do_delete_link</span></code></a>(line)</td>
+<td>delete_link [id] [id] ... [id]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_dump" title="run_interactive.BlackWidowInteractive.do_dump"><code class="xref py py-obj docutils literal"><span class="pre">do_dump</span></code></a>(line)</td>
+<td>dump [filename]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_exit" title="run_interactive.BlackWidowInteractive.do_exit"><code class="xref py py-obj docutils literal"><span class="pre">do_exit</span></code></a>(line)</td>
+<td>End the program</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_load" title="run_interactive.BlackWidowInteractive.do_load"><code class="xref py py-obj docutils literal"><span class="pre">do_load</span></code></a>(line)</td>
+<td>load [filename]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_reset" title="run_interactive.BlackWidowInteractive.do_reset"><code class="xref py py-obj docutils literal"><span class="pre">do_reset</span></code></a>(line)</td>
+<td>Reset network</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_reset_v" title="run_interactive.BlackWidowInteractive.do_reset_v"><code class="xref py py-obj docutils literal"><span class="pre">do_reset_v</span></code></a>(line)</td>
+<td>Reset parameters for interactive</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_run" title="run_interactive.BlackWidowInteractive.do_run"><code class="xref py py-obj docutils literal"><span class="pre">do_run</span></code></a>(line)</td>
+<td>Run the network</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_dpi" title="run_interactive.BlackWidowInteractive.do_set_dpi"><code class="xref py py-obj docutils literal"><span class="pre">do_set_dpi</span></code></a>(line)</td>
+<td>set_dpi [dpi]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_output" title="run_interactive.BlackWidowInteractive.do_set_output"><code class="xref py py-obj docutils literal"><span class="pre">do_set_output</span></code></a>(line)</td>
+<td>set_output [output]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_proj" title="run_interactive.BlackWidowInteractive.do_set_proj"><code class="xref py py-obj docutils literal"><span class="pre">do_set_proj</span></code></a>(line)</td>
+<td>set_proj [proj]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_routing_packet_size" title="run_interactive.BlackWidowInteractive.do_set_routing_packet_size"><code class="xref py py-obj docutils literal"><span class="pre">do_set_routing_packet_size</span></code></a>(line)</td>
+<td>set_routing_packet_size [size]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_show" title="run_interactive.BlackWidowInteractive.do_set_show"><code class="xref py py-obj docutils literal"><span class="pre">do_set_show</span></code></a>(line)</td>
+<td>set_show [show]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_static_routing" title="run_interactive.BlackWidowInteractive.do_set_static_routing"><code class="xref py py-obj docutils literal"><span class="pre">do_set_static_routing</span></code></a>(line)</td>
+<td>set_static_routing [static_routing]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_tcp_alg" title="run_interactive.BlackWidowInteractive.do_set_tcp_alg"><code class="xref py py-obj docutils literal"><span class="pre">do_set_tcp_alg</span></code></a>(line)</td>
+<td>set_tcp_alg [alg]</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_set_verbose" title="run_interactive.BlackWidowInteractive.do_set_verbose"><code class="xref py py-obj docutils literal"><span class="pre">do_set_verbose</span></code></a>(line)</td>
+<td>set_verbose [verbose]</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_show" title="run_interactive.BlackWidowInteractive.do_show"><code class="xref py py-obj docutils literal"><span class="pre">do_show</span></code></a>(line)</td>
+<td>Show the network</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#run_interactive.BlackWidowInteractive.do_stop" title="run_interactive.BlackWidowInteractive.do_stop"><code class="xref py py-obj docutils literal"><span class="pre">do_stop</span></code></a>(line)</td>
+<td>Stop the network with Ctrl-C</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.create_network">
+<code class="descname">create_network</code><span class="sig-paren">(</span><em>settings</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.create_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.create_network" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.default">
+<code class="descname">default</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_EOF">
+<code class="descname">do_EOF</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_EOF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_EOF" title="Permalink to this definition">¶</a></dt>
+<dd><p>End the program</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_add_flow">
+<code class="descname">do_add_flow</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_add_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_add_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>add_flow [id] [src] [dest] [amount] [start]
+Add a flow</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_add_host">
+<code class="descname">do_add_host</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_add_host"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_add_host" title="Permalink to this definition">¶</a></dt>
+<dd><p>add_host [id] [id] ... [id]
+Add multiple hosts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_add_link">
+<code class="descname">do_add_link</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_add_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_add_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>add_link [id] [device_id] [device_id] [delay] [rate] [buffer]
+Add a link</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_add_router">
+<code class="descname">do_add_router</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_add_router"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_add_router" title="Permalink to this definition">¶</a></dt>
+<dd><p>add_router [id] [id] ... [id]
+Add multiple routers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_clear">
+<code class="descname">do_clear</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the graph</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_close">
+<code class="descname">do_close</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the graph</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_delete_device">
+<code class="descname">do_delete_device</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_delete_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_delete_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete_device [id] [id] ... [id]
+Delete multiple devices. Can also run delete_device * to delete all
+devices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_delete_flow">
+<code class="descname">do_delete_flow</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_delete_flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_delete_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete_flow [id] [id] ... [id]
+Delete multiple flows. Can also run delete_flow * to delete all flows</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_delete_link">
+<code class="descname">do_delete_link</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_delete_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_delete_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete_link [id] [id] ... [id]
+Delete multiple links. Can also run delete_link * to delete all links</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_dump">
+<code class="descname">do_dump</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>dump [filename]
+Saves the network to a file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_exit">
+<code class="descname">do_exit</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_exit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>End the program</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_load">
+<code class="descname">do_load</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>load [filename]
+Load a file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_reset">
+<code class="descname">do_reset</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_reset_v">
+<code class="descname">do_reset_v</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_reset_v"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_reset_v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset parameters for interactive</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_run">
+<code class="descname">do_run</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_dpi">
+<code class="descname">do_set_dpi</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_dpi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_dpi" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_dpi [dpi]
+Set the dpi</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_output">
+<code class="descname">do_set_output</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_output [output]
+Show text output of the network if output == True</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_proj">
+<code class="descname">do_set_proj</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_proj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_proj" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_proj [proj]
+Set the projection type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_routing_packet_size">
+<code class="descname">do_set_routing_packet_size</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_routing_packet_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_routing_packet_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_routing_packet_size [size]
+Set routing packet size</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_show">
+<code class="descname">do_set_show</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_show" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_show [show]
+Show the network after every command if show == True</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_static_routing">
+<code class="descname">do_set_static_routing</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_static_routing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_static_routing" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_static_routing [static_routing]
+Set static routing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_tcp_alg">
+<code class="descname">do_set_tcp_alg</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_tcp_alg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_tcp_alg" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_tcp_alg [alg]
+Set TCP algorithm. Valid options are: Reno, Tahoe, Fast</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_set_verbose">
+<code class="descname">do_set_verbose</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_set_verbose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_set_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_verbose [verbose]
+Set verbose output</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_show">
+<code class="descname">do_show</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the network</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="run_interactive.BlackWidowInteractive.do_stop">
+<code class="descname">do_stop</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#BlackWidowInteractive.do_stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.BlackWidowInteractive.do_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the network with Ctrl-C</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="run_interactive.check_args">
+<code class="descclassname">run_interactive.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.check_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="run_interactive.create_bw">
+<code class="descclassname">run_interactive.</code><code class="descname">create_bw</code><span class="sig-paren">(</span><em>settings=None</em>, <em>f=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#create_bw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.create_bw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="run_interactive.main">
+<code class="descclassname">run_interactive.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_interactive.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#run_interactive.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="blackwidow.parser.html" class="btn btn-neutral" title="blackwidow.parser package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Rahul Bachal, David Qu, Justin Leong, Nancy Wen.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

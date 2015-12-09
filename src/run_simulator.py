@@ -8,7 +8,7 @@ import os.path
 from blackwidow import BlackWidow
 from run_interactive import create_bw
 
-if __name__ == "__main__":
+def main():
 
     # Configure argument parser
     parser = argparse.ArgumentParser(description='Run a TCP network'
@@ -61,3 +61,6 @@ if __name__ == "__main__":
     # Run interactive mode without loading any files
     else:
         create_bw()
+
+if __name__ == "__main__":
+    main()

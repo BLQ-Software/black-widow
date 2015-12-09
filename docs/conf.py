@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# blackwidow documentation build configuration file, created by
-# sphinx-quickstart on Tue Dec  8 10:57:24 2015.
+# src documentation build configuration file, created by
+# sphinx-quickstart on Wed Dec  9 14:01:33 2015.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -20,7 +20,9 @@ import shlex
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../src'))
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -52,9 +54,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'blackwidow'
-copyright = u'2015, Author'
-author = u'Author'
+project = u'BlackWidow TCP Network Simulator'
+copyright = u'2015, Rahul Bachal, David Qu, Justin Leong, Nancy Wen'
+author = u'Rahul Bachal, David Qu, Justin Leong, Nancy Wen'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -206,7 +208,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'blackwidowdoc'
+htmlhelp_basename = 'srcdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -228,7 +230,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'blackwidow.tex', u'blackwidow Documentation',
+  (master_doc, 'src.tex', u'src Documentation',
    u'Author', 'manual'),
 ]
 
@@ -258,7 +260,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'blackwidow', u'blackwidow Documentation',
+    (master_doc, 'src', u'src Documentation',
      [author], 1)
 ]
 
@@ -272,8 +274,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'blackwidow', u'blackwidow Documentation',
-   author, 'blackwidow', 'One line description of project.',
+  (master_doc, 'src', u'src Documentation',
+   author, 'src', 'One line description of project.',
    'Miscellaneous'),
 ]
 
