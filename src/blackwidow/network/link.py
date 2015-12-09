@@ -77,6 +77,8 @@ class Link(object):
         # Buffer size. Initialize to 0 since there are no packets.
         self._size = 0
         self._distance = delay
+
+        # Recorder for rate data
         self._send_rate = Rate_Graph(self._id,
                                      "link {0} send rate".format(self._id),
                                      self.env,
