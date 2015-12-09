@@ -109,7 +109,9 @@ class Router(Device):
         route_changed = False
         for dest, route in packet.routing_table.items():
             distance = route['distance'] + link.distance
-            if dest not in self._new_routing_table:
+            if dest is self._network_id:
+                continue
+            elif dest not in self._new_routing_table:
                 self._new_routing_table[dest] = {'link': link, 'distance': distance}
                 route_changed = True
             elif distance < self._new_routing_table[dest]['distance']:
