@@ -39,6 +39,7 @@ class Event:
 
     # Static id to create unique ids for each event.
     _last_id = 0
+
     def __init__(self, type, src_id, f, **kwargs):
         # Assign the event an id
         self._id = Event._last_id
@@ -65,7 +66,8 @@ class Event:
 
     @src_id.setter
     def src_id(self, value):
-        raise AttributeError("Cannot modify event source id: {0}".format(self._id))
+        raise AttributeError("Cannot modify event"
+                             "source id: {0}".format(self._id))
 
     @property
     def type(self):
