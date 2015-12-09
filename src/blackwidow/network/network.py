@@ -27,6 +27,11 @@ class Network():
     ----------
     bw : `Blackwidow`
         The simulation object containing settings and data recording.
+
+    Attributes
+    ----------
+    time : float
+        The currenet simulation time.
     """
     def __init__(self, bw):
         self.devices = {}
@@ -51,7 +56,16 @@ class Network():
         raise AttributeError("Cannot modify network time")
 
     def check_id(self, obj_id):
-        """Raise an exception if object id is not unique."""
+        """Check if the id is not already used.
+
+        This function checks if the id is not already used. This function
+        raises an exception if object id is not unique.
+
+        Parameters
+        ----------
+        obj_id : string
+            The id to check.
+        """
         if obj_id in self.ids:
             raise ValueError('id {0} already exists.'.format(obj_id))
 
