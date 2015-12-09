@@ -148,10 +148,13 @@
           <div role="main" class="document">
             
   <h1>Source code for blackwidow.network.link</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">blackwidow.network.rate_graph</span> <span class="kn">import</span> <span class="n">Rate_Graph</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
 <span class="kn">from</span> <span class="nn">event</span> <span class="kn">import</span> <span class="n">Event</span>
 
+<span class="c"># Setting to use HALF_DUPLEX for sending packets</span>
 <span class="n">HALF_DUPLEX</span> <span class="o">=</span> <span class="bp">False</span>
+
 
 <div class="viewcode-block" id="Link"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.link.Link">[docs]</a><span class="k">class</span> <span class="nc">Link</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simulates a link connected to two Devices in the network.</span>
@@ -178,12 +181,30 @@
 <span class="sd">    bw : `Blackwidow`</span>
 <span class="sd">        The printer to print data to.</span>
 
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : string</span>
+<span class="sd">        The link id.</span>
+<span class="sd">    device_a : `Device`</span>
+<span class="sd">        One of the `Device` objects to which the link is connected.</span>
+<span class="sd">    device_b : `Device`</span>
+<span class="sd">        One of the `Device` objects to which the link is connected.</span>
+<span class="sd">    delay : float</span>
+<span class="sd">        The progapation delay in ms.</span>
+<span class="sd">    rate : float</span>
+<span class="sd">        The rate at which the link can send a packet in bits per ms.</span>
+<span class="sd">    capacity : int</span>
+<span class="sd">        The capacity of the link buffer in bits.</span>
+<span class="sd">    distance : float</span>
+<span class="sd">        The distance of the link. Used for dynamic routing.</span>
+
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
 <span class="sd">    receive(packet, source_id)</span>
 <span class="sd">        Receives a packet from a `Device`.</span>
+<span class="sd">    measure_distance()</span>
+<span class="sd">        Measures the link distance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">device_a</span><span class="p">,</span> <span class="n">device_b</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">capacity</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">bw</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="nb">id</span>
@@ -193,23 +214,37 @@
         <span class="c"># rate is initially Mbps. rate is stored as bits per ms.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span> <span class="o">=</span> <span class="n">rate</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="n">delay</span>
+        <span class="c"># capacity is initially KB. capacity is stored as bits.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span> <span class="o">=</span> <span class="n">capacity</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">8</span>
 
         <span class="c"># Buffer to enter link</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_release_into_link_buffer</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
 
+        <span class="c"># Environment variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bw</span> <span class="o">=</span> <span class="n">bw</span>
+
+        <span class="c"># Buffer size. Initialize to 0 since there are no packets.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="n">delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_rate</span> <span class="o">=</span> <span class="n">Rate_Graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
+                                     <span class="s">&quot;link {0} send rate&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">),</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a string representation of the link.&quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Link {0} connected to {1} and {2}</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s"> Rate: {3} mbps</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s"> Delay: {4} mbps</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s"> Capacity: {5} bits</span><span class="se">\n</span><span class="s">&quot;</span>
-        <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_a</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_b</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_a</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_device_b</span><span class="o">.</span><span class="n">network_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span><span class="p">)</span>
 
+    <span class="c"># Properties for attributes</span>
+
+    <span class="c"># Link id</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
@@ -218,6 +253,7 @@
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link id: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
+    <span class="c"># Link devices</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">device_a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_a</span>
@@ -234,6 +270,7 @@
     <span class="k">def</span> <span class="nf">device_b</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link device: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
+    <span class="c"># Propagation delay</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">delay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span>
@@ -242,6 +279,7 @@
     <span class="k">def</span> <span class="nf">delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link delay: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
+    <span class="c"># Link rate</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span>
@@ -250,23 +288,41 @@
     <span class="k">def</span> <span class="nf">rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link rate: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
+    <span class="c"># Link capacity</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capacity</span>
 
     <span class="nd">@capacity.setter</span>
     <span class="k">def</span> <span class="nf">capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link capacity: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link&quot;</span>
+                             <span class="s">&quot;capacity: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
+    <span class="c"># Distance of link</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span>
 
     <span class="nd">@distance.setter</span>
     <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link distance: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;Cannot modify link&quot;</span>
+                             <span class="s">&quot;distance: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Link.receive"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.link.Link.receive">[docs]</a>    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">,</span> <span class="n">source_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Receives a packet from a `Device`.</span>
+
+<span class="sd">        This function takes as parameter a `Packet` and a device id. Packets</span>
+<span class="sd">        are either enqueued in the link buffer if the link buffer is not full</span>
+<span class="sd">        or are dropped.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        packet : `Packet`</span>
+<span class="sd">            The packet received by the link.</span>
+<span class="sd">        source_id : string</span>
+<span class="sd">            The id of the `Device` object sending the packet.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Add packet to link buffer as soon as it is received.</span>
         <span class="c"># Drop packet if the buffer is full</span>
         <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;I am link {0}. I have received &quot;</span>
@@ -280,7 +336,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_release_into_link_buffer</span><span class="o">.</span><span class="n">appendleft</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">packet</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="n">packet</span><span class="o">.</span><span class="n">size</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">),</span> <span class="s">&#39;link_{0}.buffer&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">),</span>
+                           <span class="s">&#39;link_{0}.buffer&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
             <span class="k">print</span> <span class="s">&quot;Current size of link {}: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span>
 
             <span class="c"># If we only have one packet in the buffer, send it with no delay</span>
@@ -291,57 +348,130 @@
         <span class="c"># The buffer is full</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">print</span> <span class="s">&quot;Packet dropped.&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="s">&#39;link_{0}.drop&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">),</span>
+                           <span class="s">&#39;link_{0}.drop&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 </div>
     <span class="k">def</span> <span class="nf">_send</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># Wait for packet.size / self._rate time before packet is traveling</span>
+        <span class="sd">&quot;&quot;&quot;Sends the first packet in the buffer across the link.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The packet begins to transmit across the link after size / rate time,</span>
+<span class="sd">        where size is the packet size and rate is the rate of the link. This</span>
+<span class="sd">        function then calls _release to send the packet to the receiving</span>
+<span class="sd">        `Device`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Get the first packet in the buffer. We do not dequeue until it has</span>
+        <span class="c"># fully been sent.</span>
         <span class="n">packet_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release_into_link_buffer</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># packet_info is a tuple of packet, source_id</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="n">packet_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">source_id</span> <span class="o">=</span> <span class="n">packet_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c"># Calculate the delay time needed to begin sending the packet.</span>
         <span class="n">delay</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rate</span><span class="p">)</span>
+
+        <span class="c"># Create the event message</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;I am link {0}. I have begun sending &quot;</span>
         <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_ack</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;ACK &quot;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;packet {1}&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release</span><span class="p">),</span> <span class="n">delay</span><span class="p">)</span>
-
+        <span class="c"># Call _release after delay time to begin sending the packet.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">),</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_release</span><span class="p">),</span>
+                           <span class="n">delay</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Releases the packet being sent to the receiving `Device` after the</span>
+<span class="sd">        packet has traversed the link.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This function dequeues the first packet in the buffer and begins</span>
+<span class="sd">        sending it across the link. The packet is sent to its destination after</span>
+<span class="sd">        delay time, where delay is the propagation delay of the link.</span>
+<span class="sd">        Routing packets and acknowledgement packets are sent instantaneously to</span>
+<span class="sd">        their destination without considering the propagation delay. This</span>
+<span class="sd">        simplifies the network simulation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Dequeue the first packet in the buffer</span>
         <span class="n">packet</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release_into_link_buffer</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_rate</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="c"># Update the buffer size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-=</span> <span class="n">packet</span><span class="o">.</span><span class="n">size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">),</span> <span class="s">&#39;link_{0}.buffer&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+
+        <span class="c"># Record the buffer size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">),</span>
+                       <span class="s">&#39;link_{0}.buffer&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
         <span class="c"># Figure out which device to send to</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">source_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_a</span><span class="o">.</span><span class="n">network_id</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_b</span><span class="o">.</span><span class="n">receive</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_device_a</span><span class="o">.</span><span class="n">receive</span>
-        <span class="c"># Release to device after self._delay time</span>
+
+        <span class="c"># Create the event message</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;I am link {0}. I have sent &quot;</span>
         <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_ack</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;ACK &quot;</span>
         <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;packet {1}&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">packet</span><span class="o">=</span><span class="n">packet</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s">&#39;link_{0}.sent&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+
+        <span class="c"># Ignore routing packet propagation so updates happen instantly.</span>
+        <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_routing</span> <span class="ow">or</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_ack</span><span class="p">:</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span>
+
+        <span class="c"># Release to device after self._delay time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">),</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
+                                 <span class="n">f</span><span class="p">,</span>
+                                 <span class="n">packet</span><span class="o">=</span><span class="n">packet</span><span class="p">),</span>
+                           <span class="n">delay</span><span class="p">)</span>
+
+        <span class="c"># Record link sent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+                       <span class="s">&#39;link_{0}.sent&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+
+        <span class="c"># Record the link rate for packets that are not acknowledgements or</span>
+        <span class="c"># routing packets</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_ack</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_routing</span><span class="p">:</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">),</span> <span class="s">&#39;link_{0}.rate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s">&#39;{0}, {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                                             <span class="nb">float</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">/</span>
+                                             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">time</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">),</span>
+                           <span class="s">&#39;link_{0}.rate&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">))</span>
 
+        <span class="c"># Process the next packet in the buffer</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_release_into_link_buffer</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># Get the next packet in the buffer</span>
             <span class="n">packet_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_release_into_link_buffer</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">next_packet</span> <span class="o">=</span> <span class="n">packet_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">next_source_id</span> <span class="o">=</span> <span class="n">packet_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
+            <span class="c"># If the next packet&#39;s destination is not the same as the current</span>
+            <span class="c"># packet&#39;s destination and we are running in HALF_DUPLEX mode, wait</span>
+            <span class="c"># until the current packet has left the link before sending the</span>
+            <span class="c"># next packet.</span>
             <span class="k">if</span> <span class="n">next_source_id</span> <span class="o">!=</span> <span class="n">source_id</span> <span class="ow">and</span> <span class="n">HALF_DUPLEX</span><span class="p">:</span>
                 <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">delay</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c"># Create the event message</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;I am link {0}. I am ready to send &quot;</span>
             <span class="k">if</span> <span class="n">next_packet</span><span class="o">.</span><span class="n">is_ack</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;ACK &quot;</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;packet {1}&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="n">next_packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send</span><span class="p">),</span> <span class="n">delay</span><span class="p">)</span>
+
+            <span class="c"># Begin sending the next packet after delay time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="n">next_packet</span><span class="o">.</span><span class="n">pack_id</span><span class="p">),</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_send</span><span class="p">),</span>
+                               <span class="n">delay</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Link.get_buffer_size"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.link.Link.get_buffer_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_buffer_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the buffer size in bits.&quot;&quot;&quot;</span>
@@ -351,11 +481,16 @@
         <span class="k">return</span> <span class="n">total_size</span>
 </div>
 <div class="viewcode-block" id="Link.measure_distance"><a class="viewcode-back" href="../../../blackwidow.network.html#blackwidow.network.link.Link.measure_distance">[docs]</a>    <span class="k">def</span> <span class="nf">measure_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Measure the link distance.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Measure the link distance.</span>
+
+<span class="sd">        Sets the distance attribute of the link.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">.</span><span class="n">static_routing</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_buffer_size</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">+</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">get_buffer_size</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="p">))</span></div></div>
 </pre></div>
 
           </div>

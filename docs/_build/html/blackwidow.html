@@ -182,9 +182,7 @@
 <li class="toctree-l2"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.host">blackwidow.network.host module</a><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.link">blackwidow.network.link module</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.link">blackwidow.network.link module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="blackwidow.network.html#module-blackwidow.network.network">blackwidow.network.network module</a><ul class="simple">
 </ul>
 </li>
@@ -244,7 +242,9 @@ including files, or functions that dynamically generate graphs.</p>
 <dd><p class="first last">Whether to print statements labelled verbose.</p>
 </dd>
 <dt>log_file <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Name of file to write to.</p>
+<dd><p class="first last">Name of file to write to. This is the prefix for all data types
+written to files. See documentation for write for more
+information.</p>
 </dd>
 </dl>
 </dd>
@@ -361,8 +361,14 @@ BlackWidow object is constructed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>file_name</strong> : string</p>
+<blockquote>
+<div><p>Name of config file containing network.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sim_time</strong> : float</p>
 <blockquote class="last">
-<div><p>Name of config file</p>
+<div><p>The amount of time taken for the network to finish running.</p>
 </div></blockquote>
 </td>
 </tr>

@@ -664,32 +664,32 @@ receive, this class also handles the packet buffer for sending packets.</p>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
+<table border="1" class="docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.capacity" title="blackwidow.network.link.Link.capacity"><code class="xref py py-obj docutils literal"><span class="pre">capacity</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td>id</td>
+<td>(string) The link id.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.link.Link.delay" title="blackwidow.network.link.Link.delay"><code class="xref py py-obj docutils literal"><span class="pre">delay</span></code></a></td>
-<td></td>
+<tr class="row-even"><td>device_a</td>
+<td>(<cite>Device</cite>) One of the <cite>Device</cite> objects to which the link is connected.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.device_a" title="blackwidow.network.link.Link.device_a"><code class="xref py py-obj docutils literal"><span class="pre">device_a</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td>device_b</td>
+<td>(<cite>Device</cite>) One of the <cite>Device</cite> objects to which the link is connected.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.link.Link.device_b" title="blackwidow.network.link.Link.device_b"><code class="xref py py-obj docutils literal"><span class="pre">device_b</span></code></a></td>
-<td></td>
+<tr class="row-even"><td>delay</td>
+<td>(float) The progapation delay in ms.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.distance" title="blackwidow.network.link.Link.distance"><code class="xref py py-obj docutils literal"><span class="pre">distance</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td>rate</td>
+<td>(float) The rate at which the link can send a packet in bits per ms.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#blackwidow.network.link.Link.id" title="blackwidow.network.link.Link.id"><code class="xref py py-obj docutils literal"><span class="pre">id</span></code></a></td>
-<td></td>
+<tr class="row-even"><td>capacity</td>
+<td>(int) The capacity of the link buffer in bits.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#blackwidow.network.link.Link.rate" title="blackwidow.network.link.Link.rate"><code class="xref py py-obj docutils literal"><span class="pre">rate</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td>distance</td>
+<td>(float) The distance of the link. Used for dynamic routing.</td>
 </tr>
 </tbody>
 </table>
@@ -702,6 +702,9 @@ receive, this class also handles the packet buffer for sending packets.</p>
 <tbody valign="top">
 <tr class="row-odd"><td>receive(packet, source_id)</td>
 <td>Receives a packet from a <cite>Device</cite>.</td>
+</tr>
+<tr class="row-even"><td>measure_distance()</td>
+<td>Measures the link distance.</td>
 </tr>
 </tbody>
 </table>
@@ -745,6 +748,7 @@ receive, this class also handles the packet buffer for sending packets.</p>
 <dt id="blackwidow.network.link.Link.measure_distance">
 <code class="descname">measure_distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/link.html#Link.measure_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.link.Link.measure_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Measure the link distance.</p>
+<p>Sets the distance attribute of the link.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -755,7 +759,27 @@ receive, this class also handles the packet buffer for sending packets.</p>
 <dl class="method">
 <dt id="blackwidow.network.link.Link.receive">
 <code class="descname">receive</code><span class="sig-paren">(</span><em>packet</em>, <em>source_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/blackwidow/network/link.html#Link.receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#blackwidow.network.link.Link.receive" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Receives a packet from a <cite>Device</cite>.</p>
+<p>This function takes as parameter a <cite>Packet</cite> and a device id. Packets
+are either enqueued in the link buffer if the link buffer is not full
+or are dropped.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>packet</strong> : <cite>Packet</cite></p>
+<blockquote>
+<div><p>The packet received by the link.</p>
+</div></blockquote>
+<p><strong>source_id</strong> : string</p>
+<blockquote class="last">
+<div><p>The id of the <cite>Device</cite> object sending the packet.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

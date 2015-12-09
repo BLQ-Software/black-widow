@@ -153,6 +153,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
+
 <div class="viewcode-block" id="BlackWidow"><a class="viewcode-back" href="../../blackwidow.html#blackwidow.blackwidow.BlackWidow">[docs]</a><span class="k">class</span> <span class="nc">BlackWidow</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Runs simulation based on settings.</span>
 
@@ -169,7 +170,9 @@
 <span class="sd">            show_verbose : bool</span>
 <span class="sd">                Whether to print statements labelled verbose.</span>
 <span class="sd">            log_file : str</span>
-<span class="sd">                Name of file to write to.</span>
+<span class="sd">                Name of file to write to. This is the prefix for all data types</span>
+<span class="sd">                written to files. See documentation for write for more</span>
+<span class="sd">                information.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -195,34 +198,36 @@
 <span class="sd">        settings is a dictionary generated from the argsparse arguments,</span>
 <span class="sd">        with some extra options added in.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="n">settings</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">real_time</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># Default setting</span>
+        <span class="c"># Set settings</span>
+
+        <span class="c"># Real time graphing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">real_time</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c"># Default setting</span>
         <span class="k">if</span> <span class="s">&#39;real_time&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">real_time</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;real_time&#39;</span><span class="p">]</span> <span class="c"># Override default</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">real_time</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;real_time&#39;</span><span class="p">]</span>  <span class="c"># Override default</span>
 
-
+        <span class="c"># Show verbose output</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_verbose</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="s">&#39;show_verbose&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_verbose</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;show_verbose&#39;</span><span class="p">]</span>
 
-
+        <span class="c"># Static routing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">static_routing</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">if</span> <span class="s">&#39;static_routing&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">static_routing</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;static_routing&#39;</span><span class="p">]</span>
 
-
+        <span class="c"># Directory to write data to</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="s">&#39;./data&#39;</span>
         <span class="k">if</span> <span class="s">&#39;data_dir&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;data_dir&#39;</span><span class="p">]</span>
 
-
+        <span class="c"># Size of routing packet</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">routing_packet_size</span> <span class="o">=</span> <span class="mi">32</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="p">(</span><span class="s">&#39;routing_packet_size&#39;</span> <span class="ow">in</span> <span class="n">settings</span> <span class="ow">and</span>
                 <span class="n">settings</span><span class="p">[</span><span class="s">&#39;routing_packet_size&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">routing_packet_size</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;routing_packet_size&#39;</span><span class="p">]</span>
 
-
+        <span class="c"># Log file. Prefix for all data files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="s">&#39;log_file&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
             <span class="c"># Regex to match old version of particular case.</span>
@@ -234,19 +239,14 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;log_file&#39;</span><span class="p">]</span>
 
-
+        <span class="c"># TCP algorithm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcp_alg</span> <span class="o">=</span> <span class="s">&#39;Reno&#39;</span>
         <span class="k">if</span> <span class="p">(</span><span class="s">&#39;tcp_alg&#39;</span> <span class="ow">in</span> <span class="n">settings</span> <span class="ow">and</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;tcp_alg&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tcp_alg</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s">&#39;tcp_alg&#39;</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_graphs</span> <span class="o">=</span> <span class="mi">10</span>
-
-
+        <span class="c"># Initialize the data to be empty. This dictionary will contain all</span>
+        <span class="c"># recorded data.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
-
-
-
-
 
 <div class="viewcode-block" id="BlackWidow.run"><a class="viewcode-back" href="../../blackwidow.html#blackwidow.blackwidow.BlackWidow.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Runs the overall simulation based on settings specified when the</span>
@@ -255,19 +255,29 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        file_name : string</span>
-<span class="sd">            Name of config file</span>
+<span class="sd">            Name of config file containing network.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sim_time : float</span>
+<span class="sd">            The amount of time taken for the network to finish running.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">print</span> <span class="s">&quot;Parsing {0} ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_name</span><span class="p">),</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="c"># Create network from file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">config_network</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="c"># Initialize grapher</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grapher</span> <span class="o">=</span> <span class="n">CsvGrapher</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="k">print</span> <span class="s">&quot;Parsed network: </span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
 
+        <span class="c"># Run the network.</span>
         <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Running network: </span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="c"># sim_time is the amount of time taken for the network to run</span>
         <span class="n">sim_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
+        <span class="c"># Graph the data if we are not graphing in real time</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_time</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grapher</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sim_time</span><span class="p">))</span>
 
@@ -294,8 +304,6 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_time</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grapher</span><span class="o">.</span><span class="n">graph</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sim_time</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">sim_time</span>
-
-
 </div>
 <div class="viewcode-block" id="BlackWidow.print_verbose"><a class="viewcode-back" href="../../blackwidow.html#blackwidow.blackwidow.BlackWidow.print_verbose">[docs]</a>    <span class="k">def</span> <span class="nf">print_verbose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Handles a verbose message based on specified settings.</span>
@@ -307,8 +315,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_verbose</span><span class="p">:</span>
             <span class="k">print</span> <span class="n">msg</span>
-
-
 </div>
 <div class="viewcode-block" id="BlackWidow.record"><a class="viewcode-back" href="../../blackwidow.html#blackwidow.blackwidow.BlackWidow.record">[docs]</a>    <span class="k">def</span> <span class="nf">record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_type</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Records data based on specified settings.</span>
@@ -329,11 +335,15 @@
 <span class="sd">            flow.sent    -  &quot;Time in ms&quot;, &quot;Mega bits&quot;</span>
 <span class="sd">            flow.delay   -  &quot;Time in ms&quot;, &quot;Delay in ms&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">data_num</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">)]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_time</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">grapher</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data_num</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="s">&quot;time (ms)&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span> <span class="c"># TODO: integrate with graph module.</span>
+            <span class="n">data_num</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">)]</span>
+            <span class="k">pass</span>
+
+        <span class="c"># Add to existing data type</span>
         <span class="k">if</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c"># Create new data type and add the data</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_verbose</span><span class="p">:</span>
@@ -349,10 +359,15 @@
 <span class="sd">        Files are created in the data_dir directory in CSV format.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Check if the log file is defined. If not, we cannot write data.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># Write each data type to a file</span>
             <span class="k">for</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="c"># Open file</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;{}/{}.{}.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span>
                                                 <span class="n">data_type</span><span class="p">),</span> <span class="s">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="c"># Write data</span>
                     <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data_type</span><span class="p">]:</span>
                         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span></div></div>
 </pre></div>

@@ -1,5 +1,9 @@
 class Device(object):
     """Super class for hosts and routers.
+
+    Parameters
+    ----------
+    
     """
     def __init__(self, net_addr):
         """Constructor for device."""
