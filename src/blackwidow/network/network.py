@@ -428,7 +428,7 @@ class Network():
             if current_event.src_id in self.deleted:
                 continue
 
-            print ("{0} at time {1} with {2}"
+            print ("{0} at time {1} with {2} "
                    "flows active".format(str(current_event),
                                          time,
                                          self.num_flows_active))
