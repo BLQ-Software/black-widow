@@ -75,7 +75,7 @@ class BlackWidow(object):
                 settings['routing_packet_size'] is not None):
             self.routing_packet_size = settings['routing_packet_size']
 
-        # Log file. Prefix for all data files.
+        # Log file. Prefix for all data files
         self.log_file = None
         if 'log_file' in settings:
             # Regex to match old version of particular case.
@@ -103,19 +103,29 @@ class BlackWidow(object):
         Parameters
         ----------
         file_name : string
-            Name of config file
+            Name of config file containing network.
+
+        Returns
+        -------
+        sim_time : float
+            The amount of time taken for the network to finish running.
         """
 
         print "Parsing {0} ...".format(file_name), "\n"
+        # Create network from file
         self.network = parser.config_network(file_name, self)
+        # Initialize grapher
         self.grapher = CsvGrapher(self)
 
         print "Parsed network: \n"
         self.network.dump()
 
+        # Run the network.
         print "\nRunning network: \n"
+        # sim_time is the amount of time taken for the network to run
         sim_time = self.network.run()
 
+        # Graph the data if we are not graphing in real time
         if not self.real_time:
             self.grapher.graph(int(sim_time))
 
