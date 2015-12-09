@@ -7,6 +7,7 @@ class RenoFlow(TahoeFlow):
     Adds Fast Retransmit and Fast Recovery
     Flows will trigger host behavior.
     Has slow start and congestion avoidance.
+
     Parameters
     ----------
     flow_id : string
@@ -148,5 +149,9 @@ class RenoFlow(TahoeFlow):
             self._receive_ack(packet)
 
     def _reset_window(self):
+        """ Called when a packet timeout occurs.
+            Sets ssthresh to max(2, cwnd/2) and cwnd to 1.
+            Resets counter
+        """
         super(RenoFlow, self)._reset_window()
         self._counter = 0

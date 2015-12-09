@@ -14,6 +14,7 @@ class Flow(object):
     """Simple class for flows.
     Flows will trigger host behavior.
     Has slow start and congestion avoidance.
+
     Parameters
     ----------
     flow_id : string
