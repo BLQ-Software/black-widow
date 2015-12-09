@@ -77,7 +77,10 @@ class Link(object):
         # Buffer size. Initialize to 0 since there are no packets.
         self._size = 0
         self._distance = delay
-        self._send_rate = Rate_Graph(self._id, "link {0} send rate".format(self._id), self.env, self.bw)
+        self._send_rate = Rate_Graph(self._id,
+                                     "link {0} send rate".format(self._id),
+                                     self.env,
+                                     self.bw)
 
     def __str__(self):
         """Returns a string representation of the link."""
