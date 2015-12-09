@@ -3,6 +3,7 @@ from graph import CsvGrapher
 import re
 import os
 
+
 class BlackWidow(object):
     """Runs simulation based on settings.
 
@@ -45,34 +46,36 @@ class BlackWidow(object):
         settings is a dictionary generated from the argsparse arguments,
         with some extra options added in.
         """
-        self._settings = settings
 
-        self.real_time = False # Default setting
+        # Set settings
+
+        # Real time graphing
+        self.real_time = False  # Default setting
         if 'real_time' in settings:
-            self.real_time = settings['real_time'] # Override default
+            self.real_time = settings['real_time']  # Override default
 
-
+        # Show verbose output
         self.show_verbose = False
         if 'show_verbose' in settings:
             self.show_verbose = settings['show_verbose']
 
-
+        # Static routing
         self.static_routing = False
         if 'static_routing' in settings:
             self.static_routing = settings['static_routing']
 
-
+        # Directory to write data to
         self.data_dir = './data'
         if 'data_dir' in settings:
             self.data_dir = settings['data_dir']
 
-
+        # Size of routing packet
         self.routing_packet_size = 32 * 8 * 0
         if ('routing_packet_size' in settings and
                 settings['routing_packet_size'] is not None):
             self.routing_packet_size = settings['routing_packet_size']
 
-
+        # Log file. Prefix for all data files.
         self.log_file = None
         if 'log_file' in settings:
             # Regex to match old version of particular case.
@@ -84,19 +87,14 @@ class BlackWidow(object):
 
             self.log_file = settings['log_file']
 
-
+        # TCP algorithm
         self.tcp_alg = 'Reno'
         if ('tcp_alg' in settings and settings['tcp_alg'] is not None):
             self.tcp_alg = settings['tcp_alg']
 
-        self.num_graphs = 10
-
-
+        # Initialize the data to be empty. This dictionary will contain all
+        # recorded data.
         self.data = {}
-
-
-
-
 
     def run(self, file_name):
         """Runs the overall simulation based on settings specified when the
@@ -145,8 +143,6 @@ class BlackWidow(object):
             self.grapher.graph(int(sim_time))
         return sim_time
 
-
-
     def print_verbose(self, msg):
         """Handles a verbose message based on specified settings.
 
@@ -157,8 +153,6 @@ class BlackWidow(object):
         """
         if self.show_verbose:
             print msg
-
-
 
     def record(self, data, data_type):
         """Records data based on specified settings.
@@ -179,11 +173,15 @@ class BlackWidow(object):
             flow.sent    -  "Time in ms", "Mega bits"
             flow.delay   -  "Time in ms", "Delay in ms"
         """
-        data_num = [float(x) for x in data.split(", ")]
         if self.real_time:
-            self.grapher.plot(data_num, data_type, "time (ms)", data_type) # TODO: integrate with graph module.
+            data_num = [float(x) for x in data.split(", ")]
+            pass
+
+        # Add to existing data type
         if data_type in self.data:
             self.data[data_type].append(data)
+
+        # Create new data type and add the data
         else:
             self.data[data_type] = [data]
         if self.show_verbose:
@@ -199,9 +197,14 @@ class BlackWidow(object):
         Files are created in the data_dir directory in CSV format.
 
         """
+
+        # Check if the log file is defined. If not, we cannot write data.
         if self.log_file is not None:
+            # Write each data type to a file
             for data_type in self.data:
+                # Open file
                 with open('{}/{}.{}.csv'.format(self.data_dir, self.log_file,
                                                 data_type), 'a') as f:
+                    # Write data
                     for data in self.data[data_type]:
                         f.write(data + '\n')
