@@ -175,7 +175,14 @@ class Link(object):
         if packet.is_ack:
             msg += "ACK "
         msg += "packet {1}"
-        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, f, packet=packet), self._delay)
+        
+        # Ignore routing packet propagation so updates happen instantly.
+        if packet.is_routing:
+            delay = 0
+        else:
+            delay = self._delay
+
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, f, packet=packet), delay)
         self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link_{0}.sent'.format(self._id))
         if not packet.is_ack and not packet.is_routing:
 
