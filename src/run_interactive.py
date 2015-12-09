@@ -53,9 +53,9 @@ class BlackWidowInteractive(cmd.Cmd):
         if not check_args(args, 1):
             return
         if args[0] == "True":
-            self.bw.real_time = True
+            self.bw.show_verbose = True
         else:
-            self.bw.real_time = False
+            self.bw.show_verbose = False
 
     def do_set_static_routing(self, line):
         """set_static_routing [static_routing]
@@ -81,15 +81,15 @@ class BlackWidowInteractive(cmd.Cmd):
 
     def do_set_tcp_alg(self, line):
         """set_tcp_alg [alg]
-        Set TCP algorithm"""
+        Set TCP algorithm. Valid options are: Reno, Tahoe, Fast"""
         args = line.split()
         if not check_args(args, 1):
             return
         self.bw.tcp_alg = args[0]
 
     def do_add_router(self, line):
-        """add_router [id]
-        Add a router"""
+        """add_router [id] [id] ... [id]
+        Add multiple routers"""
         args = line.split()
         if len(args) < 1:
             return
@@ -103,8 +103,8 @@ class BlackWidowInteractive(cmd.Cmd):
 
 
     def do_add_host(self, line):
-        """add_host [id]
-        Add a host"""
+        """add_host [id] [id] ... [id]
+        Add multiple hosts"""
         args = line.split()
         if len(args) < 1:
             return
@@ -117,8 +117,9 @@ class BlackWidowInteractive(cmd.Cmd):
             print e
 
     def do_delete_device(self, line):
-        """delete_device [id]
-        Delete a device"""
+        """delete_device [id] [id] ... [id]
+        Delete multiple devices. Can also run delete_device * to delete all
+        devices"""
         args = line.split()
         if len(args) < 1:
             return
@@ -149,8 +150,8 @@ class BlackWidowInteractive(cmd.Cmd):
             print e
 
     def do_delete_link(self, line):
-        """delete_link [id]
-        Delete a link"""
+        """delete_link [id] [id] ... [id]
+        Delete multiple links. Can also run delete_link * to delete all links"""
         args = line.split()
         if len(args) < 1:
             return
@@ -180,8 +181,8 @@ class BlackWidowInteractive(cmd.Cmd):
             print e
 
     def do_delete_flow(self, line):
-        """delete_flow [id]
-        Delete a flow"""
+        """delete_flow [id] [id] ... [id]
+        Delete multiple flows. Can also run delete_flow * to delete all flows"""
         args = line.split()
         if len(args) < 1:
             return
