@@ -120,7 +120,7 @@ class Router(Device):
             if (other_device.network_id == self._network_id):
                 other_device = link.device_b
 
-            if type(other_device) is Router: 
+            if type(other_device) is Router:
                 packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
                                        other_device.network_id, None,
                                        self._new_routing_table, self.bw.routing_packet_size)

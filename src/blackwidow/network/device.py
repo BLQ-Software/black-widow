@@ -19,7 +19,6 @@ class Device(object):
         Adds the specified `Link` object to `links`.
     delete_link(link)
         Remotes the specified `Link` object from `links`.
-    
     """
     def __init__(self, net_addr):
         """Constructor for device."""

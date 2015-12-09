@@ -241,7 +241,11 @@ class Flow(object):
         self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
 
     def _update_RTT(self, packet):
-        """ Update last RTT and min RTT
+        """ Update last RTT and min RTT and retransmission timeout.
+        Parameters
+        ----------
+        packet : `Packet`
+            The packet that was received. Need this to get the timestamp
         """
         self._last_RTT = self.env.time - packet.timestamp
         if self._SRTT == -1:

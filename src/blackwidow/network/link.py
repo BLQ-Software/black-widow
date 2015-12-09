@@ -29,7 +29,7 @@ class Link(object):
     env : `Network`
         The network that the link belongs to.
     bw : `Blackwidow`
-        The printer to print data to.
+        The simulation object containing settings and data recording.
 
     Attributes
     ----------
