@@ -11,8 +11,8 @@ from run_interactive import create_bw
 if __name__ == "__main__":
 
     # Configure argument parser
-    parser = argparse.ArgumentParser(description='Run a TCP network
-                                     simulation.')
+    parser = argparse.ArgumentParser(description='Run a TCP network'
+                                                 'simulation')
 
     # Files containing network configurations. Multiple files can be provided.
     parser.add_argument('files', metavar='config_file', type=str, nargs='*',

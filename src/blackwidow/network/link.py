@@ -4,6 +4,7 @@ from event import Event
 # Setting to use HALF_DUPLEX for sending packets
 HALF_DUPLEX = False
 
+
 class Link(object):
     """Simulates a link connected to two Devices in the network.
 
@@ -54,7 +55,6 @@ class Link(object):
         Measures the link distance.
     """
 
-
     def __init__(self, id, device_a, device_b, delay, rate, capacity, env, bw):
         self._id = id
         self._device_a = device_a
@@ -83,7 +83,9 @@ class Link(object):
         msg += "\t Rate: {3} mbps\n"
         msg += "\t Delay: {4} mbps\n"
         msg += "\t Capacity: {5} bits\n"
-        return msg.format(self._id, self._device_a.network_id, self._device_b.network_id, self._rate, self._delay, self._capacity)
+        return msg.format(self._id, self._device_a.network_id,
+                          self._device_b.network_id, self._rate, self._delay,
+                          self._capacity)
 
     # Properties for attributes
 
@@ -138,7 +140,8 @@ class Link(object):
 
     @capacity.setter
     def capacity(self, value):
-        raise AttributeError("Cannot modify link capacity: {0}".format(self._id))
+        raise AttributeError("Cannot modify link"
+                             "capacity: {0}".format(self._id))
 
     # Distance of link
     @property
@@ -147,7 +150,8 @@ class Link(object):
 
     @distance.setter
     def distance(self, value):
-        raise AttributeError("Cannot modify link distance: {0}".format(self._id))
+        raise AttributeError("Cannot modify link"
+                             "distance: {0}".format(self._id))
 
     def receive(self, packet, source_id):
         """Receives a packet from a `Device`.
@@ -177,7 +181,8 @@ class Link(object):
             self._release_into_link_buffer.appendleft(
                 [packet, source_id, self.env.time])
             self._size += packet.size
-            self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'link_{0}.buffer'.format(self._id))
+            self.bw.record('{0}, {1}'.format(self.env.time, self._size),
+                           'link_{0}.buffer'.format(self._id))
             print "Current size of link {}: {}".format(self._id, self._size)
 
             # If we only have one packet in the buffer, send it with no delay
@@ -188,8 +193,8 @@ class Link(object):
         # The buffer is full
         else:
             print "Packet dropped."
-            self.bw.record('{0}'.format(self.env.time), 'link_{0}.drop'.format(self._id))
-
+            self.bw.record('{0}'.format(self.env.time),
+                           'link_{0}.drop'.format(self._id))
 
     def _send(self):
         """Sends the first packet in the buffer across the link.
@@ -216,7 +221,10 @@ class Link(object):
             msg += "ACK "
         msg += "packet {1}"
         # Call _release after delay time to begin sending the packet.
-        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, self._release), delay)
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id),
+                                 self._id,
+                                 self._release),
+                           delay)
 
     def _release(self):
         """Releases the packet being sent to the receiving `Device` after the
@@ -238,7 +246,8 @@ class Link(object):
         self._size -= packet.size
 
         # Record the buffer size
-        self.bw.record('{0}, {1}'.format(self.env.time, self._size), 'link_{0}.buffer'.format(self._id))
+        self.bw.record('{0}, {1}'.format(self.env.time, self._size),
+                       'link_{0}.buffer'.format(self._id))
 
         # Figure out which device to send to
         if (source_id == self._device_a.network_id):
@@ -252,16 +261,24 @@ class Link(object):
             msg += "ACK "
         msg += "packet {1}"
         # Release to device after self._delay time
-        self.env.add_event(Event(msg.format(self._id, packet.pack_id), self._id, f, packet=packet), self._delay)
+        self.env.add_event(Event(msg.format(self._id, packet.pack_id),
+                                 self._id,
+                                 f,
+                                 packet=packet),
+                           self._delay)
 
         # Record link sent
-        self.bw.record('{0}, {1}'.format(self.env.time, packet.size), 'link_{0}.sent'.format(self._id))
+        self.bw.record('{0}, {1}'.format(self.env.time, packet.size),
+                       'link_{0}.sent'.format(self._id))
 
         # Record the link rate for packets that are not acknowledgements or
         # routing packets
         if not packet.is_ack and not packet.is_routing:
 
-            self.bw.record('{0}, {1}'.format(self.env.time, float(packet.size) / (self.env.time - time) / 1000.0), 'link_{0}.rate'.format(self._id))
+            self.bw.record('{0}, {1}'.format(self.env.time,
+                                             float(packet.size) /
+                                             (self.env.time - time) / 1000.0),
+                           'link_{0}.rate'.format(self._id))
 
         # Process the next packet in the buffer
         if len(self._release_into_link_buffer) > 0:
@@ -286,7 +303,10 @@ class Link(object):
             msg += "packet {1}"
 
             # Begin sending the next packet after delay time
-            self.env.add_event(Event(msg.format(self._id, next_packet.pack_id), self._id, self._send), delay)
+            self.env.add_event(Event(msg.format(self._id, next_packet.pack_id),
+                                     self._id,
+                                     self._send),
+                               delay)
 
     def get_buffer_size(self):
         """Returns the buffer size in bits."""
@@ -304,4 +324,5 @@ class Link(object):
         if self.bw.static_routing:
             self._distance = self.delay
         else:
-            self._distance = self.delay + self.get_buffer_size() / float(self.rate)
+            self._distance = (self.delay +
+                              self.get_buffer_size() / float(self.rate))
