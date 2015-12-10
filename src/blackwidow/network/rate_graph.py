@@ -41,8 +41,8 @@ class Data(object):
         raise AttributeError("Cannot change size")
 
     def __cmp__(self, other):
-    """ Method to compare with other objects in the priority queue.
-    """
+        """Method to compare with other objects in the priority queue."""
+
         return cmp(self._time, other.time)
 
 class Rate_Graph(object):
