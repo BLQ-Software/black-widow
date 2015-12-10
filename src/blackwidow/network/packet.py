@@ -48,7 +48,8 @@ class Packet(object):
     """
 
     def __init__(self, packet_id, src, dest, flow_id, timestamp=0):
-        """Constructor for host class"""
+        """ Constructor for host class
+        """
         self._pack_id = packet_id
         self._src = src
         self._dest = dest
@@ -57,8 +58,11 @@ class Packet(object):
         self._is_routing = False
         self._size = 0
         self._timestamp = timestamp
+
     def __str__(self):
-        """Constructor for host class"""
+        """ Returns a stirng of which packet is being sent.
+            Called by link.  
+        """
         msg = ""
         if self._is_ack:
             msg += "ACK "

@@ -126,6 +126,9 @@ class FastFlow(Flow):
         self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), 20)
 
     def _respond_to_ack(self):
+        """ Overwrites parent Flow class' method because it shouldn't change
+            window size.
+        """
         self.env.add_event(Event("Send", self._flow_id, self.send_packet),self._resend_time)
 
     def _reset_window(self):
