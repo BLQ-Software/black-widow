@@ -148,7 +148,7 @@ class Link(object):
     @capacity.setter
     def capacity(self, value):
         raise AttributeError("Cannot modify link"
-                             "capacity: {0}".format(self._id))
+                             " capacity: {0}".format(self._id))
 
     # Distance of link
     @property
@@ -158,7 +158,7 @@ class Link(object):
     @distance.setter
     def distance(self, value):
         raise AttributeError("Cannot modify link"
-                             "distance: {0}".format(self._id))
+                             " distance: {0}".format(self._id))
 
     def receive(self, packet, source_id):
         """Receives a packet from a `Device`.

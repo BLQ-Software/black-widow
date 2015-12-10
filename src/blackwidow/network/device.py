@@ -32,7 +32,8 @@ class Device(object):
 
     @network_id.setter
     def network_id(self, value):
-        raise AttributeError("Cannot modify device id: {0}".format(self._network_id))
+        raise AttributeError("Cannot modify"
+                             " device id: {0}".format(self._network_id))
 
     @property
     def links(self):
@@ -40,7 +41,7 @@ class Device(object):
 
     def add_link(self, link):
         """Add link to list of links.
-        
+
         Parameters
         ----------
         link : `Link`
@@ -50,7 +51,7 @@ class Device(object):
 
     def delete_link(self, link):
         """Remove link from list of links.
-        
+
         Parameters
         ----------
         link : `Link`
@@ -60,7 +61,7 @@ class Device(object):
 
     def send(self, packet):
         """Virtual method for sending device packets.
-        
+
         Parameters
         ----------
         packet : `Packet`
