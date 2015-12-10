@@ -22,9 +22,6 @@ blackwidow.blackwidow module
     :private-members:
 
 
-Module contents
----------------
-
 .. automodule:: blackwidow
     :members:
     :show-inheritance:

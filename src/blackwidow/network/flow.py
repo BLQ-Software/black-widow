@@ -14,6 +14,7 @@ class Flow(object):
     """Simple class for flows.
     Flows will trigger host behavior.
     Has slow start and congestion avoidance.
+
     Parameters
     ----------
     flow_id : string
@@ -153,6 +154,10 @@ class Flow(object):
 
     def _send_ack(self, packet):
         """ Creates ack for packet.
+        Parameters
+        ----------
+        packet : `Packet`
+            The packet to be received.
         """
         if self._src == packet.src and self._dest == packet.dest:
             ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, timestamp=packet.timestamp)
@@ -276,6 +281,9 @@ class Flow(object):
             self._reset_window()
 
     def _reset_window(self):
+        """ Called when a packet timeout occurs.
+            Sets ssthresh to max(2, cwnd/2) and cwnd to 1.
+        """
         if self._cwnd > 4:
             self._ssthresh = self._cwnd / float(2)
         else:

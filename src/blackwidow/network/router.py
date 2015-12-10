@@ -31,21 +31,28 @@ class Router(Device):
         The network that the link belongs to.
     bw : `Blackwidow`
         BlackWidow simulation object containing simulation settings.
-
+    send_rate : Rate_Graph object
+        Send rate graphing object.
+    receive_rate : Rate_Graph object 
+        Receive rate graphing object.
 
     Methods
     -------
-    add_flow(flow)
-        Adds receiving flow to host.
-    delete_flow(flow)
-        Delete flow from the host.
+    add_link(link)
+        Adds a link to the router.
     send(packet) 
         Sends a packet to a link.
     receive(packet)
         Receives a packet from a link.
+    start_new_routing()
+        Starts a new routing round.
+    send_routing()
+        Sends a routing packet to all neighbors.
+    update_route() 
+        Update the new_routing_table based on routing packets.
+    _distance(link)
+        Gets the distance of a link.
     """
-
-
     def __init__(self, router_id, env, bw):
         """Constructor for Router class."""
         super(Router, self).__init__(router_id)
@@ -60,7 +67,13 @@ class Router(Device):
 
 
     def add_link(self, link):
-        """Overrides Device.add_link() ."""
+        """Overrides Device.add_link() to add to routing table.
+        
+        Parameters
+        ----------
+        link : Link
+            The link to add to the router.
+        """
         self._links.append(link)
 
         network_id = link._device_a.network_id
@@ -72,7 +85,16 @@ class Router(Device):
         self._new_routing_table[network_id] = {'link': link, 'distance': self._distance(link)}
 
     def send(self, packet):
-        """Send packet to appropriate link."""
+        """Send packet to appropriate link. 
+        
+        First looks in the new routing table to see if we know how to reach 
+        it there. Otherwise uses the old routing table.
+
+        Parameters
+        ----------
+        packet : Packet
+            Packet to send through the router.
+        """
         route = None
         self._send_rate.add_point(packet, self.env.time)
 
@@ -85,7 +107,16 @@ class Router(Device):
             route['link'].receive(packet, self._network_id)
 
     def receive(self, packet):
-        """Process packet."""
+        """Process packet by sending it out. 
+        
+        If the packet is routing, calls update_route to update the
+        new_routing_table.
+
+        Parameters
+        ----------
+        packet : Packet
+            Received packet.
+        """
         self._receive_rate.add_point(packet, self.env.time)
         if packet.is_routing:
             self.update_route(packet)
@@ -94,7 +125,12 @@ class Router(Device):
             self.send(packet)
 
     def start_new_routing(self):
-        """Start a new routing round."""
+        """Start a new routing round.
+        
+        If there is dynamic routing, updates the routing table to the new 
+        routing table built up by dynamic routing and measures the distance
+        for each link.
+        """
         # Reset routing table if dynamic routing.
         if not self.bw.static_routing:
             self._new_routing_table = {}
@@ -120,7 +156,7 @@ class Router(Device):
             if (other_device.network_id == self._network_id):
                 other_device = link.device_b
 
-            if type(other_device) is Router:
+            if type(other_device) is Router: 
                 packet = RoutingPacket(ROUTING_PKT_ID, self._network_id,
                                        other_device.network_id, None,
                                        self._new_routing_table, self.bw.routing_packet_size)
@@ -129,7 +165,17 @@ class Router(Device):
 
 
     def update_route(self, packet):
-        """Update routing table."""
+        """Update routing table.
+        
+        Goes through the routing table contained in the routing packet and 
+        determines if it contains a better way to get to each destination.
+        This uses a distributed version of the Bellman-Ford algorithm.
+
+        Parameters
+        ----------
+        packet : Packet
+            Routing packet to update the route.
+        """
         link = None
         if packet.src in self._new_routing_table:
             route = self._new_routing_table[packet.src]
@@ -155,7 +201,13 @@ class Router(Device):
             self.send_routing()
 
     def _distance(self, link):
-        """Get the distance from the link."""
+        """Get the distance of the link.
+
+        Parameters
+        ----------
+        link : Link
+            Link to get distance of.
+        """
         distance = link.delay + link.get_buffer_size() / float(link.rate)
 
         if self.bw.static_routing:
