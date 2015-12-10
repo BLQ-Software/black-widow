@@ -154,6 +154,10 @@ class Flow(object):
 
     def _send_ack(self, packet):
         """ Creates ack for packet.
+        Parameters
+        ----------
+        packet : `Packet`
+            The packet to be received.
         """
         if self._src == packet.src and self._dest == packet.dest:
             ack_packet = AckPacket(packet.pack_id, packet.dest, packet.src, self._flow_id, timestamp=packet.timestamp)
