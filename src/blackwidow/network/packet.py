@@ -60,7 +60,7 @@ class Packet(object):
         self._timestamp = timestamp
 
     def __str__(self):
-        """ Returns a stirng of which packet is being sent.
+        """ Returns a string of which packet is being sent and where.
             Called by link.  
         """
         msg = ""
@@ -134,7 +134,46 @@ class Packet(object):
         raise AttributeError("Cannot modify packet size: {0}".format(self._pack_id))
 
 class DataPacket(Packet):
-    """Class for data packets"""
+    """Class for data packets
+
+    Parameters
+    ----------
+    packet_id : int
+        A unique id for the packet within a flow
+    src : Device
+        The device a packet originated from
+    dest : Device
+        The destination of the packet
+    flow_id : string
+        The flow_id of the flow this packet is in
+    timestamp : float, optional
+        The default value is 0 when this parameter is not used. This is used
+        to track when the packet or the packet this is associated with if it
+        is an ack was sent.  This parameter is used to calculate round trip
+        time in flow.
+
+    Attributes
+    ----------
+    pack_id : int
+        The packet id or the id of the packet an ack is associated with.
+    src : Device
+        The device a packet originated from
+    dest : Device
+        The destination of the packet
+    flow_id : string
+        The flow_id of the flow this packet is in
+    timestamp : float, optional
+        The default value is 0 when this parameter is not used. This is used
+        to track when the packet or the packet this is associated with if it
+        is an ack was sent.  This parameter is used to calculate round trip
+        time in flow.
+    is_ack : boolean
+        True if ack packet; False otherwise.
+    is_routing : boolean
+        True if routing packet; False otherwise.
+    size : int
+        Size in bits of packet.
+    """
 
     def __init__(self, packet_id, src, dest, flow_id, timestamp=0):
         """Constructor for DataPacket class"""
@@ -142,7 +181,50 @@ class DataPacket(Packet):
         self._size = DATA_PACKET_SIZE
 
 class AckPacket(Packet):
-    """Class for acknowledgement packets"""
+    """Class for acknowledgement packets
+
+    Parameters
+    ----------
+    packet_id : int
+        A unique id for the packet within a flow
+    src : Device
+        The device a packet originated from
+    dest : Device
+        The destination of the packet
+    flow_id : string
+        The flow_id of the flow this packet is in
+    next_expected_id : int
+        The next packet that the destination expects from the source.
+    timestamp : float, optional
+        The default value is 0 when this parameter is not used. This is used
+        to track when the packet or the packet this is associated with if it
+        is an ack was sent.  This parameter is used to calculate round trip
+        time in flow.
+
+    Attributes
+    ----------
+    pack_id : int
+        The packet id or the id of the packet an ack is associated with.
+    src : Device
+        The device a packet originated from
+    dest : Device
+        The destination of the packet
+    flow_id : string
+        The flow_id of the flow this packet is in
+    timestamp : float, optional
+        The default value is 0 when this parameter is not used. This is used
+        to track when the packet or the packet this is associated with if it
+        is an ack was sent.  This parameter is used to calculate round trip
+        time in flow.
+    is_ack : boolean
+        True if ack packet; False otherwise.
+    is_routing : boolean
+        True if routing packet; False otherwise.
+    size : int
+        Size in bits of packet.
+    next_expected_id : int
+        The next packet that the destination expects from the source.
+    """
 
     @property
     def next_expected(self):
@@ -160,7 +242,45 @@ class AckPacket(Packet):
         self._next_expected = next_expected_id
 
 class RoutingPacket(Packet):
-    """Class for routing packets"""
+    """Class for routing packets
+
+    Parameters
+    ----------
+    packet_id : int
+        A unique id for the packet within a flow
+    src : Device
+        The device a packet originated from
+    dest : Device
+        The destination of the packet
+    flow_id : string
+        The flow_id of the flow this packet is in
+    routing_table : dictionary
+        Routing table to be updated
+
+    Attributes
+    ----------
+    pack_id : int
+        The packet id or the id of the packet an ack is associated with.
+    src : Device
+        The device a packet originated from
+    dest : Device
+        The destination of the packet
+    flow_id : string
+        The flow_id of the flow this packet is in
+    timestamp : float, optional
+        The default value is 0 when this parameter is not used. This is used
+        to track when the packet or the packet this is associated with if it
+        is an ack was sent.  This parameter is used to calculate round trip
+        time in flow.
+    is_ack : boolean
+        True if ack packet; False otherwise.
+    is_routing : boolean
+        True if routing packet; False otherwise.
+    size : int
+        Size in bits of packet.
+    routing_table : dictionary
+        Routing table to be updated
+    """
 
     def __init__(self, packet_id, src, dest, flow_id, routing_table, size):
         """Constructor for RoutingPacket class"""
