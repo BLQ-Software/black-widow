@@ -13,9 +13,6 @@ blackwidow.parser.parser module
     :private-members:
 
 
-Module contents
----------------
-
 .. automodule:: blackwidow.parser
     :members:
     :show-inheritance:
