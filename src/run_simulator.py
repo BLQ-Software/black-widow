@@ -9,6 +9,7 @@ from blackwidow import BlackWidow
 from run_interactive import create_bw
 
 def main():
+    """Runs the simulator."""
 
     # Configure argument parser
     parser = argparse.ArgumentParser(description='Run a TCP network'
