@@ -24,7 +24,7 @@ class BlackWidowInteractive(cmd.Cmd):
     """
 
     def create_network(self, settings=None, f=None):
-        """Initializes the `Network` and `Blackwidow` variables.
+        """Initializes the network and bw variables.
 
         Parameters
         ----------
