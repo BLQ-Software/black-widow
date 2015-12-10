@@ -23,6 +23,15 @@ class BlackWidow(object):
                 Name of file to write to. This is the prefix for all data types
                 written to files. See documentation for write for more
                 information.
+            data_dir : str
+                Directory where the data is stored.
+            static_routing : bool
+                Whether to use static routing. 
+            routing_packet_size : int 
+                Size of routing packets.
+            tcp_alg : str
+                Which TCP algorithm to use. Must be 'Reno', 'Fast', or 
+                'Tahoe'.
 
     Methods
     -------
