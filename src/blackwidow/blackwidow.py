@@ -26,11 +26,11 @@ class BlackWidow(object):
             data_dir : str
                 Directory where the data is stored.
             static_routing : bool
-                Whether to use static routing. 
-            routing_packet_size : int 
+                Whether to use static routing.
+            routing_packet_size : int
                 Size of routing packets.
             tcp_alg : str
-                Which TCP algorithm to use. Must be 'Reno', 'Fast', or 
+                Which TCP algorithm to use. Must be 'Reno', 'Fast', or
                 'Tahoe'.
 
     Methods

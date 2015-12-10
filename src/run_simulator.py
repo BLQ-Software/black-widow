@@ -8,6 +8,7 @@ import os.path
 from blackwidow import BlackWidow
 from run_interactive import create_bw
 
+
 def main():
     """Runs the simulator."""
 
