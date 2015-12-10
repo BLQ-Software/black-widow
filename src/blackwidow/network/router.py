@@ -212,7 +212,14 @@ class Router(Device):
                                                  'distance': distance}
                 route_changed = True
 
-        if route_changed or self.env.time < 0.5:
+        if self.env.time < 500:
+            self.env.add_event(Event("{} sent a routing packet"
+                         ".".format(self._network_id),
+                         self._network_id,
+                         self.send_routing),
+                       50)
+
+        if route_changed:
             self.send_routing()
 
     def _distance(self, link):
