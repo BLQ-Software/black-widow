@@ -2,6 +2,7 @@ from blackwidow.network.packet import AckPacket, DataPacket
 from event import Event
 from flow import Flow
 
+
 class FastFlow(Flow):
     """ Implements FAST TCP.
     Flows will trigger host behavior.
@@ -62,13 +63,17 @@ class FastFlow(Flow):
     acks_arrived : set
         Set of ack packets that have been received
     done : int
-        0 if flow isn't finished; 1 if flow is finished; used to avoid decrementing flow more than once
+        0 if flow isn't finished; 1 if flow is finished.
+        Used to avoid decrementing flow more than once.
     send_rate : Rate_Graph
-        Keeps track of the rate the flow is sending at and outputs to CSV file in real time
+        Keeps track of the rate the flow is sending at and outputs to CSV file
+        in real time.
     receive_rate : Rate_Graph
-        Keeps track of the rate the flow is receiving at and outputs to CSV file in real time 
+        Keeps track of the rate the flow is receiving at and outputs to CSV
+        file in real time.
     alpha : float
-        alpha in FAST TCP algorithm; alpha = 20 because link rates are between 10 Mbps and 1 Gbps
+        alpha in FAST TCP algorithm; alpha = 20 because link rates are between
+        10 Mbps and 1 Gbps.
     gamma : float
         gamma in FAST TCP algorithm; smoothing factor for window size
     total_num_pack : int
@@ -77,30 +82,40 @@ class FastFlow(Flow):
     def __init__(self, flow_id, source, destination, amount, env, time, bw):
         """ Constructor for Flow class
         """
-        Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
+        Flow.__init__(self, flow_id, source, destination, amount, env, time,
+                      bw)
         self._alpha = 20.0
-        self._gamma = 0.8 
-        self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), self._flow_start-1)
+        self._gamma = 0.8
+        self.env.add_event(Event("Start window calc", self._flow_id,
+                                 self._update_window),
+                           self._flow_start-1)
         self._total_num_pack = (int)(self._amount/(1024*8)) + 1
         self._cwnd = self._alpha
         self._resend_time = 1
 
     def send_packet(self):
-        """ Send a packet. The difference between FastFlow's send_packet and Flow's
-            send_packet is the ending behavior. FastFlow just keeps resending packets
-            it hasn't received yet until it is done after it has sent all the packets
-            once.
+        """ Send a packet. The difference between FastFlow's send_packet and
+            Flow's send_packet is the ending behavior. FastFlow just keeps
+            resending packets it hasn't received yet until it is done after it
+            has sent all the packets once.
         """
         if self._amount > 0 or (len(self._packets_sent) > 0):
-           # Send packets up to the window size.
-            while (len(self._packets_sent) - len(self._packets_time_out) < self._cwnd):
-                pack = DataPacket(self._pack_num, self._src, self._dest, self._flow_id, timestamp=self.env.time)
+            # Send packets up to the window size.
+            while (len(self._packets_sent) - len(self._packets_time_out) <
+                   self._cwnd):
+                pack = DataPacket(self._pack_num, self._src, self._dest,
+                                  self._flow_id, timestamp=self.env.time)
                 if (self._pack_num not in self._acks_arrived):
                     self._src.send(pack)
                     print "Flow sent packet {0}".format(pack.pack_id)
-                    self.bw.record('{0}, {1}'.format(self.env.time,pack.size), 'flow_{0}.sent'.format(self.flow_id))
+                    self.bw.record('{0}, {1}'.format(self.env.time, pack.size),
+                                   'flow_{0}.sent'.format(self.flow_id))
                     self._send_rate.add_point(pack, self.env.time)
-                    self.env.add_event(Event("Timeout", self._flow_id, self._timeout, pack_num = self._pack_num), self._RTO)
+                    self.env.add_event(Event("Timeout",
+                                             self._flow_id,
+                                             self._timeout,
+                                             pack_num=self._pack_num),
+                                       self._RTO)
                     # Shouldn't subtract pack.size if sent before.
                     if (self._pack_num not in self._packets_sent):
                         self._amount = self._amount - pack.size
@@ -114,25 +129,34 @@ class FastFlow(Flow):
                     self._pack_num = self._packets_sent[0]
                     self._cwnd = self._alpha
 
-                    print "Flow {} already finished. Received timeout at {}.".format(self.flow_id, self.env.time)
+                    print ("Flow {} already finished. Received timeout"
+                           " at {}.".format(self.flow_id, self.env.time))
                     return
 
     def _update_window(self):
         """ Send a packet.
         """
-        self._cwnd = min((((self._min_RTT/self._last_RTT)*self._cwnd + self._alpha)*self._gamma + (1.0-self._gamma)*self._cwnd), 2*self._cwnd)
+        self._cwnd = min((((self._min_RTT / self._last_RTT) *
+                          self._cwnd + self._alpha) * self._gamma +
+                          (1.0-self._gamma) * self._cwnd), 2 * self._cwnd)
         print "Flow {} window size is {}".format(self._flow_id, self._cwnd)
-        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd), 'flow_{0}.window'.format(self.flow_id))
-        self.env.add_event(Event("Start window calc", self._flow_id, self._update_window), 20)
+        self.bw.record('{0}, {1}'.format(self.env.time, self._cwnd),
+                       'flow_{0}.window'.format(self.flow_id))
+        self.env.add_event(Event("Start window calc",
+                                 self._flow_id,
+                                 self._update_window),
+                           20)
 
     def _respond_to_ack(self):
         """ Overwrites parent Flow class' method because it shouldn't change
             window size.
         """
-        self.env.add_event(Event("Send", self._flow_id, self.send_packet),self._resend_time)
+        self.env.add_event(Event("Send", self._flow_id, self.send_packet),
+                           self._resend_time)
 
     def _reset_window(self):
-        """ This is called when a packet timeout occurs by the parent Flow class.
+        """ This is called when a packet timeout occurs by the parent Flow
+            class.
             Does nothing since FAST TCP automatically updates every 20 ms.
         """
         pass
