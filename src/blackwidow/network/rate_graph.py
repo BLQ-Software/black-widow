@@ -50,12 +50,22 @@ class Rate_Graph(object):
 
     def add_point(self, packet, time):
         """ Adds a point to the queue
+        Parameters
+        ----------
+        packet : `Packet`
+            The packet which was sent or received.
+        time : float
+            The network's current time.
         """
         self.window.put(Data(time, packet.size))
         self.bits_in_window = self.bits_in_window + packet.size
 
     def remove_points(self, time):
         """ Removes data before time
+        Parameters
+        ----------
+        time : float
+            The network's current time.
         """
         while ((not self.window.empty()) and self.peek_time() < time):
             first = self.window.get()
