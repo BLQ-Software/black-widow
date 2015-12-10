@@ -91,7 +91,7 @@ class Rate_Graph(object):
         self.window = PriorityQueue()
         self.bits_in_window = 0
         # Interval between points
-        self.interval = 10
+        self.interval = 100
         self.env.add_event(Event("Graph rate", self.object_id, self.graph), self.window_size)
 
     def add_point(self, packet, time):
