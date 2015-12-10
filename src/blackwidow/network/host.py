@@ -1,5 +1,6 @@
 from device import Device
 
+
 class Host(Device):
     """Simple class for hosts.
 
@@ -28,7 +29,7 @@ class Host(Device):
         Adds receiving flow to host.
     delete_flow(flow)
         Delete flow from the host.
-    send(packet) 
+    send(packet)
         Sends a packet to a link.
     receive(packet)
         Receives a packet from a link.
@@ -55,7 +56,7 @@ class Host(Device):
 
     def delete_flow(self, flow):
         """Delete flow from host.
-        
+
         Parameters
         ----------
         flow : `Flow`
@@ -75,7 +76,8 @@ class Host(Device):
         if len(self._links) > 0:
             self._links[0].receive(packet, self._network_id)
         else:
-            raise Exception("Host {0} does not have any links".format(self.network_id))
+            raise Exception("Host {0} does not have any"
+                            " links".format(self.network_id))
 
     def receive(self, packet):
         """Send packet to flow to process.
