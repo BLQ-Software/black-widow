@@ -1,8 +1,17 @@
 from blackwidow.network import Network
 import json
 
+
 def config_network(filename, bw):
-    """Returns config object."""
+    """Returns Network object after parsing a .json file.
+
+    Parameters
+    ----------
+    filename : string
+        name of .json file to configure off of.
+    bw : `BlackWidow`
+        BlackWidow simulation object containing simulation settings.
+    """
 
     f = open(filename)
     config = json.load(f)
