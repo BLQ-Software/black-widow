@@ -3,6 +3,9 @@ from event import Event
 from Queue import PriorityQueue
 
 class Data(object):
+    """ Class to represent an amount of data and the time it was sent.
+        It is used as a priority queue object with time as the priority.
+    """
     def __init__(self, time, size):
         self._time = time
         self._size = size
@@ -24,10 +27,12 @@ class Data(object):
         raise AttributeError("Cannot change size")
 
     def __cmp__(self, other):
+    """ Method to compare with other objects in the priority queue.
+    """
         return cmp(self._time, other.time)
 
 class Rate_Graph(object):
-    """Class to graph rates.
+    """ Class to graph rates.
     """
     def __init__(self, object_id, name, env, bw):
         """ Constructor for Rate_Graph class
