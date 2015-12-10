@@ -11,7 +11,32 @@ class GraphSettings(object):
         self.sim_time = sim_time
 
 class CsvGrapher(object):
-    """Graphs the .csv files."""
+    """Graphs the .csv files.
+    
+    Parameters
+    ----------
+    bw : `BlackWidow`
+        BlackWidow simulation object containing simulation settings.
+
+    Attributes
+    ----------
+    bw : `BlackWidow`
+        BlackWidow simulation object containing simulation settings.
+    data_dir : string
+        Data directory containing .csv files.
+    log_file : string 
+        Base file name for the log file indicating case number.
+    smooth_factor : int
+        Number of data points to average for rates.
+    max_capacity : float
+        Maximum capacity for link rates to throw out outliers.
+
+    Methods
+    -------
+    graph(sim_time)
+        Graph all desired rates based on the csv files.
+
+    """
 
     def __init__(self, bw):
         """Constructor for graph object."""
@@ -228,11 +253,10 @@ class CsvGrapher(object):
 
 
 
-
 if __name__ == '__main__':
     data_dir = '../../data'
     log_files = ['case0', 'case1', 'case2']
-    expected_times = [70000, 120000, 1000000]
+    expected_times = [20000, 20000, 80000]
 
     for x, log_file in enumerate(log_files):
         bw = GraphSettings(data_dir, log_file, expected_times[x])
