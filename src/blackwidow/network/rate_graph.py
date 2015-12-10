@@ -4,7 +4,21 @@ from Queue import PriorityQueue
 
 class Data(object):
     """ Class to represent an amount of data and the time it was sent.
-        It is used as a priority queue object with time as the priority.
+    It is used as a priority queue object with time as the priority.
+
+    Parameters
+    ----------
+    time : float
+        Represents the network time this object was transferred.
+    size : int
+        The number of bits this object represents
+
+    Attributes
+    ----------
+    time : float
+        Represents the network time this object was transferred.
+    size : int
+        The number of bits this object represents
     """
     def __init__(self, time, size):
         self._time = time
@@ -33,6 +47,38 @@ class Data(object):
 
 class Rate_Graph(object):
     """ Class to graph rates.
+
+    Parameters
+    ----------
+    object_id : string
+        The id of the object recording.
+    name : string
+        The name of this Rate_Graph. Should specify which flow, link, or device
+        is using it.
+    env : `Network`
+        The network that the flow belongs to.
+    bw : Blackwidow
+        The printer to print data to
+
+    Attributes
+    ----------
+    object_id : string
+        The id of the object recording.
+    name : string
+        The name of this Rate_Graph. Should specify which flow, link, or device
+        is using it.
+    env : `Network`
+        The network that the flow belongs to.
+    bw : Blackwidow
+        The printer to print data to
+    window_size : float
+        ms to average over
+    bits_in_window : int
+        Number of bits that were sent in the last window_size ms
+    interval : float
+        Record a data point every interval ms.
+    window : PriorityQueue
+        Keeps track of each object recorded within last window_size ms.
     """
     def __init__(self, object_id, name, env, bw):
         """ Constructor for Rate_Graph class
