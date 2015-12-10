@@ -155,18 +155,11 @@ class Router(Device):
                 self._new_routing_table[network_id] = \
                     {'link': link, 'distance': self._distance(link)}
             self._routing_table = self._new_routing_table
-            if self.env.time < 500:
-                self.env.add_event(Event("{} reset its routing"
-                                     " table.".format(self._network_id),
-                                     self._network_id,
-                                     self.start_new_routing),
-                                   10)
-            else:
-                self.env.add_event(Event("{} reset its routing"
-                                     " table.".format(self._network_id),
-                                     self._network_id,
-                                     self.start_new_routing),
-                                   5000)
+            self.env.add_event(Event("{} reset its routing"
+                     " table.".format(self._network_id),
+                     self._network_id,
+                     self.start_new_routing),
+                   5000)
 
         self.send_routing()
 
@@ -219,7 +212,7 @@ class Router(Device):
                                                  'distance': distance}
                 route_changed = True
 
-        if route_changed:
+        if route_changed or self.env.time < 0.5:
             self.send_routing()
 
     def _distance(self, link):
