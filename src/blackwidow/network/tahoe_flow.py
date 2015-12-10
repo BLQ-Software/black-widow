@@ -2,6 +2,7 @@ from blackwidow.network.packet import AckPacket, DataPacket
 from event import Event
 from flow import Flow
 
+
 class TahoeFlow(Flow):
     """ Implements TCP Tahoe.
     Flows will trigger host behavior.
@@ -64,15 +65,19 @@ class TahoeFlow(Flow):
     acks_arrived : set
         Set of ack packets that have been received
     done : int
-        0 if flow isn't finished; 1 if flow is finished; used to avoid decrementing flow more than once
+        0 if flow isn't finished; 1 if flow is finished
+        Used to avoid decrementing flow more than once.
     send_rate : Rate_Graph
-        Keeps track of the rate the flow is sending at and outputs to CSV file in real time
+        Keeps track of the rate the flow is sending at and outputs to CSV file
+        in real time.
     receive_rate : Rate_Graph
-        Keeps track of the rate the flow is receiving at and outputs to CSV file in real time 
+        Keeps track of the rate the flow is receiving at and outputs to CSV
+        file in real time.
     """
     def __init__(self, flow_id, source, destination, amount, env, time, bw):
         """ Constructor for Flow class
         """
-        Flow.__init__(self, flow_id, source, destination, amount, env, time ,bw)
+        Flow.__init__(self, flow_id, source, destination, amount, env, time,
+                      bw)
         self._ssthresh = 9999
         self._resend_time = 100
