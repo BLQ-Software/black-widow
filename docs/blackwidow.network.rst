@@ -101,9 +101,6 @@ blackwidow.network.tahoe_flow module
     :private-members:
 
 
-Module contents
----------------
-
 .. automodule:: blackwidow.network
     :members:
     :show-inheritance:
