@@ -216,7 +216,18 @@ class Router(Device):
 
         # Send routing packets if something has changed.
         if route_changed:
-            self.send_routing()
+            self.env.add_event(Event("{} send a routing packet"
+                     " table.".format(self._network_id),
+                     self._network_id,
+                     self.send_routing),
+                   1)
+
+        if not self.canReachNetwork():
+            print "Time: {} {} cannot reach the whole network.".format(self.env.time, self.network_id)
+            print self._routing_table
+            # import pdb; pdb.set_trace()
+        else: 
+            print "Time: {} {} can reach the whole network.".format(self.env.time, self.network_id)
 
     def _distance(self, link):
         """Get the distance of the link.
@@ -232,3 +243,13 @@ class Router(Device):
             distance = link.delay
 
         return distance
+
+    def canReachNetwork(self):
+        result = True
+        for device in self.env.devices:
+            if device not in self._routing_table:
+                print "{} cannot reach {}".format(self.network_id, device)
+                result = False
+
+        return result
+
