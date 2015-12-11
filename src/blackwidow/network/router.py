@@ -59,8 +59,9 @@ class Router(Device):
         super(Router, self).__init__(router_id)
         self.env = env
         self.bw = bw
-        self._routing_table = {}
-        self._new_routing_table = {}
+        self._routing_table = {self.network_id: {'link': None, 'distance': 0}}
+        self._new_routing_table = {self.network_id: 
+                                    {'link': None, 'distance': 0}}
         self._send_rate = Rate_Graph(router_id,
                                      "router {0} send rate".format(router_id),
                                      self.env,
@@ -146,7 +147,8 @@ class Router(Device):
         """
         # Reset routing table if dynamic routing.
         if not self.bw.static_routing:
-            self._new_routing_table = {}
+            self._new_routing_table = {self.network_id: 
+                                        {'link': None, 'distance': 0}}
             for link in self._links:
                 link.measure_distance()
                 network_id = link._device_a.network_id
@@ -212,13 +214,7 @@ class Router(Device):
                                                  'distance': distance}
                 route_changed = True
 
-        if self.env.time < 500:
-            self.env.add_event(Event("{} sent a routing packet"
-                         ".".format(self._network_id),
-                         self._network_id,
-                         self.send_routing),
-                       50)
-
+        # Send routing packets if something has changed.
         if route_changed:
             self.send_routing()
 
